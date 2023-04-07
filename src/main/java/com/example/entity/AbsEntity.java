@@ -11,6 +11,8 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 @MappedSuperclass
+@Getter
+@Setter
 public abstract class AbsEntity {
 
     @Id
