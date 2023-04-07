@@ -1,6 +1,7 @@
 package com.example.controller;
 
 
+import com.example.exception.NotMatchException;
 import com.example.exp.attach.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -56,6 +57,16 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     }
     @ExceptionHandler({OriginalFileNameNullException.class})
     private ResponseEntity<?> handler(OriginalFileNameNullException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler({NotMatchException.class})
+    private ResponseEntity<?> handler(NotMatchException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class})
+    private ResponseEntity<?> handler(IllegalArgumentException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 

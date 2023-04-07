@@ -63,6 +63,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/attach/**").permitAll()
+                .requestMatchers("/api/promo_code/**").permitAll()
                 .requestMatchers(AUTH_WHITELIST).permitAll()
                 .anyRequest()
                 .authenticated()

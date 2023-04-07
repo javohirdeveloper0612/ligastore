@@ -1,9 +1,6 @@
 package com.example.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,9 +16,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public abstract class AbsEntity {
+
     @Id
-    @GenericGenerator(name = "attach_uuid", strategy = "org.hibernate.id.UUIDGenerator")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long  id;
 
     @Column
     @CreationTimestamp
