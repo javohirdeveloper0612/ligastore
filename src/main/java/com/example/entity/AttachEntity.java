@@ -10,10 +10,11 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 
-@Entity
+
 
 @Getter
 @Setter
+@Entity
 @Table(name = "attach")
 public class AttachEntity extends AbsEntity{
 
