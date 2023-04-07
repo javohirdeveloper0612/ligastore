@@ -1,5 +1,4 @@
 package com.example.entity;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +11,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "category")
 @EntityListeners(AuditingEntityListener.class)
 public class CategoryEntity extends AbsEntity{
-
 
     @Column(nullable = false)
     private String nameUz;

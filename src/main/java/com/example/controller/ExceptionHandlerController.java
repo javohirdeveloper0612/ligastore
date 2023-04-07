@@ -1,6 +1,7 @@
 package com.example.controller;
 
 
+import com.example.Exp.NotFoundParentCategoryId;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -34,6 +35,13 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         body.put("errors", errors);
         return new ResponseEntity<>(body, headers, status);
     }
+
+    @ExceptionHandler({NotFoundParentCategoryId.class})
+    private ResponseEntity<?> handler(NotFoundParentCategoryId e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+
 
 
 }
