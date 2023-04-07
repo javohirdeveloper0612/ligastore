@@ -15,11 +15,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name = "attach")
-public class AttachEntity extends  {
+public class AttachEntity extends AbsEntity{
 
-    @Id
-    @GenericGenerator(name = "attach_uuid", strategy = "org.hibernate.id.UUIDGenerator")
-    private String id;
 
     @Column(name = "origin_name")
     private String originName;
@@ -36,7 +33,4 @@ public class AttachEntity extends  {
     @Column
     private Double duration;
 
-
-    @Column(name = "created_date")
-    private LocalDateTime createdDate = LocalDateTime.now();
 }

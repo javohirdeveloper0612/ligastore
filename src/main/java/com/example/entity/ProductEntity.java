@@ -1,13 +1,11 @@
 package com.example.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Getter
-@Setter
 @Table(name = "product")
+@EntityListeners(AuditingEntityListener.class)
 public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
