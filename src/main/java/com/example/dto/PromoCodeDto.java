@@ -1,13 +1,9 @@
 package com.example.dto;
-
-import com.example.entity.ProfileEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class PromoCodeDto {

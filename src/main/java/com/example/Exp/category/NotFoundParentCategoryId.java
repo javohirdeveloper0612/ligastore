@@ -1,4 +1,4 @@
-package com.example.Exp;
+package com.example.Exp.category;
 
 public class NotFoundParentCategoryId extends RuntimeException{
 
