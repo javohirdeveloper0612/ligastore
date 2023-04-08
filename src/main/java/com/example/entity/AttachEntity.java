@@ -16,9 +16,12 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "attach")
-public class AttachEntity extends AbsEntity{
+public class AttachEntity {
 
 
+    @Id
+    @GenericGenerator(name = "attach_uuid",strategy = "org.hibernate.id.UUIDGenerator")
+    private String id;
     @Column(name = "origin_name")
     private String originName;
 

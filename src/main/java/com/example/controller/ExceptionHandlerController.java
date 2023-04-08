@@ -1,7 +1,8 @@
 package com.example.controller;
 
 
-import com.example.Exp.NotFoundParentCategoryId;
+import com.example.exception.NotMatchException;
+import com.example.exp.attach.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.io.FileNotFoundException;
 import java.util.*;
 
 @ControllerAdvice
@@ -36,12 +36,39 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, headers, status);
     }
 
-    @ExceptionHandler({NotFoundParentCategoryId.class})
-    private ResponseEntity<?> handler(NotFoundParentCategoryId e) {
+    @ExceptionHandler({AttachNotFoundException.class})
+    private ResponseEntity<?> handler(AttachNotFoundException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
+    @ExceptionHandler({FileNameNotFoundException.class})
+    private ResponseEntity<?> handler(FileNameNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
 
+    @ExceptionHandler({FileNotFoundException.class})
+    private ResponseEntity<?> handler(FileNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler({FileUploadException.class})
+    private ResponseEntity<?> handler(FileUploadException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+    @ExceptionHandler({OriginalFileNameNullException.class})
+    private ResponseEntity<?> handler(OriginalFileNameNullException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler({NotMatchException.class})
+    private ResponseEntity<?> handler(NotMatchException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class})
+    private ResponseEntity<?> handler(IllegalArgumentException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
 
 
 }

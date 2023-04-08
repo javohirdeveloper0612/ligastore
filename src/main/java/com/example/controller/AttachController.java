@@ -34,7 +34,7 @@ public class AttachController {
      * @return AttachDTO
      */
     @PostMapping(value = "/public/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Upload method", description = "This method uploads the file in DataBase")
+    @Operation(summary = "Upload File API", description = "This method uploads the file in DataBase")
     public ResponseEntity<?> uploadFile(@ModelAttribute("file") MultipartFile file) {
         log.info("upload file : multipartFile {} ", file);
         AttachResponseDTO result = attachService.uploadFile(file);
