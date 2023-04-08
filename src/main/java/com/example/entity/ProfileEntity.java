@@ -30,7 +30,6 @@ public class ProfileEntity extends AbsEntity implements UserDetails {
 
     @Column(nullable = false)
     private String surnameRu;
-
     @Column
     private String username;
     @Column
@@ -74,6 +73,9 @@ public class ProfileEntity extends AbsEntity implements UserDetails {
 
     @OneToMany(mappedBy = "profile")
     private List<PromoCode> promoCode;
+
+    @ManyToMany
+    private List<ProductEntity> product;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

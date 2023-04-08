@@ -92,7 +92,7 @@ public class PromoCodeService {
 
 
     /**
-     * This method is used for viewing all the promoce list data  if not found throw EmptyListException
+     * This method is used for viewing all the promo-code list data  if not found throw EmptyListException
      *
      * @param language Language
      * @return List<PromoCodeDto></>
