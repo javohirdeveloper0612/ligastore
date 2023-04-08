@@ -19,7 +19,8 @@ public class PromoCode extends AbsEntity {
 
     @Column(nullable = false)
     private Integer score;
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL)
     private ProfileEntity profile;
     @Column
     private Double money;

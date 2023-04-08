@@ -5,7 +5,6 @@ import com.example.enums.ProfileStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,9 +16,7 @@ import java.util.List;
 
 @Setter
 @Getter
-
-@Entity
-@Table(name = "profile")
+@Entity(name = "profile")
 public class ProfileEntity extends AbsEntity implements UserDetails {
 
     @Column(nullable = false)
@@ -63,7 +60,7 @@ public class ProfileEntity extends AbsEntity implements UserDetails {
     @Column(unique = true)
     private String phoneHome;
     @Column
-    private Integer ball;
+    private Integer score;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -74,6 +71,9 @@ public class ProfileEntity extends AbsEntity implements UserDetails {
 
     @Column
     private Boolean enabled = false;
+
+    @OneToMany(mappedBy = "profile")
+    private List<PromoCode> promoCode;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

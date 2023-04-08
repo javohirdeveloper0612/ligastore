@@ -1,8 +1,11 @@
 package com.example.controller;
 
+import com.example.dto.CheckPromoCodeDTO;
 import com.example.dto.PromoCodeDto;
 import com.example.dto.ResponsePromCode;
+import com.example.entity.ProfileEntity;
 import com.example.enums.Language;
+import com.example.security.CurrentUser;
 import com.example.service.PromoCodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -71,7 +74,6 @@ public class PromoCodeController {
     }
 
 
-
     /**
      * This method is used for viewing all the promoce list data  if not found throw EmptyListException
      *
@@ -88,4 +90,25 @@ public class PromoCodeController {
     }
 
 
+    /**
+     * This method is used for checking promo_code if the promo_code and user_id is exist
+     * throw new InvalidPromoCodeException If The promo_code is not exist throw new
+     * InvalidPromoCodeException
+     *
+     * @param promo_code long
+     * @param language   Language
+     * @param user       ProfileEntity
+     * @return CheckPromoCodeDto
+     */
+    @PostMapping("/check_promo_code")
+    @Operation(summary = "Check Promo-Code API", description = "This API for checking promo-code")
+    public ResponseEntity<?> checkPromoCode(
+            @RequestParam long promo_code,
+            @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language,
+            @CurrentUser ProfileEntity user) {
+        log.info("Check Promo-Code : promo_code {} , user {}", promo_code, user);
+        CheckPromoCodeDTO codeDTO = promoCodeService.check_promo_code(promo_code, language, user);
+        return codeDTO.isSuccess() ? ResponseEntity.ok(codeDTO) : ResponseEntity.status(404).body(codeDTO);
+
+    }
 }

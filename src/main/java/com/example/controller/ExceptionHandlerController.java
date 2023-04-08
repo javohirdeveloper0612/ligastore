@@ -1,8 +1,9 @@
 package com.example.controller;
 
 
+import com.example.exception.InvalidPromoCodeException;
 import com.example.exception.NotMatchException;
-import com.example.exp.attach.*;
+import com.example.exception.attach.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -55,6 +56,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     private ResponseEntity<?> handler(FileUploadException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
     @ExceptionHandler({OriginalFileNameNullException.class})
     private ResponseEntity<?> handler(OriginalFileNameNullException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -67,6 +69,11 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({IllegalArgumentException.class})
     private ResponseEntity<?> handler(IllegalArgumentException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler({InvalidPromoCodeException.class})
+    private ResponseEntity<?> handler(InvalidPromoCodeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
