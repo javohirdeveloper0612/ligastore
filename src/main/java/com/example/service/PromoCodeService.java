@@ -1,5 +1,4 @@
 package com.example.service;
-
 import com.example.dto.CheckPromoCodeDTO;
 import com.example.dto.PromoCodeDto;
 import com.example.dto.ResponsePromCode;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,6 +54,7 @@ public class PromoCodeService {
      * @param money  double
      * @return List<PromoCode></>
      */
+
     public List<PromoCode> generatePromoCode(int amount, double money) {
         Random random = new Random();
         List<PromoCode> list = new ArrayList<>();
@@ -66,7 +65,6 @@ public class PromoCodeService {
         }
         return list;
     }
-
 
     /**
      * This method is used for viewing all the promo-code data by page if page or size less than 0

@@ -1,6 +1,8 @@
 package com.example.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -11,7 +13,8 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 @MappedSuperclass
-
+@Getter
+@Setter
 public abstract class AbsEntity {
 
     @Id
@@ -27,7 +30,7 @@ public abstract class AbsEntity {
     @UpdateTimestamp
     private Timestamp updatedDate;
 
-
+/*
     @ManyToOne
     @CreatedBy
     private ProfileEntity createdBy;
@@ -35,4 +38,6 @@ public abstract class AbsEntity {
     @ManyToOne
     @LastModifiedBy
     private ProfileEntity updatedBy;
+}*/
+
 }

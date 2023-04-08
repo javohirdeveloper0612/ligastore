@@ -13,10 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PromoCode extends AbsEntity {
 
-    @Id
-    @Column
-    private Long id;
-
     @Column
     private Long code;
 

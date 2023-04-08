@@ -1,6 +1,10 @@
 package com.example.controller;
-import com.example.Exp.category.NotFoundParentCategoryId;
+import com.example.exception.NotFoundParentCategoryId;
 import com.example.exception.NotMatchException;
+import com.example.exception.attach.AttachNotFoundException;
+import com.example.exception.attach.FileNameNotFoundException;
+import com.example.exception.attach.FileUploadException;
+import com.example.exception.attach.OriginalFileNameNullException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -35,8 +39,8 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, headers, status);
     }
 
-    @ExceptionHandler({com.example.exp.attach.AttachNotFoundException.class})
-    private ResponseEntity<?> handler(com.example.exp.attach.AttachNotFoundException e) {
+    @ExceptionHandler({AttachNotFoundException.class})
+    private ResponseEntity<?> handler(AttachNotFoundException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
@@ -45,8 +49,8 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
-    @ExceptionHandler({com.example.exp.attach.FileNameNotFoundException.class})
-    private ResponseEntity<?> handler(com.example.exp.attach.FileNameNotFoundException e) {
+    @ExceptionHandler({FileNameNotFoundException.class})
+    private ResponseEntity<?> handler(FileNameNotFoundException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
@@ -55,12 +59,12 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
-    @ExceptionHandler({com.example.exp.attach.FileUploadException.class})
-    private ResponseEntity<?> handler(com.example.exp.attach.FileUploadException e) {
+    @ExceptionHandler({FileUploadException.class})
+    private ResponseEntity<?> handler(FileUploadException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
-    @ExceptionHandler({com.example.exp.attach.OriginalFileNameNullException.class})
-    private ResponseEntity<?> handler(com.example.exp.attach.OriginalFileNameNullException e) {
+    @ExceptionHandler({OriginalFileNameNullException.class})
+    private ResponseEntity<?> handler(OriginalFileNameNullException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 

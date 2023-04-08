@@ -1,6 +1,7 @@
 package com.example.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +17,8 @@ public class CategoryCreationDTO {
     @NotBlank(message = "nameRu cannot be null")
     private String nameRu;
 
+    @NotNull
     private MultipartFile multipartFile;
 
-    private Long parentcategoryId;
+    private Long parentCategoryId;
 }

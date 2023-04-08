@@ -75,7 +75,7 @@ public class AttachService {
             entity.setType(extension);
             entity.setPath(pathFolder);
             entity.setSize(file.getSize());
-            repository.save(entity);
+            AttachEntity save = repository.save(entity);
 
 
             AttachResponseDTO dto = new AttachResponseDTO();

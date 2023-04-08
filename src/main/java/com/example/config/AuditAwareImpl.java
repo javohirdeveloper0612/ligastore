@@ -1,3 +1,4 @@
+/*
 package com.example.config;
 
 import com.example.entity.ProfileEntity;
@@ -23,3 +24,4 @@ public class AuditAwareImpl implements AuditorAware<UUID> {
         return Optional.empty();
     }
 }
+*/
