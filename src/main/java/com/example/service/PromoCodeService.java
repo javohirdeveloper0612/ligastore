@@ -1,16 +1,23 @@
 package com.example.service;
+
+import com.example.dto.CheckPromoCodeDTO;
 import com.example.dto.PromoCodeDto;
 import com.example.dto.ResponsePromCode;
+import com.example.entity.ProfileEntity;
 import com.example.entity.PromoCode;
 import com.example.enums.Language;
 import com.example.exception.EmptyListException;
+import com.example.exception.InvalidPromoCodeException;
 import com.example.exception.NotMatchException;
 import com.example.repository.PromocodeRepository;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -44,8 +51,9 @@ public class PromoCodeService {
 
     /**
      * This method is used for generating promo-code
+     *
      * @param amount int
-     * @param money double
+     * @param money  double
      * @return List<PromoCode></>
      */
     public List<PromoCode> generatePromoCode(int amount, double money) {
@@ -135,5 +143,33 @@ public class PromoCodeService {
             list.add(dto);
         }
         return list;
+    }
+
+    /**
+     * This method is used for checking promo_code if the promo_code and user_id is exist
+     * throw new InvalidPromoCodeException If The promo_code is not exist throw new
+     * InvalidPromoCodeException
+     *
+     * @param promoCode long
+     * @param language   Language
+     * @param user       ProfileEntity
+     * @return CheckPromoCodeDto
+     */
+    public CheckPromoCodeDTO check_promo_code(long promoCode, Language language, ProfileEntity user) {
+        boolean exists = promocodeRepository.existsByCodeAndProfileId(promoCode, user.getId());
+        if (exists) {
+            throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));
+        }
+
+        Optional<PromoCode> optional = promocodeRepository.findByCode(promoCode);
+        if (optional.isEmpty()) {
+            throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));
+        }
+        PromoCode code = optional.get();
+        int score = user.getScore() + code.getScore();
+        user.setScore(score);
+        code.setProfile(user);
+        promocodeRepository.save(code);
+        return new CheckPromoCodeDTO("PromoCode verification done successfully and added score", true, 200);
     }
 }
