@@ -28,7 +28,6 @@ public class CategoryEntity extends AbsEntity {
     @JoinColumn(name = "attach_id", insertable = false, updatable = false)
     private AttachEntity attach;
 
-
     @ManyToOne
     private CategoryEntity parentCategory;
 

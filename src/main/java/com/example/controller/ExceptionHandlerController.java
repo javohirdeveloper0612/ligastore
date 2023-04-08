@@ -1,6 +1,8 @@
 package com.example.controller;
-import com.example.exception.NotFoundParentCategoryId;
+
+import com.example.exception.NotFoundParentCategory;
 import com.example.exception.NotMatchException;
+import com.example.exception.ProductNotFoundException;
 import com.example.exception.attach.AttachNotFoundException;
 import com.example.exception.attach.FileNameNotFoundException;
 import com.example.exception.attach.FileUploadException;
@@ -44,8 +46,8 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
-    @ExceptionHandler({NotFoundParentCategoryId.class})
-    private ResponseEntity<?> handler(NotFoundParentCategoryId e) {
+    @ExceptionHandler({NotFoundParentCategory.class})
+    private ResponseEntity<?> handler(NotFoundParentCategory e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
@@ -63,6 +65,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     private ResponseEntity<?> handler(FileUploadException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
     @ExceptionHandler({OriginalFileNameNullException.class})
     private ResponseEntity<?> handler(OriginalFileNameNullException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -75,6 +78,13 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({IllegalArgumentException.class})
     private ResponseEntity<?> handler(IllegalArgumentException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+
+
+    @ExceptionHandler({ProductNotFoundException.class})
+    private ResponseEntity<?> handler(ProductNotFoundException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 

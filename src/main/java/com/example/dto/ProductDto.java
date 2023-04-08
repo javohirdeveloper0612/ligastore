@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateProductDto {
+public class ProductDto {
 
     @NotBlank
     @NotNull
@@ -29,6 +29,9 @@ public class CreateProductDto {
 
     @NotNull
     private MultipartFile file;
+
+    @NotNull
+    private Double price;
 
     @NotNull
     private Long score;

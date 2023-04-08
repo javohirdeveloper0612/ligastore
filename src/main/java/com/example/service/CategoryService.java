@@ -6,7 +6,7 @@ import com.example.dto.ResponseCategoryDto;
 import com.example.entity.CategoryEntity;
 import com.example.enums.Language;
 import com.example.exception.EmptyListException;
-import com.example.exception.NotFoundParentCategoryId;
+import com.example.exception.NotFoundParentCategory;
 import com.example.repository.CategoryRepository;
 import com.example.util.UrlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public class CategoryService {
             Optional<CategoryEntity> optionalCategory = categoryRepository.findById(dto.getParentCategoryId());
 
             if (optionalCategory.isEmpty()) {
-                throw new NotFoundParentCategoryId(resourceBundleService.getMessage("parent.not.found", language));
+                throw new NotFoundParentCategory(resourceBundleService.getMessage("parent.not.found", language));
             }
 
             categoryEntity.setParentCategory(optionalCategory.get());

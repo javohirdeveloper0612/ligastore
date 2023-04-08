@@ -31,6 +31,9 @@ public class ProductEntity extends AbsEntity {
 
     @Column
     private String attachId;
+
+    @ManyToOne(optional = false)
+    private CategoryEntity category;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(insertable = false, updatable = false)
     private AttachEntity photo;
