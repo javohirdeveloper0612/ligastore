@@ -34,8 +34,8 @@ public class PromoCodeController {
      * @return ResponseGenerateDto
      */
 
-   // @PreAuthorize(value = "hasRole('ADMIN')")
-   // @SecurityRequirement(name = "Bearer Authentication")
+    // @PreAuthorize(value = "hasRole('ADMIN')")
+    // @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/generate")
     @Operation(summary = "GeneratePromoCode API", description = "This API generating promo_code")
     public ResponseEntity<?> generatePromoCode(
@@ -48,7 +48,6 @@ public class PromoCodeController {
     }
 
 
-
     /**
      * This method is used for viewing all the promo-code data by page if page or size less than 0
      * throw IllegalArgumentException If list is empty throw EmptyListException
@@ -59,8 +58,8 @@ public class PromoCodeController {
      * @return Page<PromoCodeDto></>
      */
 
-   // @PreAuthorize(value = "hasRole('ADMIN')")
-  //  @SecurityRequirement(name = "Bearer Authentication")
+    // @PreAuthorize(value = "hasRole('ADMIN')")
+    //  @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/viewByPage")
     @Operation(summary = "View ALL Promo-code BY Pageable API", description = "This API viewing all promo_code")
     public ResponseEntity<?> getListPromoCodeByPage(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
@@ -72,14 +71,15 @@ public class PromoCodeController {
     }
 
 
+
     /**
      * This method is used for viewing all the promoce list data  if not found throw EmptyListException
      *
      * @param language Language
      * @return List<PromoCodeDto></>
      */
-   // @PreAuthorize(value = "hasRole('ADMIN')")
-   // @SecurityRequirement(name = "Bearer Authentication")
+    // @PreAuthorize(value = "hasRole('ADMIN')")
+    // @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/view_all_list")
     @Operation(summary = "View ALL Promo-Code List API", description = "This API for Viewing all the Promo-code")
     public ResponseEntity<?> getAllList(@RequestHeader(name = "Accept-Language") Language language) {
