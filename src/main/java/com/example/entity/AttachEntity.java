@@ -37,4 +37,7 @@ public class AttachEntity {
     @OneToOne(mappedBy = "attach")
     private CategoryEntity category;
 
+    @OneToOne(mappedBy = "photo")
+    private ProductEntity productEntity;
+
 }
