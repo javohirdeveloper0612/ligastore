@@ -1,7 +1,7 @@
 package com.example.controller;
 import com.example.exception.category.NotFoundCategoryId;
 import com.example.exception.category.NotFoundParentCategoryId;
-import com.example.exception.NotMatchException;
+import com.example.exception.product.NotMatchException;
 import com.example.exception.attach.AttachNotFoundException;
 import com.example.exception.attach.FileNameNotFoundException;
 import com.example.exception.attach.FileUploadException;

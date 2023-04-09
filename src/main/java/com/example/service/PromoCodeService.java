@@ -7,7 +7,7 @@ import com.example.entity.PromoCode;
 import com.example.enums.Language;
 import com.example.exception.category.EmptyListException;
 import com.example.exception.promocode.InvalidPromoCodeException;
-import com.example.exception.NotMatchException;
+import com.example.exception.product.NotMatchException;
 import com.example.repository.PromocodeRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
