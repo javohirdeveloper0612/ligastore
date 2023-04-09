@@ -1,16 +1,18 @@
 package com.example.service;
 
-import com.example.dto.AttachResponseDTO;
-import com.example.dto.ProductDto;
 import com.example.dto.ResponseMessage;
-import com.example.dto.ResponseProductDto;
+
+import com.example.dto.attach.AttachResponseDTO;
+import com.example.dto.product.ProductDto;
+import com.example.dto.product.ResponseProductDto;
 import com.example.entity.CategoryEntity;
 import com.example.entity.ProductEntity;
 import com.example.entity.ProfileEntity;
 import com.example.enums.Language;
-import com.example.exception.EmptyListException;
-import com.example.exception.NotFoundParentCategory;
-import com.example.exception.ProductNotFoundException;
+
+import com.example.exception.category.EmptyListException;
+import com.example.exception.category.NotFoundParentCategory;
+import com.example.exception.product.ProductNotFoundException;
 import com.example.repository.CategoryRepository;
 import com.example.repository.ProductRepository;
 import com.example.util.UrlUtil;
@@ -274,10 +276,17 @@ public class ProductService {
         return new ResponseMessage("Successfully deleted", true, 200);
     }
 
-
+    /**
+     * This method is used for selling product
+     *
+     * @param user  ProfileEntity
+     * @param score Long
+     * @return ResponseMessage
+     */
     public ResponseMessage sellProduct(ProfileEntity user, Long score) {
         if (user.getScore() >= score) {
-            ///send to Admin Bot
+            ///adminga xabar junatiladi va admin acceptni bossa
+            //userni balidan productni bali ayiriladi
             return new ResponseMessage("Message sent To Admin", true, 200);
         }
         return new ResponseMessage("Your score is less than Product's score", false, 400);

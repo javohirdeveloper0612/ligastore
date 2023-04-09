@@ -1,8 +1,10 @@
 package com.example.controller;
 
-import com.example.dto.ProductDto;
+
 import com.example.dto.ResponseMessage;
-import com.example.dto.ResponseProductDto;
+
+import com.example.dto.product.ProductDto;
+import com.example.dto.product.ResponseProductDto;
 import com.example.entity.ProfileEntity;
 import com.example.enums.Language;
 import com.example.security.CurrentUser;

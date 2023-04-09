@@ -75,6 +75,14 @@
 			<version>2.0.0</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.telegram/telegrambots -->
+		<dependency>
+			<groupId>org.telegram</groupId>
+			<artifactId>telegrambots</artifactId>
+			<version>6.4.0</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
