@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.exception.EmptyListException;
 import com.example.exception.NotFoundParentCategory;
 import com.example.exception.NotMatchException;
 import com.example.exception.ProductNotFoundException;
@@ -82,11 +83,13 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     }
 
 
-
     @ExceptionHandler({ProductNotFoundException.class})
     private ResponseEntity<?> handler(ProductNotFoundException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
-
+    @ExceptionHandler({EmptyListException.class})
+    private ResponseEntity<?> handler(EmptyListException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
 }

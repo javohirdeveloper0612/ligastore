@@ -1,4 +1,5 @@
 package com.example.service;
+
 import com.example.dto.CheckPromoCodeDTO;
 import com.example.dto.PromoCodeDto;
 import com.example.dto.ResponsePromCode;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -149,8 +151,8 @@ public class PromoCodeService {
      * InvalidPromoCodeException
      *
      * @param promoCode long
-     * @param language   Language
-     * @param user       ProfileEntity
+     * @param language  Language
+     * @param user      ProfileEntity
      * @return CheckPromoCodeDto
      */
     public CheckPromoCodeDTO check_promo_code(long promoCode, Language language, ProfileEntity user) {
@@ -158,7 +160,6 @@ public class PromoCodeService {
         if (exists) {
             throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));
         }
-
         Optional<PromoCode> optional = promocodeRepository.findByCode(promoCode);
         if (optional.isEmpty()) {
             throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));

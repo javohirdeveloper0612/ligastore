@@ -51,6 +51,7 @@ public class PromoCodeController {
     }
 
 
+
     /**
      * This method is used for viewing all the promo-code data by page if page or size less than 0
      * throw IllegalArgumentException If list is empty throw EmptyListException
@@ -60,6 +61,7 @@ public class PromoCodeController {
      * @param language Language
      * @return Page<PromoCodeDto></>
      */
+
 
     // @PreAuthorize(value = "hasRole('ADMIN')")
     //  @SecurityRequirement(name = "Bearer Authentication")
@@ -100,7 +102,7 @@ public class PromoCodeController {
      * @param user       ProfileEntity
      * @return CheckPromoCodeDto
      */
-    @PostMapping("/check_promo_code")
+    @PostMapping("public/check_promo_code")
     @Operation(summary = "Check Promo-Code API", description = "This API for checking promo-code")
     public ResponseEntity<?> checkPromoCode(
             @RequestParam long promo_code,
@@ -109,6 +111,8 @@ public class PromoCodeController {
         log.info("Check Promo-Code : promo_code {} , user {}", promo_code, user);
         CheckPromoCodeDTO codeDTO = promoCodeService.check_promo_code(promo_code, language, user);
         return codeDTO.isSuccess() ? ResponseEntity.ok(codeDTO) : ResponseEntity.status(404).body(codeDTO);
-
     }
+
+
+
 }
