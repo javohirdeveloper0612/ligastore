@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.dto.AttachResponseDTO;
+import com.example.dto.attach.AttachResponseDTO;
 import com.example.entity.AttachEntity;
 import com.example.enums.Language;
 import com.example.exception.attach.FileNotFoundException;

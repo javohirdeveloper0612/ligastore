@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.dto.AttachResponseDTO;
+import com.example.dto.attach.AttachResponseDTO;
 import com.example.service.AttachService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

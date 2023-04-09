@@ -1,4 +1,4 @@
-package com.example.exception;
+package com.example.exception.category;
 
 public class EmptyListException extends RuntimeException {
     public EmptyListException(String message) {

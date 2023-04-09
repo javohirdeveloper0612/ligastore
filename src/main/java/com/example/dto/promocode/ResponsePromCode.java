@@ -1,4 +1,4 @@
-package com.example.dto;
+package com.example.dto.promocode;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CheckPromoCodeDTO {
+public class ResponsePromCode {
     private String message;
-    private boolean success;
-    private int statusCode;
+    private Integer statusCode;
+    private Boolean success;
 }

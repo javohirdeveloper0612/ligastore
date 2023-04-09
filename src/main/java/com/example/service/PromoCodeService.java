@@ -1,12 +1,12 @@
 package com.example.service;
-import com.example.dto.CheckPromoCodeDTO;
-import com.example.dto.PromoCodeDto;
-import com.example.dto.ResponsePromCode;
+import com.example.dto.promocode.CheckPromoCodeDTO;
+import com.example.dto.promocode.PromoCodeDto;
+import com.example.dto.promocode.ResponsePromCode;
 import com.example.entity.ProfileEntity;
 import com.example.entity.PromoCode;
 import com.example.enums.Language;
-import com.example.exception.EmptyListException;
-import com.example.exception.InvalidPromoCodeException;
+import com.example.exception.category.EmptyListException;
+import com.example.exception.promocode.InvalidPromoCodeException;
 import com.example.exception.NotMatchException;
 import com.example.repository.PromocodeRepository;
 import org.springframework.data.domain.Page;

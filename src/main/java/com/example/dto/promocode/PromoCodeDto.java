@@ -1,4 +1,4 @@
-package com.example.dto;
+package com.example.dto.promocode;
 import lombok.*;
 
 @Data

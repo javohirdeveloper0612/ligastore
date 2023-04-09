@@ -1,4 +1,5 @@
-package com.example.dto;
+package com.example.dto.promocode;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -6,10 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseCategoryDto {
-
+public class CheckPromoCodeDTO {
     private String message;
-    private Boolean status;
-    private Integer statusCode;
-
+    private boolean success;
+    private int statusCode;
 }

@@ -1,8 +1,8 @@
 package com.example.controller;
 
-import com.example.dto.CheckPromoCodeDTO;
-import com.example.dto.PromoCodeDto;
-import com.example.dto.ResponsePromCode;
+import com.example.dto.promocode.CheckPromoCodeDTO;
+import com.example.dto.promocode.PromoCodeDto;
+import com.example.dto.promocode.ResponsePromCode;
 import com.example.entity.ProfileEntity;
 import com.example.enums.Language;
 import com.example.security.CurrentUser;

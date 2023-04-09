@@ -1,5 +1,6 @@
 package com.example.controller;
-import com.example.exception.NotFoundParentCategoryId;
+import com.example.exception.category.NotFoundCategoryId;
+import com.example.exception.category.NotFoundParentCategoryId;
 import com.example.exception.NotMatchException;
 import com.example.exception.attach.AttachNotFoundException;
 import com.example.exception.attach.FileNameNotFoundException;
@@ -41,6 +42,11 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({AttachNotFoundException.class})
     private ResponseEntity<?> handler(AttachNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler({NotFoundCategoryId.class})
+    private ResponseEntity<?> handler(NotFoundCategoryId e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
