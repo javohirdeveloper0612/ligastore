@@ -1,19 +1,27 @@
 package com.example.service;
-import com.example.dto.attach.AttachResponseDTO;
-import com.example.dto.product.ProductDto;
-import com.example.dto.product.ResponseProductDto;
+
+import com.example.dto.AttachResponseDTO;
+import com.example.dto.ProductDto;
+import com.example.dto.ResponseMessage;
+import com.example.dto.ResponseProductDto;
 import com.example.entity.CategoryEntity;
 import com.example.entity.ProductEntity;
+import com.example.entity.ProfileEntity;
 import com.example.enums.Language;
-import com.example.exception.category.EmptyListException;
-import com.example.exception.category.NotFoundParentCategory;
-import com.example.exception.promocode.ProductNotFoundException;
+import com.example.exception.EmptyListException;
+import com.example.exception.NotFoundParentCategory;
+import com.example.exception.ProductNotFoundException;
 import com.example.repository.CategoryRepository;
 import com.example.repository.ProductRepository;
 import com.example.util.UrlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -114,6 +122,26 @@ public class ProductService {
     }
 
     /**
+     * This method is used for getting product data by page if list is empty
+     * throw new EmptyListException
+     *
+     * @param page        int
+     * @param size        int
+     * @param language    Language
+     * @param category_id Long
+     * @return List<ResponseProductDto></>
+     */
+    public List<ResponseProductDto> getProductListByPage(int page, int size, Language language, Long category_id) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProductEntity> entityPage = productRepository.findAllByCategoryId(category_id, pageable);
+        if (entityPage.isEmpty()) {
+            throw new EmptyListException(resourceBundleService.getMessage("empty.list.product", language));
+        }
+        return getProductList(entityPage, language);
+
+    }
+
+    /**
      * This method is used for converting CreatedDto to ProductEntity
      * If Category not Found throw new NotFoundParentCategoryException
      *
@@ -195,4 +223,64 @@ public class ProductService {
         return dto;
     }
 
+
+    /**
+     * This method is used for converting Page<ProductEntity></> to List<ResponseProductDto></>
+     *
+     * @param entityPage Page<ProductEntity></>
+     * @param language   Language
+     * @return List<ResponseProductDto></>
+     */
+    public List<ResponseProductDto> getProductList(Page<ProductEntity> entityPage, Language language) {
+        List<ResponseProductDto> list = new LinkedList<>();
+        for (ProductEntity productEntity : entityPage) {
+            list.add(responseProductDtoByLan(productEntity, language));
+        }
+        return list;
+    }
+
+    /**
+     * This method is used for viewing product data by Id
+     * If not found product_id throw ProductNotFoundException
+     *
+     * @param productId Long
+     * @param language  Language
+     * @return ResponseProductDto
+     */
+    public ResponseProductDto getProductById(Long productId, Language language) {
+        Optional<ProductEntity> optional = productRepository.findById(productId);
+        if (optional.isEmpty()) {
+            throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
+        }
+        return responseProductDtoByLan(optional.get(), language);
+    }
+
+
+    /**
+     * This method is used for deleting product data if not found product_id
+     * throw new ProductNotFoundException
+     *
+     * @param productId Long
+     * @param language  Language
+     * @return ResponseMessage
+     */
+    public ResponseMessage deleteProduct(Long productId, Language language) {
+        Optional<ProductEntity> optional = productRepository.findById(productId);
+        if (optional.isEmpty()) {
+            throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
+        }
+        productRepository.delete(optional.get());
+
+        return new ResponseMessage("Successfully deleted", true, 200);
+    }
+
+
+    public ResponseMessage sellProduct(ProfileEntity user, Long score) {
+        if (user.getScore() >= score) {
+            ///send to Admin Bot
+            return new ResponseMessage("Message sent To Admin", true, 200);
+        }
+        return new ResponseMessage("Your score is less than Product's score", false, 400);
+
+    }
 }

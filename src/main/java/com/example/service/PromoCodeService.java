@@ -1,18 +1,20 @@
 package com.example.service;
-import com.example.dto.promocode.CheckPromoCodeDTO;
-import com.example.dto.promocode.PromoCodeDto;
-import com.example.dto.promocode.ResponsePromCode;
+
+import com.example.dto.CheckPromoCodeDTO;
+import com.example.dto.PromoCodeDto;
+import com.example.dto.ResponsePromCode;
 import com.example.entity.ProfileEntity;
 import com.example.entity.PromoCode;
 import com.example.enums.Language;
-import com.example.exception.category.EmptyListException;
-import com.example.exception.promocode.InvalidPromoCodeException;
-import com.example.exception.product.NotMatchException;
+import com.example.exception.EmptyListException;
+import com.example.exception.InvalidPromoCodeException;
+import com.example.exception.NotMatchException;
 import com.example.repository.PromocodeRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -149,8 +151,8 @@ public class PromoCodeService {
      * InvalidPromoCodeException
      *
      * @param promoCode long
-     * @param language   Language
-     * @param user       ProfileEntity
+     * @param language  Language
+     * @param user      ProfileEntity
      * @return CheckPromoCodeDto
      */
     public CheckPromoCodeDTO check_promo_code(long promoCode, Language language, ProfileEntity user) {
@@ -158,7 +160,6 @@ public class PromoCodeService {
         if (exists) {
             throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));
         }
-
         Optional<PromoCode> optional = promocodeRepository.findByCode(promoCode);
         if (optional.isEmpty()) {
             throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));

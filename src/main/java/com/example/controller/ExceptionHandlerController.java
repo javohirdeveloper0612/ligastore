@@ -1,7 +1,9 @@
 package com.example.controller;
-import com.example.exception.category.NotFoundCategoryId;
-import com.example.exception.category.NotFoundParentCategoryId;
-import com.example.exception.product.NotMatchException;
+
+import com.example.exception.EmptyListException;
+import com.example.exception.NotFoundParentCategory;
+import com.example.exception.NotMatchException;
+import com.example.exception.ProductNotFoundException;
 import com.example.exception.attach.AttachNotFoundException;
 import com.example.exception.attach.FileNameNotFoundException;
 import com.example.exception.attach.FileUploadException;
@@ -45,13 +47,8 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
-    @ExceptionHandler({NotFoundCategoryId.class})
-    private ResponseEntity<?> handler(NotFoundCategoryId e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    }
-
-    @ExceptionHandler({NotFoundParentCategoryId.class})
-    private ResponseEntity<?> handler(NotFoundParentCategoryId e) {
+    @ExceptionHandler({NotFoundParentCategory.class})
+    private ResponseEntity<?> handler(NotFoundParentCategory e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
@@ -69,6 +66,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     private ResponseEntity<?> handler(FileUploadException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
     @ExceptionHandler({OriginalFileNameNullException.class})
     private ResponseEntity<?> handler(OriginalFileNameNullException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -85,4 +83,13 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     }
 
 
+    @ExceptionHandler({ProductNotFoundException.class})
+    private ResponseEntity<?> handler(ProductNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler({EmptyListException.class})
+    private ResponseEntity<?> handler(EmptyListException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
 }
