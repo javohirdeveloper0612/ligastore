@@ -5,6 +5,7 @@ import com.example.enums.ProfileStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,7 +35,6 @@ public class ProfileEntity extends AbsEntity  {
 
     @Column(nullable = false)
     private String surnameRu;
-
     @Column
     private String username;
     @Column
@@ -64,7 +64,7 @@ public class ProfileEntity extends AbsEntity  {
     @Column(unique = true)
     private String phoneHome;
     @Column
-    private Integer ball;
+    private Integer score;
 
     @Column
     @Enumerated(EnumType.STRING)

@@ -1,31 +1,41 @@
 package com.example.entity;
-
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Entity
-@Table(name = "product")
+@Entity(name = "product")
+@Getter
+@Setter
 @EntityListeners(AuditingEntityListener.class)
-public class ProductEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    @Column
+public class ProductEntity extends AbsEntity {
+
+    @Column(nullable = false)
     private String nameUz;
-    @Column
+
+    @Column(nullable = false)
     private String nameRu;
-    @Column
+
+    @Column(nullable = false)
     private Double price;
-    @Column
-    private Integer ball;
-    @Column
+
+    @Column(nullable = false)
+    private Long score;
+
+    @Column(nullable = false)
     private String descriptionUz;
-    @Column
+
+    @Column(nullable = false)
     private String descriptionRu;
 
-    @Column(name = "attach_id")
+    @Column
     private String attachId;
-    @OneToOne
-    @JoinColumn(name = "attach_id", insertable = false, updatable = false)
-    private AttachEntity attach;
+
+    @ManyToOne(optional = false)
+    private CategoryEntity category;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(insertable = false, updatable = false)
+    private AttachEntity photo;
+
+
 }

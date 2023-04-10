@@ -1,11 +1,11 @@
 package com.example.service;
 
-import com.example.dto.AttachResponseDTO;
+import com.example.dto.attach.AttachResponseDTO;
 import com.example.entity.AttachEntity;
 import com.example.enums.Language;
-import com.example.exp.attach.FileNotFoundException;
-import com.example.exp.attach.FileUploadException;
-import com.example.exp.attach.OriginalFileNameNullException;
+import com.example.exception.attach.FileNotFoundException;
+import com.example.exception.attach.FileUploadException;
+import com.example.exception.attach.OriginalFileNameNullException;
 import com.example.repository.AttachRepository;
 import com.example.util.UrlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +75,7 @@ public class AttachService {
             entity.setType(extension);
             entity.setPath(pathFolder);
             entity.setSize(file.getSize());
-            repository.save(entity);
+            AttachEntity save = repository.save(entity);
 
 
             AttachResponseDTO dto = new AttachResponseDTO();

@@ -1,9 +1,6 @@
 package com.example.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -16,8 +13,12 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "attach")
-public class AttachEntity extends AbsEntity{
+public class AttachEntity {
 
+
+    @Id
+    @GenericGenerator(name = "attach_uuid",strategy = "org.hibernate.id.UUIDGenerator")
+    private String id;
 
     @Column(name = "origin_name")
     private String originName;
@@ -33,5 +34,10 @@ public class AttachEntity extends AbsEntity{
 
     @Column
     private Double duration;
+    @OneToOne(mappedBy = "attach")
+    private CategoryEntity category;
+
+    @OneToOne(mappedBy = "photo")
+    private ProductEntity productEntity;
 
 }
