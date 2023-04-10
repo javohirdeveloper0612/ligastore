@@ -5,7 +5,6 @@ import com.example.enums.ProfileStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +19,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "profile")
-public class ProfileEntity extends AbsEntity implements UserDetails {
+public class ProfileEntity extends AbsEntity  {
+
+
 
     @Column(nullable = false)
     private String nameUz;
@@ -72,33 +73,4 @@ public class ProfileEntity extends AbsEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private ProfileRole role;
 
-    @Column
-    private Boolean enabled = false;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> list = new LinkedList<>();
-        list.add(new SimpleGrantedAuthority(role.name()));
-        return list;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
 }
