@@ -12,10 +12,12 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
     private final BotConfig botConfig;
 
+
     @Autowired
     public MyTelegramBot(BotConfig botConfig) {
         this.botConfig = botConfig;
     }
+
 
     @Override
     public void onUpdateReceived(Update update) {

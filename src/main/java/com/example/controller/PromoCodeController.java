@@ -51,7 +51,6 @@ public class PromoCodeController {
     }
 
 
-
     /**
      * This method is used for viewing all the promo-code data by page if page or size less than 0
      * throw IllegalArgumentException If list is empty throw EmptyListException
@@ -112,7 +111,6 @@ public class PromoCodeController {
         CheckPromoCodeDTO codeDTO = promoCodeService.check_promo_code(promo_code, language, user);
         return codeDTO.isSuccess() ? ResponseEntity.ok(codeDTO) : ResponseEntity.status(404).body(codeDTO);
     }
-
 
 
 }

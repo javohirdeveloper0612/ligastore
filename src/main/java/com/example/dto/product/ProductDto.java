@@ -1,4 +1,5 @@
 package com.example.dto.product;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -10,33 +11,37 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDto {
-    
-
-        @NotBlank
-        @NotNull
-        private String name_uz;
-        @NotBlank
-        @NotNull
-        private String name_ru;
-
-        @NotBlank
-        @NotNull
-        private String description_uz;
-
-        @NotBlank
-        @NotNull
-        private String description_ru;
-
-        @NotNull
-        private MultipartFile file;
-
-        @NotNull
-        private Double price;
-
-        @NotNull
-        private Long score;
 
 
-    }
+    @NotBlank
+    @NotNull
+    private String name_uz;
+    @NotBlank
+    @NotNull
+    private String name_ru;
+
+    @NotBlank
+    @NotNull
+    private String description_uz;
+
+    @NotBlank
+    @NotNull
+    private String description_ru;
+
+    @NotNull
+    @NotBlank
+    private String model;
+
+    @NotNull
+    private MultipartFile file;
+
+    @NotNull
+    private Double price;
+
+    @NotNull
+    private Long score;
+
+
+}
 
 
