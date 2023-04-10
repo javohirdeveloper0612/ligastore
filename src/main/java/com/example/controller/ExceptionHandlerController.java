@@ -1,8 +1,11 @@
 package com.example.controller;
+
+
 import com.example.exception.attach.AttachNotFoundException;
 import com.example.exception.attach.FileNameNotFoundException;
 import com.example.exception.attach.FileUploadException;
 import com.example.exception.attach.OriginalFileNameNullException;
+import com.example.exception.auth.ProfileNotFoundException;
 import com.example.exception.category.EmptyListException;
 import com.example.exception.category.NotFoundParentCategory;
 import com.example.exception.product.NotMatchException;
@@ -70,6 +73,11 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     private ResponseEntity<?> handler(OriginalFileNameNullException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+    @ExceptionHandler({ProfileNotFoundException.class})
+    private ResponseEntity<?> handler(ProfileNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
 
     @ExceptionHandler({NotMatchException.class})
     private ResponseEntity<?> handler(NotMatchException e) {
