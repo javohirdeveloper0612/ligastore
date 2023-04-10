@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Tag(name = "AuthController")
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService service;
@@ -33,6 +33,8 @@ public class AuthController {
         log.info(" login method dtoUsername {}" ,dto.getUsername());
         return ResponseEntity.ok().body(response);
     }
+
+
 
 
 }

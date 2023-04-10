@@ -4,7 +4,9 @@ import com.example.dto.LoginDTO;
 import com.example.dto.LoginResponseDTO;
 import com.example.entity.ProfileEntity;
 import com.example.enums.Language;
-import com.example.exp.auth.ProfileNotFoundException;
+import com.example.enums.ProfileStatus;
+import com.example.exception.auth.ProfileBlockedException;
+import com.example.exception.auth.ProfileNotFoundException;
 import com.example.repository.AuthRepository;
 import com.example.security.CustomUserDetail;
 import com.example.util.JwtUtil;
@@ -48,6 +50,10 @@ public class AuthService implements UserDetailsService {
         }
 
         ProfileEntity entity = optional.get();
+
+        if (entity.getStatus().equals(ProfileStatus.BLOCK)){
+            throw new ProfileBlockedException(resourceBundleService.getMessage("profile.blocked",language.name()));
+        }
 
         LoginResponseDTO responseDTO = new LoginResponseDTO();
         responseDTO.setName(entity.getNameUz());
