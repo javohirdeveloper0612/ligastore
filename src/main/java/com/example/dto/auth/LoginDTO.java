@@ -1,4 +1,4 @@
-package com.example.dto;
+package com.example.dto.auth;
 
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

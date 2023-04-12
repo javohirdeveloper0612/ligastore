@@ -1,10 +1,12 @@
 package com.example.service;
 
-import com.example.dto.LoginDTO;
-import com.example.dto.LoginResponseDTO;
+import com.example.dto.auth.LoginDTO;
+import com.example.dto.auth.LoginResponseDTO;
+import com.example.dto.auth.VerificationDTO;
 import com.example.entity.ProfileEntity;
 import com.example.enums.Language;
 import com.example.enums.ProfileStatus;
+import com.example.exception.auth.PhoneAlReadyExistsException;
 import com.example.exception.auth.ProfileBlockedException;
 import com.example.exception.auth.ProfileNotFoundException;
 import com.example.repository.AuthRepository;
@@ -12,6 +14,7 @@ import com.example.security.CustomUserDetail;
 import com.example.util.JwtUtil;
 import com.example.util.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -65,4 +68,14 @@ public class AuthService implements UserDetailsService {
     }
 
 
+    public ResponseEntity<?> verification(VerificationDTO dto,Language language) {
+        Optional<ProfileEntity> optional = repository.findByPhoneUser(dto.getPhone());
+        if (optional.isPresent()){
+            if (!optional.get().getStatus().equals(ProfileStatus.NOT_ACTIVE)){
+                throw new PhoneAlReadyExistsException(resourceBundleService.getMessage("phone.exists",language.name()));
+            }
+            
+        }
+        return null;
+    }
 }
