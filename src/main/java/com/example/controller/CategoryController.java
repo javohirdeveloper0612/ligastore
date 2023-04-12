@@ -1,6 +1,6 @@
 package com.example.controller;
-import com.example.dto.category.CategoryCreationDTO;
-import com.example.dto.category.CategoryResponseListDTO;
+
+import com.example.dto.category.CategoryDto;
 import com.example.dto.category.CategoryUpdateDTO;
 import com.example.dto.category.ResponseCategoryDto;
 import com.example.enums.Language;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -37,13 +38,14 @@ public class CategoryController {
      * @param language            language
      * @return result
      */
-
+    // @PreAuthorize(value = "hasRole('ADMIN')")
+    //  @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping(value = "/add_category", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "ADD_CATEGORY API", description = "This API for adding new Category")
     public ResponseEntity<?> addCategory(@Valid
-                                         @ModelAttribute CategoryCreationDTO categoryCreationDTO,
+                                         @ModelAttribute CategoryDto categoryCreationDTO,
                                          @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
-
+        log.info("Creation Category : categoryCreationDTO {} ", categoryCreationDTO);
         ResponseCategoryDto result = categoryService.add_category(categoryCreationDTO, language);
         return ResponseEntity.ok(result);
     }
@@ -55,15 +57,31 @@ public class CategoryController {
      * @return result
      */
 
-    @GetMapping("/public/category_get_list")
-    @Operation(summary = "CATEGORY GET LIST", description = "this API for category get list (only ADMIN) ")
-    public ResponseEntity<?> categoryGetList(@Valid
-                                             @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
-
-        List<CategoryResponseListDTO> result = categoryService.getCategoryList(language);
+    @GetMapping("/public/get_category_list/{id}")
+    @Operation(summary = "CATEGORY  LIST", description = "This API is used for getting category list  ")
+    public ResponseEntity<?> getCategoryList(
+            @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language,
+            @PathVariable Long id) {
+        log.info("Getting category list : id {}", id);
+        List<ResponseCategoryDto> result = categoryService.getCategoryList(id, language);
         return ResponseEntity.ok().body(result);
 
     }
+
+
+    /**
+     * This method is used for getting BrandList
+     *
+     * @param language Language
+     * @return List<ResponseCategoryDto></>
+     */
+    @GetMapping("/public/get_brand_list")
+    @Operation(summary = "Brand List API", description = "This API is used for getting Brand List")
+    public ResponseEntity<?> getBrandList(@RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
+        List<ResponseCategoryDto> brandList = categoryService.getBrandList(language);
+        return ResponseEntity.ok(brandList);
+    }
+
 
     /**
      * this method and API will find the category by id
@@ -73,14 +91,13 @@ public class CategoryController {
      * @return result
      */
 
+    @GetMapping("/public/get_category_by_id/{id}")
+    @Operation(summary = "Get Category By ID API", description = "This API is used  category get by id ( public )")
 
-    @GetMapping("/public/getById/{id}")
-    @Operation(summary = "CATEGORY GET BY ID", description = "this API category get by id ( public )")
-    public ResponseEntity<?> categoryGetById(@Valid
-                                             @PathVariable("id") Long id,
+    public ResponseEntity<?> getCategoryById(@PathVariable("id") Long id,
                                              @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
-
-        CategoryResponseListDTO result = categoryService.getCategoryById(id, language);
+        log.info("getCategoryById : id {}", id);
+        ResponseCategoryDto result = categoryService.getCategoryById(id, language);
         return ResponseEntity.ok().body(result);
 
     }
@@ -93,17 +110,17 @@ public class CategoryController {
      * @param language          language
      * @return result;
      */
-
-    @PutMapping("/updatebyid/{id}")
-    @Operation(summary = "CATEGORY UPDATE BY ID", description = "this API category update by id ( only ADMIN) ")
-    public ResponseEntity<?> categoryUpdateById(@Valid
-                                                @PathVariable("id") Long id,
-                                                @RequestBody CategoryUpdateDTO categoryUpdateDTO,
-                                                @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
-
+    // @PreAuthorize(value = "hasRole('ADMIN')")
+    //  @SecurityRequirement(name = "Bearer Authentication")
+    @PutMapping("/edite_category/{id}")
+    @Operation(summary = "CATEGORY UPDATE BY ID", description = "This API is used for editing Category")
+    public ResponseEntity<?> editeCategory(
+            @PathVariable("id") Long id,
+            @Valid @RequestBody CategoryUpdateDTO categoryUpdateDTO,
+            @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
+        log.info("Edite Category : id {},categoryUpdateDTO {}", id, categoryUpdateDTO);
         CategoryUpdateDTO result = categoryService.categoryUpdate(id, categoryUpdateDTO, language);
         return ResponseEntity.ok().body(result);
-
     }
 
     /**
@@ -113,14 +130,14 @@ public class CategoryController {
      * @param language language
      * @return String result
      */
-
+    // @PreAuthorize(value = "hasRole('ADMIN')")
+    //  @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "CATEGORY DELETE BY ID", description = "this API category update by id (only ADMIN) ")
-    @DeleteMapping("/deletebyid/{id}")
-    public ResponseEntity<?> categoryDeleteByid(@Valid
-                                                @PathVariable("id") Long id,
-                                                @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
-
-
+    @DeleteMapping("/deleteCategory/{id}")
+    public ResponseEntity<?> deleteCategory(
+            @PathVariable("id") Long id,
+            @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
+        log.info("deleteCategory : id {}", id);
         String result = categoryService.categoryDelete(id, language);
         return ResponseEntity.ok().body(result);
 
@@ -129,19 +146,20 @@ public class CategoryController {
     /**
      * this method and API are used to paginate the category
      *
-     * @param page int
-     * @param size int
+     * @param page     int
+     * @param size     int
      * @param language language
      * @return allCategory
      */
 
-    @Operation(summary = "CATEGORY GET LIST PAGINATION",description = "this API category list pagination (only ADMIN va USER) ")
-    @GetMapping("/public/categorygetlistpagination")
-    public ResponseEntity<?> categoryGetPages(@RequestParam(name = "page", defaultValue = "0") int page,
-                                              @RequestParam(name = "size", defaultValue = "1") int size,
-                                              @RequestHeader(name = "Accept-Language",defaultValue = "UZ") Language language){
+    @Operation(summary = "CATEGORY GET LIST PAGINATION", description = "this API category list pagination (only ADMIN va USER) ")
+    @GetMapping("/public/get_category_list_by_page")
+    public ResponseEntity<?> getCategoryByPage(@RequestParam(name = "page", defaultValue = "0") int page,
+                                               @RequestParam(name = "size", defaultValue = "1") int size,
+                                               @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
 
-        Page<CategoryResponseListDTO> allCategory = categoryService.categoryGetPaginationList(page,size,language);
+        log.info("categoryGetPages : page {},size{}", page, size);
+        Page<ResponseCategoryDto> allCategory = categoryService.categoryGetPaginationList(page, size, language);
         return ResponseEntity.ok().body(allCategory);
 
     }

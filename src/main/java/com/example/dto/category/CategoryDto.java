@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
 
-public class CategoryCreationDTO {
+public class CategoryDto {
 
     @NotBlank(message = "nameUz cannot be null")
     private String nameUz;

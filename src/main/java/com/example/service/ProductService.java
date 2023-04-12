@@ -54,11 +54,11 @@ public class ProductService {
      */
     public ResponseProductDto addProduct(Long categoryId, ProductDto dto, Language language) {
         Optional<CategoryEntity> optional = categoryRepository.findById(categoryId);
-        if (optional.isEmpty()) {
+
+        if (optional.isEmpty())
             throw new NotFoundParentCategory(resourceBundleService.getMessage("parent.not.found", language));
-        }
-        ProductEntity productEntity = getProductEntity(dto, optional.get());
-        ProductEntity savedProduct = productRepository.save(productEntity);
+
+        ProductEntity savedProduct = productRepository.save(getProductEntity(dto, optional.get()));
         return responseProductDto(savedProduct);
     }
 
@@ -74,12 +74,10 @@ public class ProductService {
     public ResponseProductDto editeProduct(Long productId, ProductDto productDto, Language language) {
 
         Optional<ProductEntity> optional = productRepository.findById(productId);
-        if (optional.isEmpty()) {
+        if (optional.isEmpty())
             throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
-        }
-        ProductEntity productEntity = optional.get();
-        ProductEntity product = getProductEntity(productDto, productEntity);
-        ProductEntity editedProduct = productRepository.save(product);
+
+        ProductEntity editedProduct = productRepository.save(getProductEntity(productDto, optional.get()));
         return responseProductDto(editedProduct);
 
     }
@@ -95,14 +93,12 @@ public class ProductService {
      */
     public List<ResponseProductDto> getProductList(Long category_id, Language language) {
         Optional<CategoryEntity> optional = categoryRepository.findById(category_id);
-        if (optional.isEmpty()) {
+        if (optional.isEmpty())
             throw new NotFoundParentCategory(resourceBundleService.getMessage("category.not.found", language));
-        }
 
         List<ProductEntity> list = productRepository.findAllByCategoryId(category_id);
-        if (list.isEmpty()) {
+        if (list.isEmpty())
             throw new EmptyListException(resourceBundleService.getMessage("empty.list.product", language));
-        }
         return getProductEntityList(list, language);
     }
 
@@ -135,9 +131,8 @@ public class ProductService {
     public List<ResponseProductDto> getProductListByPage(int page, int size, Language language, Long category_id) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ProductEntity> entityPage = productRepository.findAllByCategoryId(category_id, pageable);
-        if (entityPage.isEmpty()) {
+        if (entityPage.isEmpty())
             throw new EmptyListException(resourceBundleService.getMessage("empty.list.product", language));
-        }
         return getProductList(entityPage, language);
 
     }
@@ -155,9 +150,10 @@ public class ProductService {
         product.setNameRu(dto.getName_ru());
         product.setDescriptionUz(dto.getDescription_uz());
         product.setDescriptionRu(dto.getDescription_ru());
-        product.setScore(dto.getScore());
+        product.setScore((long) (dto.getPrice() * 0.04));
         product.setAttachId(uploadFile.getId());
         product.setPrice(dto.getPrice());
+        product.setModel(dto.getModel());
         return product;
     }
 
@@ -175,7 +171,7 @@ public class ProductService {
         product.setNameRu(dto.getName_ru());
         product.setDescriptionUz(dto.getDescription_uz());
         product.setDescriptionRu(dto.getDescription_ru());
-        product.setScore(dto.getScore());
+        product.setScore((long) (dto.getPrice() * 0.04));
         product.setAttachId(uploadFile.getId());
         product.setPrice(dto.getPrice());
         product.setModel(dto.getModel());
@@ -202,6 +198,7 @@ public class ProductService {
         dto.setId(productEntity.getId());
         dto.setScore(productEntity.getScore());
         dto.setPrice(productEntity.getPrice());
+        dto.setModel(productEntity.getModel());
         dto.setPhotoUrl(UrlUtil.url + productEntity.getAttachId());
         return dto;
     }
@@ -221,6 +218,7 @@ public class ProductService {
         dto.setId(productEntity.getId());
         dto.setScore(productEntity.getScore());
         dto.setPrice(productEntity.getPrice());
+        dto.setModel(productEntity.getModel());
         dto.setPhotoUrl(UrlUtil.url + productEntity.getAttachId());
         return dto;
     }
@@ -251,9 +249,8 @@ public class ProductService {
      */
     public ResponseProductDto getProductById(Long productId, Language language) {
         Optional<ProductEntity> optional = productRepository.findById(productId);
-        if (optional.isEmpty()) {
+        if (optional.isEmpty())
             throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
-        }
         return responseProductDtoByLan(optional.get(), language);
     }
 
@@ -268,11 +265,9 @@ public class ProductService {
      */
     public ResponseMessage deleteProduct(Long productId, Language language) {
         Optional<ProductEntity> optional = productRepository.findById(productId);
-        if (optional.isEmpty()) {
+        if (optional.isEmpty())
             throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
-        }
         productRepository.delete(optional.get());
-
         return new ResponseMessage("Successfully deleted", true, 200);
     }
 

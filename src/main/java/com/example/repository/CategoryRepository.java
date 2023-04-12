@@ -3,6 +3,11 @@ package com.example.repository;
 import com.example.entity.CategoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CategoryRepository extends JpaRepository<CategoryEntity,Long> {
+import java.util.List;
 
+public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> {
+
+    List<CategoryEntity> findAllByParentCategoryId(Long parentCategory_id);
+
+    List<CategoryEntity> findAllByParentCategoryNull();
 }
