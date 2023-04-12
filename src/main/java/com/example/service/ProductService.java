@@ -77,7 +77,6 @@ public class ProductService {
         if (optional.isEmpty()) {
             throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
         }
-
         ProductEntity productEntity = optional.get();
         ProductEntity product = getProductEntity(productDto, productEntity);
         ProductEntity editedProduct = productRepository.save(product);
@@ -179,6 +178,7 @@ public class ProductService {
         product.setScore(dto.getScore());
         product.setAttachId(uploadFile.getId());
         product.setPrice(dto.getPrice());
+        product.setModel(dto.getModel());
         product.setCategory(categoryEntity);
         return product;
     }

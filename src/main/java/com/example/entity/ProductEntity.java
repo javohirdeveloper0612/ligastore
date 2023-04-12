@@ -1,4 +1,5 @@
 package com.example.entity;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,8 @@ public class ProductEntity extends AbsEntity {
     @Column(nullable = false)
     private String descriptionRu;
 
+    @Column(nullable = false)
+    private String model;
     @Column
     private String attachId;
 
