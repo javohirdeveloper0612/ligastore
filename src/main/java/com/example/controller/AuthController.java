@@ -1,11 +1,13 @@
 package com.example.controller;
 
-import com.example.dto.LoginDTO;
-import com.example.dto.LoginResponseDTO;
+import com.example.dto.auth.LoginDTO;
+import com.example.dto.auth.LoginResponseDTO;
+import com.example.dto.auth.VerificationDTO;
 import com.example.enums.Language;
 import com.example.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +36,10 @@ public class AuthController {
         return ResponseEntity.ok().body(response);
     }
 
-
-
+@Operation(summary = "Phone Registration",description = "This API for send message Phone number")
+    @PostMapping("/send_sms")
+    public ResponseEntity<?> verification(@Valid @RequestBody VerificationDTO dto){
+        return service.verification(dto,Language.UZ);
+}
 
 }
