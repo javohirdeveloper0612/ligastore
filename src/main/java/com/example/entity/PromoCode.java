@@ -1,4 +1,5 @@
 package com.example.entity;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,8 +22,12 @@ public class PromoCode extends AbsEntity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     private ProfileEntity profile;
-    @Column
+
+    @Column(nullable = false)
     private Double money;
+
+    @ManyToOne
+    private ProductEntity product;
 
 
 }

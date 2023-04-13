@@ -49,7 +49,6 @@ public class ProductController {
         log.info("Add Product : productDto {}", productDto);
         ResponseProductDto dto = productService.addProduct(category_id, productDto, language);
         return ResponseEntity.status(201).body(dto);
-
     }
 
 
@@ -87,6 +86,7 @@ public class ProductController {
     @Operation(summary = "View Product Data List API", description = "This API for viewing all the productDto")
     public ResponseEntity<?> getProductList(@PathVariable Long category_id,
                                             @RequestHeader(name = "Accept-Language") Language language) {
+        log.info("getProductList : category_id{}", category_id);
         List<ResponseProductDto> productList = productService.getProductList(category_id, language);
         return ResponseEntity.ok(productList);
     }
@@ -103,6 +103,7 @@ public class ProductController {
     @Operation(summary = "View_product_List By Page API", description = "This Api for viewing all the product data by page")
     public ResponseEntity<?> getProductListByPage(@PathVariable Long category_id, @RequestParam int page, @RequestParam int size,
                                                   @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
+        log.info("getProductListByPage : category_id {}", category_id);
         List<ResponseProductDto> list = productService.getProductListByPage(page, size, language, category_id);
         return ResponseEntity.ok(list);
     }

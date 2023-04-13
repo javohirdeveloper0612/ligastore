@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class ProductDto {
 
-
     @NotBlank
     @NotNull
     private String name_uz;
@@ -38,8 +37,6 @@ public class ProductDto {
     @NotNull
     private Double price;
 
-    @NotNull
-    private Long score;
 
 
 }

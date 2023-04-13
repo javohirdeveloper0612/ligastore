@@ -1,8 +1,9 @@
 package com.example.controller;
 
 import com.example.dto.promocode.CheckPromoCodeDTO;
-import com.example.dto.promocode.PromoCodeDto;
-import com.example.dto.promocode.ResponsePromCode;
+import com.example.dto.promocode.CreatePromoCodeDto;
+import com.example.dto.promocode.ResponsePromoCodeDto;
+import com.example.dto.promocode.ResponsePromCodeMessage;
 import com.example.entity.ProfileEntity;
 import com.example.enums.Language;
 import com.example.security.CurrentUser;
@@ -20,33 +21,28 @@ import java.util.List;
 @RequestMapping("/api/promo_code")
 @Tag(name = "Promo-code")
 public class PromoCodeController {
-
     private final PromoCodeService promoCodeService;
 
     public PromoCodeController(PromoCodeService promoCodeService) {
         this.promoCodeService = promoCodeService;
     }
 
-    /**
-     * This method is used for generating promo-code If amount ==0 or amount<=0
-     * throw NotMatchException
-     *
-     * @param money    double
-     * @param amount   int
-     * @param language Language
-     * @return ResponseGenerateDto
-     */
 
+    /**
+     * This method is used for generating promo-code if amount is equals 0 or less than 0
+     * throw new NotMatchException if model not found throw ProductNotFoundException
+     *
+     * @param dto      CreatePromoCodeDto
+     * @param language Language
+     * @return ResponsePromoCode
+     */
     // @PreAuthorize(value = "hasRole('ADMIN')")
     // @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/generate")
     @Operation(summary = "GeneratePromoCode API", description = "This API generating promo_code")
-    public ResponseEntity<?> generatePromoCode(
-            @RequestParam double money, @RequestParam int amount,
-            @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
-        log.info("generate promo-code : money {},amount {}", money, amount);
-
-        ResponsePromCode promCode = promoCodeService.generateCode(money, amount, language);
+    public ResponseEntity<?> generatePromoCode(@RequestBody CreatePromoCodeDto dto,
+                                               @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
+        ResponsePromCodeMessage promCode = promoCodeService.generateCode(dto, language);
         return ResponseEntity.status(201).body(promCode);
     }
 
@@ -61,19 +57,17 @@ public class PromoCodeController {
      * @return Page<PromoCodeDto></>
      */
 
-
     // @PreAuthorize(value = "hasRole('ADMIN')")
     //  @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/viewByPage")
     @Operation(summary = "View ALL Promo-code BY Pageable API", description = "This API viewing all promo_code")
     public ResponseEntity<?> getListPromoCodeByPage(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
-                                                    @RequestHeader(name = "Accept-Language",
-                                                            defaultValue = "UZ") Language language) {
-        List<PromoCodeDto> list = promoCodeService.getListPromoCodeByPage(page, size, language);
+                                                    @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
+        log.info("getListPromoCodeByPage : page {},size {}", page, size);
+        List<ResponsePromoCodeDto> list = promoCodeService.getListPromoCodeByPage(page, size, language);
         return ResponseEntity.ok(list);
 
     }
-
 
     /**
      * This method is used for viewing all the promoce list data  if not found throw EmptyListException
@@ -86,7 +80,7 @@ public class PromoCodeController {
     @GetMapping("/view_all_list")
     @Operation(summary = "View ALL Promo-Code List API", description = "This API for Viewing all the Promo-code")
     public ResponseEntity<?> getAllList(@RequestHeader(name = "Accept-Language") Language language) {
-        List<PromoCodeDto> list = promoCodeService.getAllList(language);
+        List<ResponsePromoCodeDto> list = promoCodeService.getAllList(language);
         return ResponseEntity.ok(list);
     }
 
@@ -113,4 +107,21 @@ public class PromoCodeController {
     }
 
 
+    /**
+     * This method is used for getting promo-codeList by ProductModel if list is empty throw new EmptyListException
+     *
+     * @param model    String
+     * @param language Language
+     * @return List<ResponsePromoCode></>
+     */
+    // @PreAuthorize(value = "hasRole('ADMIN')")
+    //  @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping("/promo_code_list_by_model")
+    @Operation(summary = "Find Promo-Code List By ProductModel", description = "This API for finding PromoCodeList By ProductModel ")
+    public ResponseEntity<?> findPromoCodeListByProductModel(@RequestParam String model,
+                                                             @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
+        log.info("Find Promo-Code List By ProductModel : model {}", model);
+        List<ResponsePromoCodeDto> list = promoCodeService.findPromoCodeListByProductModel(model, language);
+        return ResponseEntity.ok(list);
+    }
 }
