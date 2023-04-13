@@ -24,6 +24,7 @@ public class CustomUserDetail implements UserDetails {
         return list;
     }
 
+
     @Override
     public String getPassword() {
         return profile.getPassword();
@@ -32,6 +33,10 @@ public class CustomUserDetail implements UserDetails {
     @Override
     public String getUsername() {
         return profile.getUsername();
+    }
+
+    public Long getId() {
+        return profile.getId();
     }
 
     @Override

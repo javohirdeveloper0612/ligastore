@@ -166,7 +166,7 @@ public class PromoCodeService {
             throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));
         }
         PromoCode code = optional.get();
-        int score = user.getScore() + code.getScore();
+        long score = user.getScore() + code.getScore();
         user.setScore(score);
         code.setProfile(user);
         promocodeRepository.save(code);
