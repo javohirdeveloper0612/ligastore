@@ -10,11 +10,13 @@ import com.example.enums.Language;
 import com.example.security.CurrentUser;
 import com.example.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,8 +42,8 @@ public class ProductController {
      * @return ProductEntity
      */
 
-    // @PreAuthorize(value = "hasRole('ADMIN')")
-    // @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize(value = "hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping(value = "/add_product/{category_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "ADD PRODUCT API", description = "This API for adding new Product")
     public ResponseEntity<?> addProduct(@PathVariable Long category_id, @Valid @ModelAttribute ProductDto productDto,
@@ -62,8 +64,8 @@ public class ProductController {
      * @return ResponseProductDto
      */
 
-    // @PreAuthorize(value = "hasRole('ADMIN')")
-    // @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize(value = "hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(value = "/edite/{product_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Edite Product API", description = "This API for editing Product Data")
     public ResponseEntity<?> editeProduct(@PathVariable Long product_id, @Valid @ModelAttribute ProductDto productDto,
@@ -136,8 +138,8 @@ public class ProductController {
      * @return ResponseMessage
      */
 
-    // @PreAuthorize(value = "hasRole('ADMIN')")
-    // @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize(value = "hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/deleteProduct/{product_id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long product_id,
                                            @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {

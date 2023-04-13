@@ -7,7 +7,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-
 public class VerificationDTO {
     @Size(min = 13, max = 13)
     @NotBlank(message = "phone cannot be null or empty")

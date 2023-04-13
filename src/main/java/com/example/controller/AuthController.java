@@ -32,14 +32,15 @@ public class AuthController {
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO dto) {
 
         LoginResponseDTO response = service.login(dto, Language.UZ);
-        log.info(" login method dtoUsername {}" ,dto.getUsername());
+        log.info(" login method dtoUsername {}", dto.getUsername());
         return ResponseEntity.ok().body(response);
     }
 
-@Operation(summary = "Phone Registration",description = "This API for send message Phone number")
+
+    @Operation(summary = "Phone Registration", description = "This API for send message Phone number")
     @PostMapping("/send_sms")
-    public ResponseEntity<?> verification(@Valid @RequestBody VerificationDTO dto){
-        return service.verification(dto,Language.UZ);
-}
+    public ResponseEntity<?> verification(@Valid @RequestBody VerificationDTO dto) {
+        return service.verification(dto, Language.UZ);
+    }
 
 }

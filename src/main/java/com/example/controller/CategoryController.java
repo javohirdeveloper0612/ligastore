@@ -6,6 +6,7 @@ import com.example.dto.category.ResponseCategoryDto;
 import com.example.enums.Language;
 import com.example.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,8 +40,8 @@ public class CategoryController {
      * @param language            language
      * @return result
      */
-    // @PreAuthorize(value = "hasRole('ADMIN')")
-    //  @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize(value = "hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping(value = "/add_category", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "ADD_CATEGORY API", description = "This API for adding new Category")
     public ResponseEntity<?> addCategory(@Valid
@@ -57,13 +59,13 @@ public class CategoryController {
      * @return result
      */
 
-    @GetMapping("/public/get_category_list/{id}")
+    @GetMapping("/public/get_category_list/{brand_id}")
     @Operation(summary = "CATEGORY  LIST", description = "This API is used for getting category list  ")
     public ResponseEntity<?> getCategoryList(
             @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language,
-            @PathVariable Long id) {
-        log.info("Getting category list : id {}", id);
-        List<ResponseCategoryDto> result = categoryService.getCategoryList(id, language);
+            @PathVariable Long brand_id) {
+        log.info("Getting category list : brand_id {}", brand_id);
+        List<ResponseCategoryDto> result = categoryService.getCategoryList(brand_id, language);
         return ResponseEntity.ok().body(result);
 
     }
@@ -110,8 +112,8 @@ public class CategoryController {
      * @param language          language
      * @return result;
      */
-    // @PreAuthorize(value = "hasRole('ADMIN')")
-    //  @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize(value = "hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/edite_category/{id}")
     @Operation(summary = "CATEGORY UPDATE BY ID", description = "This API is used for editing Category")
     public ResponseEntity<?> editeCategory(
@@ -130,8 +132,8 @@ public class CategoryController {
      * @param language language
      * @return String result
      */
-    // @PreAuthorize(value = "hasRole('ADMIN')")
-    //  @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize(value = "hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "CATEGORY DELETE BY ID", description = "this API category update by id (only ADMIN) ")
     @DeleteMapping("/deleteCategory/{id}")
     public ResponseEntity<?> deleteCategory(

@@ -34,12 +34,14 @@ public class AuthService implements UserDetailsService {
         this.resourceBundleService = resourceBundleService;
     }
 
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<ProfileEntity> optional = repository.findByUsername(username);
         if (optional.isEmpty()) throw new UsernameNotFoundException("Bad Credentials");
         return new CustomUserDetail(optional.get());
     }
+
 
 
     public LoginResponseDTO login(LoginDTO dto, Language language) {
@@ -58,7 +60,6 @@ public class AuthService implements UserDetailsService {
         responseDTO.setUsername(entity.getUsername());
         responseDTO.setRole(entity.getRole());
         responseDTO.setToken(JwtUtil.encode(entity.getUsername(), entity.getRole()));
-
         return responseDTO;
     }
 
@@ -69,7 +70,6 @@ public class AuthService implements UserDetailsService {
             if (!optional.get().getStatus().equals(ProfileStatus.NOT_ACTIVE)){
                 throw new PhoneAlReadyExistsException(resourceBundleService.getMessage("phone.exists",language.name()));
             }
-            
         }
         return null;
     }
