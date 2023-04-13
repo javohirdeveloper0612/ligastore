@@ -5,7 +5,7 @@ import com.example.exception.attach.AttachNotFoundException;
 import com.example.exception.attach.FileNameNotFoundException;
 import com.example.exception.attach.FileUploadException;
 import com.example.exception.attach.OriginalFileNameNullException;
-import com.example.exception.auth.ProfileNotFoundException;
+import com.example.exception.auth.*;
 import com.example.exception.category.EmptyListException;
 import com.example.exception.category.NotFoundParentCategory;
 import com.example.exception.product.NotMatchException;
@@ -95,8 +95,21 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
-    @ExceptionHandler({EmptyListException.class})
-    private ResponseEntity<?> handler(EmptyListException e) {
+    @ExceptionHandler({ProfileBlockedException.class})
+    private ResponseEntity<?> handler(ProfileBlockedException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+    @ExceptionHandler({PasswordIncorrectException.class})
+    private ResponseEntity<?> handler(PasswordIncorrectException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+    @ExceptionHandler({PhoneNotExistsException.class})
+    private ResponseEntity<?> handler(PhoneNotExistsException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+    @ExceptionHandler({PhoneAlReadyExistsException.class})
+    private ResponseEntity<?> handler(PhoneAlReadyExistsException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
 }

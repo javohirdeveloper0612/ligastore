@@ -20,42 +20,39 @@ import java.util.List;
 
 @Entity
 @Table(name = "profile")
-public class ProfileEntity extends AbsEntity  {
+public class ProfileEntity extends AbsEntity {
 
-
-
-    @Column(nullable = false)
+    @Column
     private String nameUz;
-
-    @Column(nullable = false)
+    @Column
     private String nameRu;
 
-    @Column(nullable = false)
+    @Column
     private String surnameUz;
 
-    @Column(nullable = false)
+    @Column
     private String surnameRu;
     @Column
     private String username;
     @Column
     private String password;
 
-    @Column(nullable = false)
+    @Column
     private Date birthdate;
 
-    @Column(nullable = false)
+    @Column
     private String professionUz;
 
-    @Column(nullable = false)
+    @Column
     private String professionRu;
 
-    @Column(nullable = false)
+    @Column
     private Boolean team;
 
-    @Column(nullable = false)
+    @Column
     private String region;
 
-    @Column(nullable = false)
+    @Column
     private String district;
 
     @Column(nullable = false, unique = true)
@@ -63,8 +60,11 @@ public class ProfileEntity extends AbsEntity  {
 
     @Column(unique = true)
     private String phoneHome;
+
+    @Column(nullable = false)
+    private String smsCode;
     @Column
-    private Integer score;
+    private Long score;
 
     @Column
     @Enumerated(EnumType.STRING)
