@@ -39,6 +39,7 @@ public class AuthService implements UserDetailsService {
     }
 
 
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<ProfileEntity> optional = repository.findByUsername(username);
@@ -51,9 +52,7 @@ public class AuthService implements UserDetailsService {
     }
 
 
-
     public LoginResponseDTO login(LoginDTO dto, Language language) {
-
         Optional<ProfileEntity> optional = repository.findByUsernameAndPassword(dto.getUsername(), MD5.md5(dto.getPassword()));
         if (optional.isEmpty()) {
             throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
@@ -73,6 +72,7 @@ public class AuthService implements UserDetailsService {
         return responseDTO;
     }
 
+
     @Transactional
     public String sendSms(SendSmsDTO dto, Language language) {
         Optional<ProfileEntity> optional = repository.findByPhoneUser(dto.getPhone());
@@ -85,7 +85,6 @@ public class AuthService implements UserDetailsService {
             }
         }
         String smsCode = randomSmsCode();
-
         ProfileEntity profile = new ProfileEntity();
         profile.setPhoneUser(dto.getPhone());
         profile.setSmsCode(MD5.md5(smsCode));
@@ -163,11 +162,8 @@ public class AuthService implements UserDetailsService {
         if (!entity.getSmsCode().equals(MD5.md5(dto.getPassword()))) {
             throw new PasswordIncorrectException(resourceBundleService.getMessage("password.wrong", language.name()));
         }
-
         entity.setStatus(ProfileStatus.ACTIVE);
-
         repository.save(entity);
-
         return "Successfully";
     }
 

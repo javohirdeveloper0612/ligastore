@@ -22,6 +22,7 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/api/promo_code")
 @Tag(name = "Promo-code")
+@SecurityRequirement(name = "Bearer Authentication")
 public class PromoCodeController {
     private final PromoCodeService promoCodeService;
 
@@ -39,7 +40,6 @@ public class PromoCodeController {
      * @return ResponsePromoCode
      */
     @PreAuthorize(value = "hasRole('ADMIN')")
-    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/generate")
     @Operation(summary = "GeneratePromoCode API", description = "This API generating promo_code")
     public ResponseEntity<?> generatePromoCode(@RequestBody CreatePromoCodeDto dto,
@@ -60,7 +60,6 @@ public class PromoCodeController {
      */
 
     @PreAuthorize(value = "hasRole('ADMIN')")
-    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/viewByPage")
     @Operation(summary = "View ALL Promo-code BY Pageable API", description = "This API viewing all promo_code")
     public ResponseEntity<?> getListPromoCodeByPage(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
@@ -78,7 +77,6 @@ public class PromoCodeController {
      * @return List<PromoCodeDto></>
      */
     @PreAuthorize(value = "hasRole('ADMIN')")
-    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/view_all_list")
     @Operation(summary = "View ALL Promo-Code List API", description = "This API for Viewing all the Promo-code")
     public ResponseEntity<?> getAllList(@RequestHeader(name = "Accept-Language") Language language) {
@@ -97,7 +95,9 @@ public class PromoCodeController {
      * @param user       ProfileEntity
      * @return CheckPromoCodeDto
      */
-    @PostMapping("public/check_promo_code")
+
+    @PreAuthorize(value = "hasRole('USER')")
+    @PostMapping("/check_promo_code")
     @Operation(summary = "Check Promo-Code API", description = "This API for checking promo-code")
     public ResponseEntity<?> checkPromoCode(
             @RequestParam long promo_code,
@@ -117,7 +117,6 @@ public class PromoCodeController {
      * @return List<ResponsePromoCode></>
      */
     @PreAuthorize(value = "hasRole('ADMIN')")
-    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/promo_code_list_by_model")
     @Operation(summary = "Find Promo-Code List By ProductModel", description = "This API for finding PromoCodeList By ProductModel ")
     public ResponseEntity<?> searchPromoCodeListByProductModel(@RequestParam String model,

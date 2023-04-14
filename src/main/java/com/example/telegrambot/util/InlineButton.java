@@ -19,6 +19,7 @@ public class InlineButton {
         return new LinkedList<>(Arrays.asList(inlineKeyboardButtons));
     }
 
+    @SafeVarargs
     public static List<List<InlineKeyboardButton>> rowList(List<InlineKeyboardButton>... row) {
         return new LinkedList<>(Arrays.asList(row));
     }

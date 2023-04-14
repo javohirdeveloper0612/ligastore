@@ -5,21 +5,12 @@ import com.example.enums.ProfileStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 @Setter
 @Getter
-
-@Entity
-@Table(name = "profile")
+@Entity(name = "profile")
 public class ProfileEntity extends AbsEntity {
 
     @Column

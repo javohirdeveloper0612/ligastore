@@ -2,8 +2,6 @@ package com.example.util;
 
 
 import okhttp3.*;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Random;
@@ -17,10 +15,9 @@ public class SmsSender {
 //        sendSms("998996731741", "salom123");
 //        System.out.println(gen());
 
-    getToken();
+        getToken();
 
     }
-
 
 
     public static void sendSms(String phone, String message) {
@@ -54,7 +51,7 @@ public class SmsSender {
             RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
                     .addFormDataPart("mod", "lattocyr")
                     .addFormDataPart("text", "Sh Ch G' g' sh")
-                    .addFormDataPart("ignoreHtml","true")
+                    .addFormDataPart("ignoreHtml", "true")
                     .build();
             Request request = new Request.Builder()
                     .url("https://lotin.uz/api/translate")
@@ -71,7 +68,7 @@ public class SmsSender {
     }
 
     public static int gen() {
-        Random r = new Random( System.currentTimeMillis() );
+        Random r = new Random(System.currentTimeMillis());
         return ((1 + r.nextInt(9)) * 10000 + r.nextInt(10000));
     }
 

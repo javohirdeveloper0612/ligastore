@@ -2,15 +2,12 @@ package com.example.controller;
 
 import com.example.dto.auth.*;
 import com.example.enums.Language;
-import com.example.security.CustomUserDetail;
 import com.example.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -28,7 +25,6 @@ public class AuthController {
     @Operation(summary = "Login Method", description = "this method for registration")
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO dto) {
-
         LoginResponseDTO response = service.login(dto, Language.UZ);
         log.info(" login method dtoUsername {}", dto.getUsername());
         return ResponseEntity.ok().body(response);
@@ -39,7 +35,6 @@ public class AuthController {
     public ResponseEntity<String> sendSms(@Valid @RequestBody SendSmsDTO dto) {
         String response = service.sendSms(dto, Language.UZ);
         return ResponseEntity.ok(response);
-
     }
 
     @Operation(summary = "Verification", description = "This API for verification ")
@@ -55,13 +50,8 @@ public class AuthController {
     private ResponseEntity<ProfileResponseDTO> registration(@Valid @RequestBody RegistrationDTO dto,
                                                             @PathVariable(name = "id") Long id,
                                                             @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
-
-
-        ProfileResponseDTO result = service.registration(dto,id ,language);
-
+        ProfileResponseDTO result = service.registration(dto, id, language);
         return ResponseEntity.ok(result);
     }
-
-
 
 }

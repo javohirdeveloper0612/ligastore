@@ -1,7 +1,6 @@
 package com.example.service;
 
 import com.example.dto.ResponseMessage;
-
 import com.example.dto.attach.AttachResponseDTO;
 import com.example.dto.product.ProductDto;
 import com.example.dto.product.ResponseProductDto;
@@ -9,12 +8,13 @@ import com.example.entity.CategoryEntity;
 import com.example.entity.ProductEntity;
 import com.example.entity.ProfileEntity;
 import com.example.enums.Language;
-
 import com.example.exception.category.EmptyListException;
 import com.example.exception.category.NotFoundParentCategory;
 import com.example.exception.product.ProductNotFoundException;
 import com.example.repository.CategoryRepository;
 import com.example.repository.ProductRepository;
+import com.example.telegrambot.util.InlineButton;
+import com.example.telegrambot.util.SendMsg;
 import com.example.util.UrlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,10 +29,12 @@ import java.util.Optional;
 
 @Service
 public class ProductService {
+    public static int orderId = 0;
     private final ProductRepository productRepository;
     private final AttachService attachService;
     private final CategoryRepository categoryRepository;
     private final ResourceBundleService resourceBundleService;
+
 
     @Autowired
     public ProductService(ProductRepository productRepository, AttachService attachService,
@@ -41,6 +43,7 @@ public class ProductService {
         this.attachService = attachService;
         this.categoryRepository = categoryRepository;
         this.resourceBundleService = resourceBundleService;
+
     }
 
 
@@ -274,17 +277,42 @@ public class ProductService {
     /**
      * This method is used for selling product
      *
-     * @param user  ProfileEntity
-     * @param score Long
+     * @param user          ProfileEntity
+     * @param product_model String
      * @return ResponseMessage
      */
-    public ResponseMessage sellProduct(ProfileEntity user, Long score) {
-        if (user.getScore() >= score) {
-            ///adminga xabar junatiladi va admin acceptni bossa
-            //userni balidan productni bali ayiriladi
+    public ResponseMessage sellProduct(ProfileEntity user, String product_model, Language language) {
+
+
+        Optional<ProductEntity> optional = productRepository.findByModel(product_model);
+        if (optional.isEmpty()) {
+            throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
+        }
+
+        ProductEntity product = optional.get();
+        if (user.getScore() >= product.getScore()) {
+
+            SendMsg.sendMsg(
+                    1030035146L, "Buyurtma raqami : " + orderId +
+                            "Buyurtma beruvchining ismi va familiyasi :" + user.getNameUz() + " " + user.getSurnameUz() +
+                            "Telefon raqami : " + user.getPhoneUser() +
+                            "Product nomi : " + product.getNameUz() +
+                            "Product modeli : " + product.getModel(),
+                    InlineButton.keyboardMarkup(
+                            InlineButton.rowList(InlineButton.row(
+                                    InlineButton.button("Accept", "accept"),
+                                    InlineButton.button("Reject", "reject")
+                            )))
+
+
+            );
+            orderId++;
+
             return new ResponseMessage("Message sent To Admin", true, 200);
         }
         return new ResponseMessage("Your score is less than Product's score", false, 400);
 
     }
+
+
 }

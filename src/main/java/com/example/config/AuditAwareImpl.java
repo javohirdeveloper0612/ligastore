@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class AuditAwareImpl implements AuditorAware<Long> {
+
     @Override
     public Optional<Long> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -16,7 +17,6 @@ public class AuditAwareImpl implements AuditorAware<Long> {
                 || !Objects.requireNonNull(authentication).getPrincipal().equals("anonymousUser")) {
             return Optional.of((Long) authentication.getPrincipal());
         }
-
         return Optional.empty();
     }
 }
