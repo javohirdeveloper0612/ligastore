@@ -21,7 +21,6 @@ public class ProfileResponseDTO {
     private String surnameUz;
     private String surnameRu;
     private String username;
-    private String password;
     private Date birthdate;
     private String professionUz;
     private String professionRu;

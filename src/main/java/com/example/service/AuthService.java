@@ -154,7 +154,7 @@ public class AuthService implements UserDetailsService {
         return String.valueOf(((1 + r.nextInt(9)) * 10000 + r.nextInt(10000)));
     }
 
-    public String verification(VerificationDTO dto, Language language) {
+    public ProfileResponseDTO verification(VerificationDTO dto, Language language) {
         Optional<ProfileEntity> optional = repository.findByPhoneUser(dto.getPhone());
         if (optional.isEmpty()) {
             throw new PhoneNotExistsException(resourceBundleService.getMessage("phone.not.exists", language.name()));
@@ -168,7 +168,11 @@ public class AuthService implements UserDetailsService {
 
         repository.save(entity);
 
-        return "Successfully";
+        ProfileResponseDTO responseDTO = new ProfileResponseDTO();
+        responseDTO.setId(entity.getId());
+        responseDTO.setPhoneUser(entity.getPhoneUser());
+
+        return responseDTO;
     }
 
 
@@ -181,7 +185,6 @@ public class AuthService implements UserDetailsService {
         dto.setSurnameRu(entity.getSurnameRu());
         dto.setSurnameUz(entity.getSurnameUz());
         dto.setUsername(entity.getUsername());
-        dto.setPassword(entity.getPassword());
         dto.setProfessionUz(entity.getProfessionUz());
         dto.setProfessionRu(entity.getProfessionRu());
         dto.setRegion(entity.getRegion());

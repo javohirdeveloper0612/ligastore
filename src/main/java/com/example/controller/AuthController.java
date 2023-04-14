@@ -45,7 +45,7 @@ public class AuthController {
     @Operation(summary = "Verification", description = "This API for verification ")
     @PostMapping("/verification")
     public ResponseEntity<?> verification(@Valid @RequestBody VerificationDTO dto) {
-        String response = service.verification(dto, Language.UZ);
+        ProfileResponseDTO response = service.verification(dto, Language.UZ);
 
         return ResponseEntity.ok().body(response);
     }
