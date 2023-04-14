@@ -1,3 +1,4 @@
+/*
 package com.example.config;
 
 import org.springframework.data.domain.AuditorAware;
@@ -20,3 +21,4 @@ public class AuditAwareImpl implements AuditorAware<Long> {
         return Optional.empty();
     }
 }
+*/

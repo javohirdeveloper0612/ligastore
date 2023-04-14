@@ -22,7 +22,6 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/api/promo_code")
 @Tag(name = "Promo-code")
-@SecurityRequirement(name = "Bearer Authentication")
 public class PromoCodeController {
     private final PromoCodeService promoCodeService;
 
@@ -40,6 +39,7 @@ public class PromoCodeController {
      * @return ResponsePromoCode
      */
     @PreAuthorize(value = "hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/generate")
     @Operation(summary = "GeneratePromoCode API", description = "This API generating promo_code")
     public ResponseEntity<?> generatePromoCode(@RequestBody CreatePromoCodeDto dto,
@@ -60,6 +60,7 @@ public class PromoCodeController {
      */
 
     @PreAuthorize(value = "hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/viewByPage")
     @Operation(summary = "View ALL Promo-code BY Pageable API", description = "This API viewing all promo_code")
     public ResponseEntity<?> getListPromoCodeByPage(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
@@ -77,6 +78,7 @@ public class PromoCodeController {
      * @return List<PromoCodeDto></>
      */
     @PreAuthorize(value = "hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/view_all_list")
     @Operation(summary = "View ALL Promo-Code List API", description = "This API for Viewing all the Promo-code")
     public ResponseEntity<?> getAllList(@RequestHeader(name = "Accept-Language") Language language) {
@@ -92,19 +94,18 @@ public class PromoCodeController {
      *
      * @param promo_code long
      * @param language   Language
-     * @param user       ProfileEntity
      * @return CheckPromoCodeDto
      */
 
     @PreAuthorize(value = "hasRole('USER')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/check_promo_code")
     @Operation(summary = "Check Promo-Code API", description = "This API for checking promo-code")
     public ResponseEntity<?> checkPromoCode(
             @RequestParam long promo_code,
-            @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language,
-            @CurrentUser ProfileEntity user) {
-        log.info("Check Promo-Code : promo_code {} , user {}", promo_code, user);
-        CheckPromoCodeDTO codeDTO = promoCodeService.check_promo_code(promo_code, language, user);
+            @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
+        log.info("Check Promo-Code : promo_code {}", promo_code);
+        CheckPromoCodeDTO codeDTO = promoCodeService.check_promo_code(promo_code, language);
         return codeDTO.isSuccess() ? ResponseEntity.ok(codeDTO) : ResponseEntity.status(404).body(codeDTO);
     }
 
@@ -117,6 +118,7 @@ public class PromoCodeController {
      * @return List<ResponsePromoCode></>
      */
     @PreAuthorize(value = "hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/promo_code_list_by_model")
     @Operation(summary = "Find Promo-Code List By ProductModel", description = "This API for finding PromoCodeList By ProductModel ")
     public ResponseEntity<?> searchPromoCodeListByProductModel(@RequestParam String model,

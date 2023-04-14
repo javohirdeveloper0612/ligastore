@@ -23,7 +23,6 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/api/category")
 @Tag(name = "Category-API-Controller")
-@SecurityRequirement(name = "Bearer Authentication")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -41,6 +40,7 @@ public class CategoryController {
      * @param language            language
      * @return result
      */
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize(value = "hasRole('ADMIN')")
     @PostMapping(value = "/add_category", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "ADD_CATEGORY API", description = "This API for adding new Category")
@@ -58,6 +58,7 @@ public class CategoryController {
      * @param language language
      * @return result
      */
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize(value = "hasRole('USER')")
     @GetMapping("/get_category_list/{brand_id}")
     @Operation(summary = "CATEGORY  LIST", description = "This API is used for getting category list  ")
@@ -79,6 +80,7 @@ public class CategoryController {
      */
 
     @PreAuthorize(value = "hasRole('USER')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/get_brand_list")
     @Operation(summary = "Brand List API", description = "This API is used for getting Brand List")
     public ResponseEntity<?> getBrandList(@RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
@@ -96,6 +98,7 @@ public class CategoryController {
      */
 
     @PreAuthorize(value = "hasRole('USER')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/get_category_by_id/{id}")
     @Operation(summary = "Get Category By ID API", description = "This API is used  category get by id ( public )")
     public ResponseEntity<?> getCategoryById(@PathVariable("id") Long id,
@@ -115,6 +118,7 @@ public class CategoryController {
      * @return result;
      */
     @PreAuthorize(value = "hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/edite_category/{id}")
     @Operation(summary = "CATEGORY UPDATE BY ID", description = "This API is used for editing Category")
     public ResponseEntity<?> editeCategory(
@@ -134,6 +138,7 @@ public class CategoryController {
      * @return String result
      */
     @PreAuthorize(value = "hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "CATEGORY DELETE BY ID", description = "this API category update by id (only ADMIN) ")
     @DeleteMapping("/deleteCategory/{id}")
     public ResponseEntity<?> deleteCategory(
@@ -154,6 +159,7 @@ public class CategoryController {
      * @return allCategory
      */
     @PreAuthorize(value = "hasRole('USER')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "CATEGORY GET LIST PAGINATION", description = "this API category list pagination (only ADMIN va USER) ")
     @GetMapping("/get_category_list_by_page")
     public ResponseEntity<?> getCategoryByPage(@RequestParam(name = "page", defaultValue = "0") int page,

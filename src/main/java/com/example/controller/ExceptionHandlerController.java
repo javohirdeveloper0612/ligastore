@@ -10,6 +10,7 @@ import com.example.exception.category.EmptyListException;
 import com.example.exception.category.NotFoundParentCategory;
 import com.example.exception.product.NotMatchException;
 import com.example.exception.product.ProductNotFoundException;
+import com.example.exception.promocode.InvalidPromoCodeException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -73,6 +74,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     private ResponseEntity<?> handler(OriginalFileNameNullException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
     @ExceptionHandler({ProfileNotFoundException.class})
     private ResponseEntity<?> handler(ProfileNotFoundException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -99,17 +101,29 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     private ResponseEntity<?> handler(ProfileBlockedException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
     @ExceptionHandler({PasswordIncorrectException.class})
     private ResponseEntity<?> handler(PasswordIncorrectException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
     @ExceptionHandler({PhoneNotExistsException.class})
     private ResponseEntity<?> handler(PhoneNotExistsException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
     @ExceptionHandler({PhoneAlReadyExistsException.class})
     private ResponseEntity<?> handler(PhoneAlReadyExistsException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+
+
+    }
+
+    @ExceptionHandler({InvalidPromoCodeException.class})
+    private ResponseEntity<?> handler(InvalidPromoCodeException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+
+
     }
 
 }

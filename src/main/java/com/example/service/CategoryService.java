@@ -78,7 +78,6 @@ public class CategoryService {
         dto.setId(category.getId());
         dto.setNameUz(category.getNameUz());
         dto.setNameRu(category.getNameRu());
-        dto.setParentCategoryId(category.getParentCategory().getId());
         dto.setPhotoUrl(attch.getUrl());
         return dto;
     }

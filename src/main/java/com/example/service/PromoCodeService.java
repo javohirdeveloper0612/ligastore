@@ -1,6 +1,5 @@
 package com.example.service;
 
-import com.example.dto.product.ResponseProductDto;
 import com.example.dto.promocode.CheckPromoCodeDTO;
 import com.example.dto.promocode.CreatePromoCodeDto;
 import com.example.dto.promocode.ResponsePromoCodeDto;
@@ -9,15 +8,20 @@ import com.example.entity.ProductEntity;
 import com.example.entity.ProfileEntity;
 import com.example.entity.PromoCode;
 import com.example.enums.Language;
+import com.example.exception.auth.ProfileNotFoundException;
 import com.example.exception.category.EmptyListException;
 import com.example.exception.product.NotMatchException;
 import com.example.exception.product.ProductNotFoundException;
 import com.example.exception.promocode.InvalidPromoCodeException;
 import com.example.repository.ProductRepository;
+import com.example.repository.ProfileRepository;
 import com.example.repository.PromocodeRepository;
+import com.example.security.CustomUserDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,13 +34,15 @@ public class PromoCodeService {
     private final ResourceBundleService resourceBundleService;
     private final PromocodeRepository promocodeRepository;
     private final ProductRepository productRepository;
+    private final ProfileRepository profileRepository;
 
     public PromoCodeService(ResourceBundleService resourceBundleService,
                             PromocodeRepository promocodeRepository,
-                            ProductRepository productRepository) {
+                            ProductRepository productRepository, ProfileRepository profileRepository) {
         this.resourceBundleService = resourceBundleService;
         this.promocodeRepository = promocodeRepository;
         this.productRepository = productRepository;
+        this.profileRepository = profileRepository;
     }
 
     /**
@@ -145,7 +151,9 @@ public class PromoCodeService {
      * @param user      ProfileEntity
      * @return CheckPromoCodeDto
      */
-    public CheckPromoCodeDTO check_promo_code(long promoCode, Language language, ProfileEntity user) {
+    public CheckPromoCodeDTO check_promo_code(long promoCode, Language language) {
+
+        ProfileEntity user = getUser(language);
         boolean exists = promocodeRepository.existsByCodeAndProfileId(promoCode, user.getId());
         if (exists)
             throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));
@@ -191,5 +199,15 @@ public class PromoCodeService {
         List<PromoCode> codeList = promocodeRepository.findAllByProductModel(model);
         if (codeList.isEmpty()) throw new EmptyListException(resourceBundleService.getMessage("empty.list", language));
         return convertToList(codeList);
+    }
+
+    public ProfileEntity getUser(Language language) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
+        Optional<ProfileEntity> optional = profileRepository.findById(customUserDetail.getId());
+        if (optional.isEmpty()) {
+            throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language));
+        }
+        return optional.get();
     }
 }

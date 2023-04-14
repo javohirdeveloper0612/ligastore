@@ -177,7 +177,6 @@ public class AuthService implements UserDetailsService {
         dto.setSurnameRu(entity.getSurnameRu());
         dto.setSurnameUz(entity.getSurnameUz());
         dto.setUsername(entity.getUsername());
-        dto.setPassword(entity.getPassword());
         dto.setProfessionUz(entity.getProfessionUz());
         dto.setProfessionRu(entity.getProfessionRu());
         dto.setRegion(entity.getRegion());
