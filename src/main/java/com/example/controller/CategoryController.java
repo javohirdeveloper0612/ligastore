@@ -59,7 +59,7 @@ public class CategoryController {
      * @return result
      */
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize(value = "hasRole('USER')")
+    @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @GetMapping("/get_category_list/{brand_id}")
     @Operation(summary = "CATEGORY  LIST", description = "This API is used for getting category list  ")
     public ResponseEntity<?> getCategoryList(
@@ -68,9 +68,7 @@ public class CategoryController {
         log.info("Getting category list : brand_id {}", brand_id);
         List<ResponseCategoryDto> result = categoryService.getCategoryList(brand_id, language);
         return ResponseEntity.ok().body(result);
-
     }
-
 
     /**
      * This method is used for getting BrandList
@@ -79,7 +77,7 @@ public class CategoryController {
      * @return List<ResponseCategoryDto></>
      */
 
-    @PreAuthorize(value = "hasRole('USER')")
+    @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/get_brand_list")
     @Operation(summary = "Brand List API", description = "This API is used for getting Brand List")
@@ -96,8 +94,7 @@ public class CategoryController {
      * @param language language
      * @return result
      */
-
-    @PreAuthorize(value = "hasRole('USER')")
+    @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/get_category_by_id/{id}")
     @Operation(summary = "Get Category By ID API", description = "This API is used  category get by id ( public )")
@@ -158,7 +155,7 @@ public class CategoryController {
      * @param language language
      * @return allCategory
      */
-    @PreAuthorize(value = "hasRole('USER')")
+    @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "CATEGORY GET LIST PAGINATION", description = "this API category list pagination (only ADMIN va USER) ")
     @GetMapping("/get_category_list_by_page")
@@ -171,6 +168,5 @@ public class CategoryController {
         return ResponseEntity.ok().body(allCategory);
 
     }
-
 
 }

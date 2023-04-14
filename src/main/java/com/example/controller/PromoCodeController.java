@@ -30,6 +30,7 @@ public class PromoCodeController {
     }
 
 
+
     /**
      * This method is used for generating promo-code if amount is equals 0 or less than 0
      * throw new NotMatchException if model not found throw ProductNotFoundException
@@ -47,6 +48,7 @@ public class PromoCodeController {
         ResponsePromCodeMessage promCode = promoCodeService.generateCode(dto, language);
         return ResponseEntity.status(201).body(promCode);
     }
+
 
 
     /**
@@ -97,7 +99,7 @@ public class PromoCodeController {
      * @return CheckPromoCodeDto
      */
 
-    @PreAuthorize(value = "hasRole('USER')")
+    @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/check_promo_code")
     @Operation(summary = "Check Promo-Code API", description = "This API for checking promo-code")

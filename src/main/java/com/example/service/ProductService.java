@@ -16,6 +16,7 @@ import com.example.repository.CategoryRepository;
 import com.example.repository.ProductRepository;
 import com.example.repository.ProfileRepository;
 import com.example.security.CustomUserDetail;
+import com.example.telegrambot.myTelegrambot.MyTelegramBot;
 import com.example.telegrambot.util.InlineButton;
 import com.example.telegrambot.util.SendMsg;
 import com.example.util.UrlUtil;
@@ -34,23 +35,25 @@ import java.util.Optional;
 
 @Service
 public class ProductService {
-    public static int orderId = 0;
+    public static int orderId = 1;
     private final ProductRepository productRepository;
     private final AttachService attachService;
     private final CategoryRepository categoryRepository;
     private final ResourceBundleService resourceBundleService;
     private final ProfileRepository profileRepository;
+    private final MyTelegramBot myTelegramBot;
 
 
     @Autowired
     public ProductService(ProductRepository productRepository, AttachService attachService,
-                          CategoryRepository categoryRepository, ResourceBundleService resourceBundleService, ProfileRepository profileRepository) {
+                          CategoryRepository categoryRepository, ResourceBundleService resourceBundleService, ProfileRepository profileRepository, MyTelegramBot myTelegramBot) {
         this.productRepository = productRepository;
         this.attachService = attachService;
         this.categoryRepository = categoryRepository;
         this.resourceBundleService = resourceBundleService;
 
         this.profileRepository = profileRepository;
+        this.myTelegramBot = myTelegramBot;
     }
 
 
@@ -299,12 +302,18 @@ public class ProductService {
         if (user.getScore() >= product.getScore()) {
             sendMessage(user, optional.get());
             orderId++;
-            return new ResponseMessage("Message sent To Admin", true, 200);
+            return new ResponseMessage("Message sent To Admin and in Process", true, 200);
         }
-        return new ResponseMessage("Your score is less than Product's score", false, 400);
+        return new ResponseMessage("User's score is less than Product's score", false, 400);
 
     }
 
+    /**
+     * This method is used for getting current User
+     *
+     * @param language Language
+     * @return ProfileEntity
+     */
     public ProfileEntity getUser(Language language) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
@@ -315,20 +324,26 @@ public class ProductService {
         return optional.get();
     }
 
+    /**
+     * This method is used for send messsage to admin
+     *
+     * @param user    ProfileEntity
+     * @param product ProductEntity
+     */
     public void sendMessage(ProfileEntity user, ProductEntity product) {
-        SendMsg.sendMsg(
-                1030035146L, "Buyurtma raqami : " + orderId +
-                        "Buyurtma beruvchining ismi va familiyasi :" + user.getNameUz() + " " + user.getSurnameUz() +
-                        "Telefon raqami : " + user.getPhoneUser() +
-                        "Product nomi : " + product.getNameUz() +
-                        "Product modeli : " + product.getModel(),
+        myTelegramBot.send(SendMsg.sendMsg(
+                1030035146L, "*Buyurtma raqami : * " + orderId +
+                        "\n*Buyurtma beruvchining FIO :*" + user.getNameUz() + " " + user.getSurnameUz() +
+                        "\n*Telefon raqami : *" + user.getPhoneUser() +
+                        "\n*Product nomi : *" + product.getNameUz() +
+                        "\n*Product modeli : *" + product.getModel(),
                 InlineButton.keyboardMarkup(
                         InlineButton.rowList(InlineButton.row(
-                                InlineButton.button("Accept", "accept"),
-                                InlineButton.button("Reject", "reject")
+                                InlineButton.button("Qabul qilish", "accept"),
+                                InlineButton.button("Rad qilish", "reject")
                         )))
+        ));
 
-        );
     }
 
 }
