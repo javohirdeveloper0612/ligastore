@@ -1,0 +1,17 @@
+### registration
+POST localhost:8080/api/auth/verification/1
+Accept-Language: UZ
+Content-Type: application/json
+
+{
+  "name": "Javohir",
+  "surname": "Yallayev",
+  "username": "adminjon",
+  "password": "123",
+  "birthdate": "2001-06-12",
+  "profession": "Dasturchi",
+  "team": true,
+  "region": "Samarkand",
+  "district": "Pastdargom",
+  "phoneHome": "+998997684433"
+}

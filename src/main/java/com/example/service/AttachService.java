@@ -75,7 +75,7 @@ public class AttachService {
             entity.setType(extension);
             entity.setPath(pathFolder);
             entity.setSize(file.getSize());
-            AttachEntity save = repository.save(entity);
+            repository.save(entity);
 
 
             AttachResponseDTO dto = new AttachResponseDTO();
@@ -118,6 +118,27 @@ public class AttachService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String deleteById(String fileName) {
+
+        Optional<AttachEntity> optional = repository.findById(fileName);
+        if (optional.isEmpty()) {
+            throw new RuntimeException("Error");
+        }
+
+        try {
+            AttachEntity entity = getAttach(fileName);
+            Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + fileName + "." + entity.getType());
+
+            Files.delete(file);
+
+            return "deleted";
+        } catch (
+                IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 

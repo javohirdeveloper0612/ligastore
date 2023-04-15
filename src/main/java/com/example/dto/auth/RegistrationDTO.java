@@ -7,8 +7,10 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.jvnet.hk2.annotations.Optional;
 
 import java.util.Date;
 
@@ -16,33 +18,34 @@ import java.util.Date;
 @Setter
 
 public class RegistrationDTO {
-    @NotBlank(message = "name required")
+    @NotBlank(message = "Name required")
     private String name;
-    @NotBlank(message = "surname required")
 
+    @NotBlank(message = "Surname required")
     private String surname;
-    @NotBlank(message = "username required")
-
+    @NotBlank(message = "Username required")
     private String username;
-    @NotBlank(message = "password required")
 
+    @NotBlank(message = "Password required")
     private String password;
-    @NotNull(message = "birthdate required")
 
+    @NotNull(message = "Birthdate required")
     private Date birthdate;
-    @NotBlank(message = "profession required")
 
+    @NotBlank(message = "Profession required")
     private String profession;
-    @NotNull(message = "team required")
 
+    @NotNull(message = "Team required")
     private Boolean team;
 
-    @NotBlank(message = "region required")
-
+    @NotBlank(message = "Region required")
     private String region;
-    @NotBlank(message = "district required")
 
+    @NotBlank(message = "District required")
     private String district;
+
+
+    @Size(min = 13,max = 13)
     private String phoneHome;
 
 }

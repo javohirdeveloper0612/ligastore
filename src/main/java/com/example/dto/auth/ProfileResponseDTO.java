@@ -25,8 +25,10 @@ public class ProfileResponseDTO {
     private String professionUz;
     private String professionRu;
     private Boolean team;
-    private String region;
-    private String district;
+    private String regionUz;
+    private String regionRu;
+    private String districtUz;
+    private String districtRu;
     private String phoneUser;
     private String message;
     private String phoneHome;

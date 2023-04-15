@@ -27,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -276,11 +277,14 @@ public class ProductService {
      * @param language  Language
      * @return ResponseMessage
      */
+    @Transactional
     public ResponseMessage deleteProduct(Long productId, Language language) {
         Optional<ProductEntity> optional = productRepository.findById(productId);
         if (optional.isEmpty())
             throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
+        attachService.deleteById(optional.get().getAttachId());
         productRepository.delete(optional.get());
+
         return new ResponseMessage("Successfully deleted", true, 200);
     }
 

@@ -1,11 +1,9 @@
 package com.example.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Date;
 
 @Getter
 @Setter
@@ -13,18 +11,19 @@ import java.util.Date;
 public class UpdateProfileDTO {
     @NotBlank(message = "name required")
     private String name;
+
     @NotBlank(message = "surname required")
-
     private String surname;
-    @NotBlank(message = "username required")
 
+    @NotBlank(message = "Profession required")
     private String profession;
-    @NotNull(message = "team required")
 
-    @NotBlank(message = "region required")
+    @NotBlank(message = "Region required")
     private String region;
-    @NotBlank(message = "district required")
 
+    @NotBlank(message = "District required")
     private String district;
+
+    @Size(min = 13,max = 13)
     private String phoneHome;
 }
