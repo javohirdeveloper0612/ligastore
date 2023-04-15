@@ -84,7 +84,7 @@ public class ProductController {
      * @return List<ResponseProductDto></>
      */
 
-    @PreAuthorize(value = "hasRole('USER')")
+    @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/view_product_list/{category_id}")
     @Operation(summary = "View Product Data List API", description = "This API for viewing all the productDto")
@@ -102,7 +102,7 @@ public class ProductController {
      * @param language Language
      * @return List<ResponseProductDto></>
      */
-    @PreAuthorize(value = "hasRole('USER')")
+    @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/view_product_list_by_page/{category_id}")
     @Operation(summary = "View_product_List By Page API", description = "This Api for viewing all the product data by page")
@@ -122,7 +122,7 @@ public class ProductController {
      * @param language   Language
      * @return ResponseProductDto
      */
-    @PreAuthorize(value = "hasRole('USER')")
+    @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/view_product_by_id/{product_id}")
     @Operation(summary = "View Product By Id API", description = "This API for viewing product data by Id")
@@ -160,7 +160,7 @@ public class ProductController {
      * @return ResponseMessage
      */
 
-    @PreAuthorize(value = "hasRole('USER')")
+    @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @PostMapping("/sell_product")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Sell Product API", description = "This API for selling Product")
