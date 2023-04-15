@@ -1,4 +1,4 @@
-package com.example.dto;
+package com.example.dto.jwt;
 
 import com.example.enums.ProfileRole;
 import lombok.Getter;

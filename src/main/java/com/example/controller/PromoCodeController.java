@@ -2,11 +2,9 @@ package com.example.controller;
 
 import com.example.dto.promocode.CheckPromoCodeDTO;
 import com.example.dto.promocode.CreatePromoCodeDto;
-import com.example.dto.promocode.ResponsePromoCodeDto;
 import com.example.dto.promocode.ResponsePromCodeMessage;
-import com.example.entity.ProfileEntity;
+import com.example.dto.promocode.ResponsePromoCodeDto;
 import com.example.enums.Language;
-import com.example.security.CurrentUser;
 import com.example.service.PromoCodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

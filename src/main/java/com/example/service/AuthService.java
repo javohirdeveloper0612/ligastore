@@ -39,7 +39,6 @@ public class AuthService implements UserDetailsService {
     }
 
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<ProfileEntity> optional = repository.findByUsername(username);
@@ -103,7 +102,7 @@ public class AuthService implements UserDetailsService {
         if (optional.isEmpty()) {
             throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
         }
-        if (repository.existsByUsername(dto.getUsername())){
+        if (repository.existsByUsername(dto.getUsername())) {
             throw new ProfileNotFoundException(resourceBundleService.getMessage("username.exists", language.name()));
         }
 

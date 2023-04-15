@@ -1,8 +1,6 @@
 package com.example.controller;
-
 import com.example.dto.attach.AttachResponseDTO;
 import com.example.service.AttachService;
-import com.example.util.SmsSender;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -50,8 +48,6 @@ public class AttachController {
      * @param id       Integer
      * @return Message
      */
-
-
     @GetMapping(value = "/public/download/{id}",produces = MediaType.ALL_VALUE)
     @Operation(summary = "Download method", description = "This method used for downloading file")
     public ResponseEntity<?> downloadFile(@PathVariable String id) {

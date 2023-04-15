@@ -1,12 +1,10 @@
 package com.example.controller;
 
 
-import com.example.dto.ResponseMessage;
+import com.example.dto.jwt.ResponseMessage;
 import com.example.dto.product.ProductDto;
 import com.example.dto.product.ResponseProductDto;
-import com.example.entity.ProfileEntity;
 import com.example.enums.Language;
-import com.example.security.CurrentUser;
 import com.example.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

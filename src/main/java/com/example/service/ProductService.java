@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.dto.ResponseMessage;
+import com.example.dto.jwt.ResponseMessage;
 import com.example.dto.attach.AttachResponseDTO;
 import com.example.dto.product.ProductDto;
 import com.example.dto.product.ResponseProductDto;

@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -23,6 +22,12 @@ public class AuthController {
         this.service = service;
     }
 
+    /**
+     * This method is used for login to system if not founded the user throw new UserNotFoundException
+     *
+     * @param dto LoginDto
+     * @return LoginResponseDto
+     */
     @Operation(summary = "Login Method", description = "this method for registration")
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO dto) {
@@ -32,6 +37,13 @@ public class AuthController {
         return ResponseEntity.ok().body(response);
     }
 
+
+    /**
+     * This method is used for registration phone  If phone is exist throw PhoneAlreadyException
+     *
+     * @param dto SendSmsDto
+     * @return String
+     */
     @Operation(summary = "Phone Registration", description = "This API for send message Phone number")
     @PostMapping("/send_sms")
     public ResponseEntity<String> sendSms(@Valid @RequestBody SendSmsDTO dto) {
@@ -39,14 +51,29 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * This method is used for Verification sms Code if not founded phone throw PhoneNotFoundException
+     * If not found password throw PasswordNotFoundException
+     *
+     * @param dto VerificationDTO
+     * @return ProfileResponseDto
+     */
     @Operation(summary = "Verification", description = "This API for verification ")
     @PostMapping("/verification")
     public ResponseEntity<?> verification(@Valid @RequestBody VerificationDTO dto) {
-        String response = service.verification(dto, Language.UZ);
-
-        return ResponseEntity.ok().body(response);
+        ProfileResponseDTO responseDTO = service.verification(dto, Language.UZ);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
+    /**
+     * This method is used for User registration if profile's data is not found
+     * throw ProfileNotFoundException
+     *
+     * @param dto      RegistrationDto
+     * @param id       Long
+     * @param language Language
+     * @return ProfileResponseDto
+     */
     @Operation(summary = "Method for registration", description = "This method used to create a user")
     @PostMapping("/registration/{id}")
     private ResponseEntity<ProfileResponseDTO> registration(@Valid @RequestBody RegistrationDTO dto,

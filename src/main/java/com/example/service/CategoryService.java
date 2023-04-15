@@ -1,5 +1,4 @@
 package com.example.service;
-
 import com.example.dto.attach.AttachResponseDTO;
 import com.example.dto.category.CategoryDto;
 import com.example.dto.category.CategoryUpdateDTO;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -73,6 +71,8 @@ public class CategoryService {
      * @param attch    AttachResponseDto
      * @return ResponsecategoryDto
      */
+
+
     public ResponseCategoryDto responseCategoryDto(CategoryEntity category, AttachResponseDTO attch) {
         ResponseCategoryDto dto = new ResponseCategoryDto();
         dto.setId(category.getId());
@@ -188,6 +188,7 @@ public class CategoryService {
      */
 
     public List<ResponseCategoryDto> getBrandList(Language language) {
+
         List<ResponseCategoryDto> dtoList = new LinkedList<>();
 
         List<CategoryEntity> categoryList = categoryRepository.findAllByParentCategoryNull();
@@ -198,7 +199,6 @@ public class CategoryService {
         return dtoList;
     }
 
-
     /**
      * This method is used for  converting category to ResponseCategoryDto By Language
      *
@@ -206,6 +206,7 @@ public class CategoryService {
      * @param category CategoryEntity
      * @return ResponseCategoryDto
      */
+
     public ResponseCategoryDto responseCategoryDtoByLan(Language language, CategoryEntity category) {
         ResponseCategoryDto responseCategoryDto = new ResponseCategoryDto();
         if (language.equals(Language.UZ)) {

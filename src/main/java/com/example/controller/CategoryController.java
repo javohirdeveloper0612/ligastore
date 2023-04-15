@@ -1,5 +1,4 @@
 package com.example.controller;
-
 import com.example.dto.category.CategoryDto;
 import com.example.dto.category.CategoryUpdateDTO;
 import com.example.dto.category.ResponseCategoryDto;
@@ -16,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -40,6 +38,7 @@ public class CategoryController {
      * @param language            language
      * @return result
      */
+
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize(value = "hasRole('ADMIN')")
     @PostMapping(value = "/add_category", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -58,6 +57,7 @@ public class CategoryController {
      * @param language language
      * @return result
      */
+
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @GetMapping("/get_category_list/{brand_id}")
@@ -76,7 +76,6 @@ public class CategoryController {
      * @param language Language
      * @return List<ResponseCategoryDto></>
      */
-
     @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/get_brand_list")
@@ -114,6 +113,7 @@ public class CategoryController {
      * @param language          language
      * @return result;
      */
+
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/edite_category/{id}")
@@ -134,6 +134,7 @@ public class CategoryController {
      * @param language language
      * @return String result
      */
+
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "CATEGORY DELETE BY ID", description = "this API category update by id (only ADMIN) ")
