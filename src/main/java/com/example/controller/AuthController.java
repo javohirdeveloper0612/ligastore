@@ -79,7 +79,7 @@ public class AuthController {
     private ResponseEntity<ProfileResponseDTO> registration(@Valid @RequestBody RegistrationDTO dto,
                                                             @PathVariable(name = "id") Long id,
                                                             @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
-        ProfileResponseDTO result = service.registration(dto, id, language);
+        ProfileResponseDTO result = service.registration(id, dto, language);
         return ResponseEntity.ok(result);
     }
 
