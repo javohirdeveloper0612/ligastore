@@ -154,6 +154,7 @@ public class CategoryService {
         if (optional.isEmpty()) {
             throw new NotFoundCategoryId(resourceBundleService.getMessage("not.found.category.id", language));
         }
+        attachService.deleteById(optional.get().getAttachId());
         categoryRepository.deleteById(optional.get().getId());
         return "Category has been deleted";
 

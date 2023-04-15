@@ -5,6 +5,7 @@ import com.example.entity.ProfileEntity;
 import com.example.enums.Language;
 import com.example.enums.ProfileRole;
 import com.example.enums.ProfileStatus;
+import com.example.enums.SmsType;
 import com.example.exception.auth.*;
 import com.example.repository.AuthRepository;
 import com.example.security.CustomUserDetail;
@@ -39,7 +40,6 @@ public class AuthService implements UserDetailsService {
     }
 
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<ProfileEntity> optional = repository.findByUsername(username);
@@ -55,7 +55,7 @@ public class AuthService implements UserDetailsService {
     public LoginResponseDTO login(LoginDTO dto, Language language) {
         Optional<ProfileEntity> optional = repository.findByUsernameAndPassword(dto.getUsername(), MD5.md5(dto.getPassword()));
         if (optional.isEmpty()) {
-            throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
+            throw new ProfileNotFoundException(resourceBundleService.getMessage("password.or.username.wrong", language.name()));
         }
 
         ProfileEntity entity = optional.get();
@@ -76,34 +76,65 @@ public class AuthService implements UserDetailsService {
     @Transactional
     public String sendSms(SendSmsDTO dto, Language language) {
         Optional<ProfileEntity> optional = repository.findByPhoneUser(dto.getPhone());
-        if (optional.isPresent()) {
-            ProfileEntity entity = optional.get();
-            if (entity.getStatus().equals(ProfileStatus.ACTIVE)) {
-                throw new PhoneAlReadyExistsException(resourceBundleService.getMessage("phone.exists", language.name()));
-            } else if (entity.getStatus().equals(ProfileStatus.BLOCK)) {
-                throw new ProfileBlockedException(resourceBundleService.getMessage("profile.blocked", language.name()));
+        if (dto.getType().equals(SmsType.REPAIR)) {
+            if (optional.isPresent()) {
+                ProfileEntity entity = optional.get();
+                String smsCode = randomSmsCode();
+                entity.setSmsCode(MD5.md5(smsCode));
+                entity.setPhoneUser(dto.getPhone());
+                entity.setStatus(ProfileStatus.REPAIR);
+
+                repository.save(entity);
+                sendSmsCode(removePlusSign(dto.getPhone()), smsCode);
+
+                return "Tasdiqlash sms habar yuborildi";
+            } else
+                throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
+        } else {
+
+            if (optional.isPresent()) {
+                ProfileEntity entity = optional.get();
+                if (entity.getStatus().equals(ProfileStatus.ACTIVE)) {
+                    throw new PhoneAlReadyExistsException(resourceBundleService.getMessage("phone.exists", language.name()));
+                } else if (entity.getStatus().equals(ProfileStatus.BLOCK)) {
+                    throw new ProfileBlockedException(resourceBundleService.getMessage("profile.blocked", language.name()));
+                } else if (entity.getStatus().equals(ProfileStatus.NOT_ACTIVE)) {
+                    return sendSms(entity, dto);
+                }
             }
+            String smsCode = randomSmsCode();
+            ProfileEntity profile = new ProfileEntity();
+            profile.setPhoneUser(dto.getPhone());
+            profile.setSmsCode(MD5.md5(smsCode));
+            profile.setRole(ProfileRole.ROLE_USER);
+            profile.setStatus(ProfileStatus.NOT_ACTIVE);
+
+            repository.save(profile);
+
+            sendSmsCode(removePlusSign(dto.getPhone()), smsCode);
+
+            return "Tasdiqlash sms habar yuborildi";
         }
-        String smsCode = randomSmsCode();
-        ProfileEntity profile = new ProfileEntity();
-        profile.setPhoneUser(dto.getPhone());
-        profile.setSmsCode(MD5.md5(smsCode));
-        profile.setRole(ProfileRole.ROLE_USER);
-        profile.setStatus(ProfileStatus.NOT_ACTIVE);
-
-        repository.save(profile);
-
-        sendSmsCode(dto.getPhone(), smsCode);
-
-        return "Successfully";
     }
 
-    public ProfileResponseDTO registration(RegistrationDTO dto, Long userId, Language language) {
+    public String sendSms(ProfileEntity entity, SendSmsDTO dto) {
+        String smsCode = randomSmsCode();
+        entity.setSmsCode(MD5.md5(smsCode));
+        entity.setPhoneUser(dto.getPhone());
+        entity.setStatus(ProfileStatus.NOT_ACTIVE);
+
+        repository.save(entity);
+        sendSmsCode(removePlusSign(dto.getPhone()), smsCode);
+
+        return "Tasdiqlash sms habar yuborildi";
+    }
+
+    public ProfileResponseDTO registration(Long userId, RegistrationDTO dto, Language language) {
         Optional<ProfileEntity> optional = repository.findById(userId);
         if (optional.isEmpty()) {
             throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
         }
-        if (repository.existsByUsername(dto.getUsername())){
+        if (repository.existsByUsername(dto.getUsername())) {
             throw new ProfileNotFoundException(resourceBundleService.getMessage("username.exists", language.name()));
         }
 
@@ -135,7 +166,7 @@ public class AuthService implements UserDetailsService {
             MediaType mediaType = MediaType.parse("text/plain");
             RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
                     .addFormDataPart("mobile_phone", phone)
-                    .addFormDataPart("message", message)
+                    .addFormDataPart("message", "LigaStore:\nTasdiqlash kodi: " + message)
                     .addFormDataPart("from", "4546")
                     .addFormDataPart("callback_url", "http://0000.uz/test.php")
                     .build();
@@ -165,7 +196,10 @@ public class AuthService implements UserDetailsService {
         if (!entity.getSmsCode().equals(MD5.md5(dto.getPassword()))) {
             throw new PasswordIncorrectException(resourceBundleService.getMessage("password.wrong", language.name()));
         }
-        entity.setStatus(ProfileStatus.ACTIVE);
+        if (entity.getStatus().equals(ProfileStatus.REPAIR))
+            entity.setStatus(ProfileStatus.CHANGED_PASSWORD);
+        else entity.setStatus(ProfileStatus.ACTIVE);
+
         repository.save(entity);
         ProfileResponseDTO response = new ProfileResponseDTO();
         response.setId(entity.getId());
@@ -187,13 +221,43 @@ public class AuthService implements UserDetailsService {
         dto.setUsername(entity.getUsername());
         dto.setProfessionUz(entity.getProfessionUz());
         dto.setProfessionRu(entity.getProfessionRu());
-        dto.setRegion(entity.getRegion());
-
-        dto.setDistrict(entity.getDistrict());
+        dto.setRegionUz(entity.getRegion());
+        dto.setRegionRu(TranslaterUtil.latinToCryllic(entity.getRegion()));
+        dto.setDistrictUz(entity.getDistrict());
+        dto.setDistrictRu(TranslaterUtil.latinToCryllic(entity.getDistrict()));
         dto.setPhoneUser(entity.getPhoneUser());
+        dto.setPhoneHome(entity.getPhoneHome());
         dto.setScore(entity.getScore());
 
 
         return dto;
     }
+
+
+    public String removePlusSign(String phoneNumber) {
+        if (phoneNumber.startsWith("+")) {
+            return phoneNumber.substring(1);
+        }
+        return phoneNumber;
+    }
+
+    @Transactional
+    public String repairPassword(Long userId, String password, Language language) {
+        Optional<ProfileEntity> optional = repository.findById(userId);
+        if (optional.isEmpty())
+            throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
+        if (!optional.get().getStatus().equals(ProfileStatus.CHANGED_PASSWORD))
+            throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.repair", language.name()));
+
+        repository.updatePasswordById(MD5.md5(password), userId);
+
+        ProfileEntity entity = optional.get();
+        entity.setStatus(ProfileStatus.ACTIVE);
+        repository.save(entity);
+
+        return "Password Changed";
+    }
+
+
 }
+

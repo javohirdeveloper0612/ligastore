@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>legastore</artifactId>
+	<artifactId>ligastore</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>legastore</name>
 	<description>legastore</description>

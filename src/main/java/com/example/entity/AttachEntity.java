@@ -36,7 +36,7 @@ public class AttachEntity {
     @OneToOne(mappedBy = "attach")
     private CategoryEntity category;
 
-    @OneToOne(mappedBy = "photo")
+    @OneToOne(mappedBy = "attach",fetch = FetchType.EAGER)
     private ProductEntity productEntity;
 
 }

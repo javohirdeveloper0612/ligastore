@@ -1,15 +1,22 @@
 package com.example.dto.auth;
 
+import com.example.enums.SmsType;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 @Getter
 @Setter
 
 public class SendSmsDTO {
-    @Size(min = 12, max = 12)
-    @NotBlank(message = "phone cannot be null or empty")
+    @Size(min = 13, max = 13)
+    @NotBlank(message = "Phone cannot be null or empty")
     private String phone;
+
+    @NotNull(message = "Type cannot be null or empty")
+    private SmsType type;
+
 }

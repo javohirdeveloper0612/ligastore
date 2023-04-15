@@ -120,6 +120,27 @@ public class AttachService {
         }
     }
 
+    public String deleteById(String fileName) {
+
+        Optional<AttachEntity> optional = repository.findById(fileName);
+        if (optional.isEmpty()) {
+            throw new RuntimeException("Error");
+        }
+
+        try {
+            AttachEntity entity = getAttach(fileName);
+            Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + fileName + "." + entity.getType());
+
+            Files.delete(file);
+
+            return "deleted";
+        } catch (
+                IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
 
     private AttachEntity getAttach(String fileName) {
         String id = fileName.split("\\.")[0];

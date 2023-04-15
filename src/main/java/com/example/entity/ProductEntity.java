@@ -3,6 +3,8 @@ package com.example.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity(name = "product")
@@ -31,14 +33,17 @@ public class ProductEntity extends AbsEntity {
 
     @Column(nullable = false)
     private String model;
-    @Column
-    private String attachId;
 
     @ManyToOne(optional = false)
     private CategoryEntity category;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(insertable = false, updatable = false)
-    private AttachEntity photo;
+
+
+    @Column(name = "attach_id")
+    private String attachId;
+    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @JoinColumn(name = "attach_id", insertable = false, updatable = false)
+    private AttachEntity attach;
 
 
 }

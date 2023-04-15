@@ -2,7 +2,6 @@ package com.example.controller;
 
 import com.example.dto.attach.AttachResponseDTO;
 import com.example.service.AttachService;
-import com.example.util.SmsSender;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
