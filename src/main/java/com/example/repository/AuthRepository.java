@@ -11,4 +11,6 @@ public interface AuthRepository extends JpaRepository<ProfileEntity,Long> {
     Optional<ProfileEntity> findByUsername(String username);
 
     Optional<ProfileEntity> findByPhoneUser(String phone);
+
+    boolean existsByUsername(String username);
 }

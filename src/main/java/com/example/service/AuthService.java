@@ -103,6 +103,9 @@ public class AuthService implements UserDetailsService {
         if (optional.isEmpty()) {
             throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
         }
+        if (repository.existsByUsername(dto.getUsername())){
+            throw new ProfileNotFoundException(resourceBundleService.getMessage("username.exists", language.name()));
+        }
 
         ProfileEntity profile = optional.get();
         profile.setNameUz(dto.getName());
@@ -153,7 +156,7 @@ public class AuthService implements UserDetailsService {
         return String.valueOf(((1 + r.nextInt(9)) * 10000 + r.nextInt(10000)));
     }
 
-    public String verification(VerificationDTO dto, Language language) {
+    public ProfileResponseDTO verification(VerificationDTO dto, Language language) {
         Optional<ProfileEntity> optional = repository.findByPhoneUser(dto.getPhone());
         if (optional.isEmpty()) {
             throw new PhoneNotExistsException(resourceBundleService.getMessage("phone.not.exists", language.name()));
@@ -164,7 +167,12 @@ public class AuthService implements UserDetailsService {
         }
         entity.setStatus(ProfileStatus.ACTIVE);
         repository.save(entity);
-        return "Successfully";
+        ProfileResponseDTO response = new ProfileResponseDTO();
+        response.setId(entity.getId());
+        response.setPhoneUser(entity.getPhoneUser());
+        response.setMessage("Successfully");
+
+        return response;
     }
 
 

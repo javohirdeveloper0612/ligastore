@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -25,6 +26,7 @@ public class AuthController {
     @Operation(summary = "Login Method", description = "this method for registration")
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO dto) {
+
         LoginResponseDTO response = service.login(dto, Language.UZ);
         log.info(" login method dtoUsername {}", dto.getUsername());
         return ResponseEntity.ok().body(response);

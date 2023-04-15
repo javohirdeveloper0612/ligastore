@@ -28,6 +28,7 @@ public class ProfileResponseDTO {
     private String region;
     private String district;
     private String phoneUser;
+    private String message;
     private String phoneHome;
     private Long score;
     @Enumerated(EnumType.STRING)
