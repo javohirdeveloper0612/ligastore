@@ -38,7 +38,6 @@ public class ProductController {
      * @param productDto ProductDto
      * @return ProductEntity
      */
-
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping(value = "/add_product/{category_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -60,7 +59,6 @@ public class ProductController {
      * @param language   Language
      * @return ResponseProductDto
      */
-
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(value = "/edite/{product_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -81,7 +79,6 @@ public class ProductController {
      * @param language Language
      * @return List<ResponseProductDto></>
      */
-
     @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/view_product_list/{category_id}")
@@ -140,7 +137,6 @@ public class ProductController {
      * @param language   Language
      * @return ResponseMessage
      */
-
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/deleteProduct/{product_id}")
@@ -157,7 +153,6 @@ public class ProductController {
      * @param product_model String
      * @return ResponseMessage
      */
-
     @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @PostMapping("/sell_product")
     @SecurityRequirement(name = "Bearer Authentication")

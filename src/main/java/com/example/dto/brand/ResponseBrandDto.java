@@ -1,20 +1,19 @@
-package com.example.dto.category;
+package com.example.dto.brand;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Component
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ResponseCategoryDto {
-
+public class ResponseBrandDto {
     private Long id;
     private String nameUz;
     private String nameRu;
-    private String photoUrl;
-
-
+    private String fileUrl;
 }

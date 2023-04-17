@@ -8,8 +8,7 @@ import lombok.*;
 public class ResponsePromoCodeDto {
 
     private Long id;
-    private Long promo_code;
-    private Integer score;
-    private Double money;
+    private String promo_code;
+    private Long score;
     private String product_model;
 }

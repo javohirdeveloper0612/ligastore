@@ -45,6 +45,7 @@ public class ProfileController {
         return ResponseEntity.ok(response);
     }
 
+
     private Long getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetail user = (CustomUserDetail) authentication.getPrincipal();

@@ -10,9 +10,9 @@ import java.util.Optional;
 
 @Repository
 public interface PromocodeRepository extends JpaRepository<PromoCode, Long> {
-    boolean existsByCodeAndProfileId(Long code, Long profile_id);
+    boolean existsByCodeAndProfileId(String code, Long profile_id);
 
-    Optional<PromoCode> findByCode(Long code);
+    Optional<PromoCode> findByCode(String code);
 
     List<PromoCode> findAllByProductModel(String product_model);
 }

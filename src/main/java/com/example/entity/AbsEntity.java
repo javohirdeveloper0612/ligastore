@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+
 @MappedSuperclass
 @Getter
 @Setter
@@ -25,14 +26,5 @@ public abstract class AbsEntity {
     @UpdateTimestamp
     private Timestamp updatedDate;
 
-/*
-    @ManyToOne
-    @CreatedBy
-    private ProfileEntity createdBy;
-
-    @ManyToOne
-    @LastModifiedBy
-    private ProfileEntity updatedBy;
-}*/
 
 }

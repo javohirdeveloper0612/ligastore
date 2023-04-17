@@ -1,12 +1,14 @@
 package com.example.dto.category;
+
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-
-public class CategoryUpdateDTO {
+public class EditeCategoryDto {
 
 
     @NotBlank(message = "nameUz cannot be null")
@@ -14,5 +16,8 @@ public class CategoryUpdateDTO {
 
     @NotBlank(message = "nameRu cannot be null")
     private String nameRu;
+
+    @NotNull
+    private MultipartFile multipartFile;
 
 }

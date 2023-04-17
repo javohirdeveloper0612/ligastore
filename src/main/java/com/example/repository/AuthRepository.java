@@ -1,11 +1,12 @@
 package com.example.repository;
 
 import com.example.entity.ProfileEntity;
+import com.example.enums.ProfileRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface AuthRepository extends JpaRepository<ProfileEntity, Long> {
@@ -14,6 +15,7 @@ public interface AuthRepository extends JpaRepository<ProfileEntity, Long> {
     Optional<ProfileEntity> findByUsername(String username);
 
     Optional<ProfileEntity> findByPhoneUser(String phone);
+    List<ProfileEntity> findAllByRole(ProfileRole role);
 
     boolean existsByUsername(String username);
 @Modifying

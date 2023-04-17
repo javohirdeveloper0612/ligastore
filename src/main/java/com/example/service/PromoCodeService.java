@@ -57,9 +57,9 @@ public class PromoCodeService {
         Random random = new Random();
         List<PromoCode> list = new ArrayList<>();
         for (int i = 0; i < dto.getAmount(); i++) {
-            long code = random.nextInt(1111111, 9999999);
-            int score = (int) (dto.getMoney() * 0.04);
-            list.add(new PromoCode(code, score, null, dto.getMoney(), product));
+            String code = product.getModel() + random.nextInt(1111111, 9999999);
+            long score = (long) (product.getPrice() * 0.00004);
+            list.add(new PromoCode(code, score, null, product));
         }
         return list;
     }
@@ -134,7 +134,6 @@ public class PromoCodeService {
     public ResponsePromoCodeDto responsePromoCodeDto(PromoCode code) {
         ResponsePromoCodeDto dto = new ResponsePromoCodeDto();
         dto.setId(code.getId());
-        dto.setMoney(code.getMoney());
         dto.setPromo_code(code.getCode());
         dto.setScore(code.getScore());
         dto.setProduct_model(code.getProduct().getModel());
@@ -148,10 +147,9 @@ public class PromoCodeService {
      *
      * @param promoCode long
      * @param language  Language
-     * @param user      ProfileEntity
      * @return CheckPromoCodeDto
      */
-    public CheckPromoCodeDTO check_promo_code(long promoCode, Language language) {
+    public CheckPromoCodeDTO check_promo_code(String promoCode, Language language) {
 
         ProfileEntity user = getUser(language);
         boolean exists = promocodeRepository.existsByCodeAndProfileId(promoCode, user.getId());
@@ -201,6 +199,12 @@ public class PromoCodeService {
         return convertToList(codeList);
     }
 
+    /**
+     * This method is used for getting user current user in System
+     *
+     * @param language Language
+     * @return ProfileEntity
+     */
     public ProfileEntity getUser(Language language) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();

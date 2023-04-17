@@ -28,7 +28,6 @@ public class PromoCodeController {
     }
 
 
-
     /**
      * This method is used for generating promo-code if amount is equals 0 or less than 0
      * throw new NotMatchException if model not found throw ProductNotFoundException
@@ -48,7 +47,6 @@ public class PromoCodeController {
     }
 
 
-
     /**
      * This method is used for viewing all the promo-code data by page if page or size less than 0
      * throw IllegalArgumentException If list is empty throw EmptyListException
@@ -58,7 +56,6 @@ public class PromoCodeController {
      * @param language Language
      * @return Page<PromoCodeDto></>
      */
-
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/viewByPage")
@@ -96,13 +93,12 @@ public class PromoCodeController {
      * @param language   Language
      * @return CheckPromoCodeDto
      */
-
     @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/check_promo_code")
     @Operation(summary = "Check Promo-Code API", description = "This API for checking promo-code")
     public ResponseEntity<?> checkPromoCode(
-            @RequestParam long promo_code,
+            @RequestParam String promo_code,
             @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
         log.info("Check Promo-Code : promo_code {}", promo_code);
         CheckPromoCodeDTO codeDTO = promoCodeService.check_promo_code(promo_code, language);
@@ -111,7 +107,8 @@ public class PromoCodeController {
 
 
     /**
-     * This method is used for getting promo-codeList by ProductModel if list is empty throw new EmptyListException
+     * This method is used for getting promo-codeList by ProductModel
+     * if list is empty throw new EmptyListException
      *
      * @param model    String
      * @param language Language

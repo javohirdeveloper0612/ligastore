@@ -15,6 +15,7 @@ public class ProfileEntity extends AbsEntity {
 
     @Column
     private String nameUz;
+
     @Column
     private String nameRu;
 
@@ -49,11 +50,14 @@ public class ProfileEntity extends AbsEntity {
     @Column(nullable = false, unique = true)
     private String phoneUser;
 
+
     @Column(unique = true)
     private String phoneHome;
 
+
     @Column(nullable = false)
     private String smsCode;
+
     @Column
     private Long score;
 
@@ -61,6 +65,7 @@ public class ProfileEntity extends AbsEntity {
     @Enumerated(EnumType.STRING)
     private ProfileStatus status;
     @Column
+
     @Enumerated(EnumType.STRING)
     private ProfileRole role;
 

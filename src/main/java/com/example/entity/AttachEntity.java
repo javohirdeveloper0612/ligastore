@@ -8,7 +8,6 @@ import org.hibernate.annotations.GenericGenerator;
 import java.time.LocalDateTime;
 
 
-
 @Getter
 @Setter
 @Entity
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 public class AttachEntity {
 
     @Id
-    @GenericGenerator(name = "attach_uuid",strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "attach_uuid", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
     @Column(name = "origin_name")
@@ -36,7 +35,10 @@ public class AttachEntity {
     @OneToOne(mappedBy = "attach")
     private CategoryEntity category;
 
-    @OneToOne(mappedBy = "attach",fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "attach", fetch = FetchType.EAGER)
     private ProductEntity productEntity;
+
+    @OneToOne(mappedBy = "attach")
+    private BrandEntity brand;
 
 }

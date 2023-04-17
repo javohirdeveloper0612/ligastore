@@ -6,10 +6,10 @@ import lombok.Setter;
 
 import java.util.Set;
 
+@Entity(name = "brand")
 @Getter
 @Setter
-@Entity(name = "category")
-public class CategoryEntity extends AbsEntity {
+public class BrandEntity extends AbsEntity {
 
     @Column(nullable = false)
     private String nameUz;
@@ -17,18 +17,13 @@ public class CategoryEntity extends AbsEntity {
     @Column(nullable = false)
     private String nameRu;
 
-    @Column(name = "attach_id")
+    @Column(name = "attach_id", nullable = false)
     private String attachId;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "attach_id", insertable = false, updatable = false)
     private AttachEntity attach;
 
-
-    @ManyToOne(optional = false)
-    private BrandEntity brand;
-
-    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
-    private Set<ProductEntity> productEntity;
-
+    @OneToMany(mappedBy = "brand", cascade = CascadeType.REMOVE)
+    private Set<CategoryEntity> category;
 }

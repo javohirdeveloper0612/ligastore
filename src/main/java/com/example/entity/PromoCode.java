@@ -15,16 +15,13 @@ import lombok.Setter;
 public class PromoCode extends AbsEntity {
 
     @Column
-    private Long code;
+    private String code;
 
     @Column(nullable = false)
-    private Integer score;
+    private Long score;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private ProfileEntity profile;
-
-    @Column(nullable = false)
-    private Double money;
 
     @ManyToOne
     private ProductEntity product;

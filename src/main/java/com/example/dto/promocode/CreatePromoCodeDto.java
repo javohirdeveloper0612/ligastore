@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreatePromoCodeDto {
 
-    @NotNull
-    private Double money;
+
 
     @NotNull
     private Long amount;

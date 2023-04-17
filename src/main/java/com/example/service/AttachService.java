@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Optional;
 import java.util.UUID;
+
 @Service
 public class AttachService {
     private final ResourceBundleService resourceBundleService;
@@ -93,8 +94,6 @@ public class AttachService {
     }
 
 
-
-
     /**
      * This method is used for downloading file
      * If file is not exist DB, throw FileNotFoundException
@@ -124,15 +123,13 @@ public class AttachService {
 
         Optional<AttachEntity> optional = repository.findById(fileName);
         if (optional.isEmpty()) {
-            throw new RuntimeException("Error");
+            throw new FileNotFoundException(resourceBundleService.getMessage("file.not.found", Language.UZ));
         }
 
         try {
             AttachEntity entity = getAttach(fileName);
             Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + fileName + "." + entity.getType());
-
             Files.delete(file);
-
             return "deleted";
         } catch (
                 IOException e) {

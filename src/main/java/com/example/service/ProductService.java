@@ -68,10 +68,8 @@ public class ProductService {
      */
     public ResponseProductDto addProduct(Long categoryId, ProductDto dto, Language language) {
         Optional<CategoryEntity> optional = categoryRepository.findById(categoryId);
-
         if (optional.isEmpty())
-            throw new NotFoundParentCategory(resourceBundleService.getMessage("parent.not.found", language));
-
+            throw new NotFoundParentCategory(resourceBundleService.getMessage("category.not.found", language));
         ProductEntity savedProduct = productRepository.save(getProductEntity(dto, optional.get()));
         return responseProductDto(savedProduct);
     }
@@ -86,11 +84,9 @@ public class ProductService {
      * @return ResponseProductDto
      */
     public ResponseProductDto editeProduct(Long productId, ProductDto productDto, Language language) {
-
         Optional<ProductEntity> optional = productRepository.findById(productId);
         if (optional.isEmpty())
             throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
-
         ProductEntity editedProduct = productRepository.save(getProductEntity(productDto, optional.get()));
         return responseProductDto(editedProduct);
 
@@ -109,7 +105,6 @@ public class ProductService {
         Optional<CategoryEntity> optional = categoryRepository.findById(category_id);
         if (optional.isEmpty())
             throw new NotFoundParentCategory(resourceBundleService.getMessage("category.not.found", language));
-
         List<ProductEntity> list = productRepository.findAllByCategoryId(category_id);
         if (list.isEmpty())
             throw new EmptyListException(resourceBundleService.getMessage("empty.list.product", language));
@@ -164,7 +159,7 @@ public class ProductService {
         product.setNameRu(dto.getName_ru());
         product.setDescriptionUz(dto.getDescription_uz());
         product.setDescriptionRu(dto.getDescription_ru());
-        product.setScore((long) (dto.getPrice() * 0.04));
+        product.setScore((long) (dto.getPrice() * 0.00004));
         product.setAttachId(uploadFile.getId());
         product.setPrice(dto.getPrice());
         product.setModel(dto.getModel());
@@ -185,7 +180,7 @@ public class ProductService {
         product.setNameRu(dto.getName_ru());
         product.setDescriptionUz(dto.getDescription_uz());
         product.setDescriptionRu(dto.getDescription_ru());
-        product.setScore((long) (dto.getPrice() * 0.04));
+        product.setScore((long) (dto.getPrice() * 0.00004));
         product.setAttachId(uploadFile.getId());
         product.setPrice(dto.getPrice());
         product.setModel(dto.getModel());
@@ -295,13 +290,11 @@ public class ProductService {
      * @return ResponseMessage
      */
     public ResponseMessage sellProduct(String product_model, Language language) {
-
         ProfileEntity user = getUser(language);
         Optional<ProductEntity> optional = productRepository.findByModel(product_model);
         if (optional.isEmpty()) {
             throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
         }
-
         ProductEntity product = optional.get();
         if (user.getScore() >= product.getScore()) {
             sendMessage(user, optional.get());

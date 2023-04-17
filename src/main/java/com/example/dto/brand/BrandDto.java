@@ -1,5 +1,6 @@
-package com.example.dto.category;
+package com.example.dto.brand;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -8,7 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-public class CategoryDto {
+
+public class BrandDto {
 
     @NotEmpty(message = "nameUz cannot be null")
     private String nameUz;
@@ -18,7 +20,4 @@ public class CategoryDto {
 
     @NotNull(message = "file cannot be null")
     private MultipartFile multipartFile;
-
-    @NotNull(message = "brandId cannot be null")
-    private Long brandId;
 }

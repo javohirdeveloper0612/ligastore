@@ -1,7 +1,9 @@
 package com.example.controller;
+
 import com.example.dto.category.CategoryDto;
-import com.example.dto.category.CategoryUpdateDTO;
+import com.example.dto.category.EditeCategoryDto;
 import com.example.dto.category.ResponseCategoryDto;
+import com.example.dto.jwt.ResponseMessage;
 import com.example.enums.Language;
 import com.example.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,12 +17,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @Slf4j
 @RequestMapping("/api/category")
-@Tag(name = "Category-API-Controller")
+@Tag(name = "Category Controller")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -38,7 +41,6 @@ public class CategoryController {
      * @param language            language
      * @return result
      */
-
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize(value = "hasRole('ADMIN')")
     @PostMapping(value = "/add_category", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -57,32 +59,16 @@ public class CategoryController {
      * @param language language
      * @return result
      */
-
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
-    @GetMapping("/get_category_list/{brand_id}")
+    @GetMapping("/get_all_category/{brand_id}")
     @Operation(summary = "CATEGORY  LIST", description = "This API is used for getting category list  ")
-    public ResponseEntity<?> getCategoryList(
+    public ResponseEntity<?> getAllCategory(
             @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language,
             @PathVariable Long brand_id) {
         log.info("Getting category list : brand_id {}", brand_id);
         List<ResponseCategoryDto> result = categoryService.getCategoryList(brand_id, language);
         return ResponseEntity.ok().body(result);
-    }
-
-    /**
-     * This method is used for getting BrandList
-     *
-     * @param language Language
-     * @return List<ResponseCategoryDto></>
-     */
-    @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
-    @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("/get_brand_list")
-    @Operation(summary = "Brand List API", description = "This API is used for getting Brand List")
-    public ResponseEntity<?> getBrandList(@RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
-        List<ResponseCategoryDto> brandList = categoryService.getBrandList(language);
-        return ResponseEntity.ok(brandList);
     }
 
 
@@ -113,17 +99,16 @@ public class CategoryController {
      * @param language          language
      * @return result;
      */
-
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PutMapping("/edite_category/{id}")
+    @PutMapping(value = "/edite_category/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "CATEGORY UPDATE BY ID", description = "This API is used for editing Category")
     public ResponseEntity<?> editeCategory(
             @PathVariable("id") Long id,
-            @Valid @RequestBody CategoryUpdateDTO categoryUpdateDTO,
+            @Valid @ModelAttribute EditeCategoryDto categoryUpdateDTO,
             @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
         log.info("Edite Category : id {},categoryUpdateDTO {}", id, categoryUpdateDTO);
-        CategoryUpdateDTO result = categoryService.categoryUpdate(id, categoryUpdateDTO, language);
+        ResponseCategoryDto result = categoryService.editeCategory(id, categoryUpdateDTO, language);
         return ResponseEntity.ok().body(result);
     }
 
@@ -134,7 +119,6 @@ public class CategoryController {
      * @param language language
      * @return String result
      */
-
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "CATEGORY DELETE BY ID", description = "this API category update by id (only ADMIN) ")
@@ -143,8 +127,8 @@ public class CategoryController {
             @PathVariable("id") Long id,
             @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
         log.info("deleteCategory : id {}", id);
-        String result = categoryService.categoryDelete(id, language);
-        return ResponseEntity.ok().body(result);
+        ResponseMessage responseMessage = categoryService.deleteCategory(id, language);
+        return ResponseEntity.ok().body(responseMessage);
 
     }
 
@@ -163,7 +147,6 @@ public class CategoryController {
     public ResponseEntity<?> getCategoryByPage(@RequestParam(name = "page", defaultValue = "0") int page,
                                                @RequestParam(name = "size", defaultValue = "1") int size,
                                                @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
-
         log.info("categoryGetPages : page {},size{}", page, size);
         Page<ResponseCategoryDto> allCategory = categoryService.categoryGetPaginationList(page, size, language);
         return ResponseEntity.ok().body(allCategory);
