@@ -31,25 +31,20 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-
+        Message message = update.getMessage();
         if (update.hasMessage()) {
-            Message message = update.getMessage();
 
             if (message.getChatId().equals(1030035146L)) {
                 adminController.handler(message);
-                return;
             }
 
-            if (message.getChatId().equals(1234567L)) {
-
-            }
-
-        } else if (update.hasCallbackQuery()) {
-
+        } else {
+            send(SendMsg.sendMsg(message.getChatId(), "Unknown message"));
         }
 
-
     }
+
+
 
 
     @Override

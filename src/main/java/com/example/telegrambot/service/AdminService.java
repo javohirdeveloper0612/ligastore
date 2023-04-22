@@ -21,9 +21,10 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import java.io.*;
 import java.util.*;
 
+
+
 @Service
 public class AdminService {
-
 
     private final MyTelegramBot myTelegramBot;
     private final AuthRepository authRepository;
@@ -100,12 +101,10 @@ public class AdminService {
                 workbook.write(out);
                 out.close();
 
-
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-
         InputStream inputStream = null;
         try {
             inputStream = new FileInputStream("Mijozlar ro'yxati.xlsx");
@@ -123,18 +122,15 @@ public class AdminService {
      * @param message Message
      */
     public void sendListPromoCode(Message message) {
-        boolean check = false;
         List<PromoCode> list = promocodeRepository.findAll();
         if (list.isEmpty()) {
             sendMessage(message.getChatId(), "*Promo-Code lar ro'yxati mavjud emas*");
             return;
         }
-
         Map<Long, Object[]> accountData = new TreeMap<>();
         accountData.put(0L, new Object[]{"ID RAQAMI ", "PROMO-CODE", "BALL", "PRODUCT-MODEL", "PRODUCT NOMI"});
 
         for (PromoCode promoCode : list) {
-
             XSSFWorkbook workbook = new XSSFWorkbook();
             XSSFSheet spreadsheet = workbook.createSheet("Promo-Code lar ro`yxati");
             XSSFRow row;
@@ -192,7 +188,6 @@ public class AdminService {
      * @param message Message
      */
     public void searchByModel(Message message) {
-        boolean check = false;
         List<PromoCode> list = promocodeRepository.findAllByProductModel(message.getText());
         if (list.isEmpty()) {
             sendMessage(message.getChatId(), message.getText() + " modeli bo'yicha promo-code lar ro'yxati topilmadi");
@@ -203,7 +198,6 @@ public class AdminService {
         accountData.put(0L, new Object[]{"ID RAQAMI ", "PROMO-CODE", "BALL", "PRODUCT-MODEL", "PRODUCT NOMI"});
 
         for (PromoCode promoCode : list) {
-
             XSSFWorkbook workbook = new XSSFWorkbook();
             XSSFSheet spreadsheet = workbook.createSheet("Promo-Code lar ro`yxati");
             XSSFRow row;
@@ -227,12 +221,10 @@ public class AdminService {
                 FileOutputStream out = new FileOutputStream("Promo-code lar ro'yxati.xlsx");
                 workbook.write(out);
                 out.close();
-
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-
         InputStream inputStream = null;
         try {
             inputStream = new FileInputStream("Promo-code lar ro'yxati.xlsx");
@@ -242,7 +234,6 @@ public class AdminService {
         InputFile inputFile = new InputFile();
         inputFile.setMedia(inputStream, "Promo-code lar ro'yxati.xlsx");
         myTelegramBot.send(SendMsg.sendDoc(message.getChatId(), inputFile));
-
     }
 
 

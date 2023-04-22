@@ -31,7 +31,7 @@ public class ProductEntity extends AbsEntity {
     @Column(nullable = false)
     private String descriptionRu;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String model;
 
     @ManyToOne(optional = false)

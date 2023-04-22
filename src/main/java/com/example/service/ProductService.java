@@ -6,19 +6,20 @@ import com.example.dto.product.ProductDto;
 import com.example.dto.product.ResponseProductDto;
 import com.example.entity.CategoryEntity;
 import com.example.entity.ProductEntity;
+import com.example.entity.AdminMessageEntity;
 import com.example.entity.ProfileEntity;
 import com.example.enums.Language;
+import com.example.exception.AlreadyProductModelException;
 import com.example.exception.auth.ProfileNotFoundException;
 import com.example.exception.category.EmptyListException;
 import com.example.exception.category.NotFoundParentCategory;
 import com.example.exception.product.ProductNotFoundException;
 import com.example.repository.CategoryRepository;
 import com.example.repository.ProductRepository;
+import com.example.repository.AdminMesageRepository;
 import com.example.repository.ProfileRepository;
 import com.example.security.CustomUserDetail;
-import com.example.telegrambot.myTelegrambot.MyTelegramBot;
-import com.example.telegrambot.util.InlineButton;
-import com.example.telegrambot.util.SendMsg;
+
 import com.example.util.UrlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,19 +43,20 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final ResourceBundleService resourceBundleService;
     private final ProfileRepository profileRepository;
-    private final MyTelegramBot myTelegramBot;
+
+    private final AdminMesageRepository productUserRepository;
 
 
     @Autowired
     public ProductService(ProductRepository productRepository, AttachService attachService,
-                          CategoryRepository categoryRepository, ResourceBundleService resourceBundleService, ProfileRepository profileRepository, MyTelegramBot myTelegramBot) {
+                          CategoryRepository categoryRepository, ResourceBundleService resourceBundleService,
+                          ProfileRepository profileRepository, AdminMesageRepository productUserRepository) {
         this.productRepository = productRepository;
         this.attachService = attachService;
         this.categoryRepository = categoryRepository;
         this.resourceBundleService = resourceBundleService;
-
         this.profileRepository = profileRepository;
-        this.myTelegramBot = myTelegramBot;
+        this.productUserRepository = productUserRepository;
     }
 
 
@@ -70,6 +72,10 @@ public class ProductService {
         Optional<CategoryEntity> optional = categoryRepository.findById(categoryId);
         if (optional.isEmpty())
             throw new NotFoundParentCategory(resourceBundleService.getMessage("category.not.found", language));
+
+        if (productRepository.existsByModel(dto.getModel()))
+            throw new AlreadyProductModelException(resourceBundleService.getMessage("model.exist", language));
+
         ProductEntity savedProduct = productRepository.save(getProductEntity(dto, optional.get()));
         return responseProductDto(savedProduct);
     }
@@ -159,7 +165,7 @@ public class ProductService {
         product.setNameRu(dto.getName_ru());
         product.setDescriptionUz(dto.getDescription_uz());
         product.setDescriptionRu(dto.getDescription_ru());
-        product.setScore((long) (dto.getPrice() * 0.00004));
+        product.setScore((long) (dto.getPrice() * 0.0004));
         product.setAttachId(uploadFile.getId());
         product.setPrice(dto.getPrice());
         product.setModel(dto.getModel());
@@ -180,7 +186,7 @@ public class ProductService {
         product.setNameRu(dto.getName_ru());
         product.setDescriptionUz(dto.getDescription_uz());
         product.setDescriptionRu(dto.getDescription_ru());
-        product.setScore((long) (dto.getPrice() * 0.00004));
+        product.setScore((long) (dto.getPrice() * 0.0004));
         product.setAttachId(uploadFile.getId());
         product.setPrice(dto.getPrice());
         product.setModel(dto.getModel());
@@ -279,7 +285,6 @@ public class ProductService {
             throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
         attachService.deleteById(optional.get().getAttachId());
         productRepository.delete(optional.get());
-
         return new ResponseMessage("Successfully deleted", true, 200);
     }
 
@@ -290,20 +295,28 @@ public class ProductService {
      * @return ResponseMessage
      */
     public ResponseMessage sellProduct(String product_model, Language language) {
-        ProfileEntity user = getUser(language);
+
         Optional<ProductEntity> optional = productRepository.findByModel(product_model);
         if (optional.isEmpty()) {
             throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
         }
+        ProfileEntity user = getUser(language);
         ProductEntity product = optional.get();
-        if (user.getScore() >= product.getScore()) {
-            sendMessage(user, optional.get());
-            orderId++;
-            return new ResponseMessage("Message sent To Admin and in Process", true, 200);
-        }
-        return new ResponseMessage("User's score is less than Product's score", false, 400);
 
+        if (user.getScore() >= product.getScore()) {
+            AdminMessageEntity productUser = new AdminMessageEntity();
+            productUser.setUser_id(user.getId());
+            productUser.setUser_name(user.getNameUz());
+            productUser.setUser_surname(user.getSurnameUz());
+            productUser.setPhone(user.getPhoneUser());
+            productUser.setProduct_name(product.getNameUz());
+            productUser.setProduct_model(product.getModel());
+            productUserRepository.save(productUser);
+            return new ResponseMessage("So'rovingiz adminga xabar jo'natildi", true, 200);
+        }
+        return new ResponseMessage("Sizning balingiz yetarli emas", false, 400);
     }
+
 
     /**
      * This method is used for getting current User
@@ -321,26 +334,6 @@ public class ProductService {
         return optional.get();
     }
 
-    /**
-     * This method is used for send messsage to admin
-     *
-     * @param user    ProfileEntity
-     * @param product ProductEntity
-     */
-    public void sendMessage(ProfileEntity user, ProductEntity product) {
-        myTelegramBot.send(SendMsg.sendMsg(
-                1030035146L, "*Buyurtma raqami : * " + orderId +
-                        "\n*Buyurtma beruvchining FIO :*" + user.getNameUz() + " " + user.getSurnameUz() +
-                        "\n*Telefon raqami : *" + user.getPhoneUser() +
-                        "\n*Product nomi : *" + product.getNameUz() +
-                        "\n*Product modeli : *" + product.getModel(),
-                InlineButton.keyboardMarkup(
-                        InlineButton.rowList(InlineButton.row(
-                                InlineButton.button("Qabul qilish", "accept"),
-                                InlineButton.button("Rad qilish", "reject")
-                        )))
-        ));
 
-    }
 
 }

@@ -9,6 +9,7 @@ import java.util.Set;
 @Entity(name = "brand")
 @Getter
 @Setter
+@Table
 public class BrandEntity extends AbsEntity {
 
     @Column(nullable = false)

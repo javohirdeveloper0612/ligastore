@@ -5,13 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.time.LocalDateTime;
-
 
 @Getter
 @Setter
 @Entity
-@Table(name = "attach")
+
 public class AttachEntity {
 
     @Id

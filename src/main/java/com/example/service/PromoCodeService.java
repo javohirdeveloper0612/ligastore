@@ -58,7 +58,7 @@ public class PromoCodeService {
         List<PromoCode> list = new ArrayList<>();
         for (int i = 0; i < dto.getAmount(); i++) {
             String code = product.getModel() + random.nextInt(1111111, 9999999);
-            long score = (long) (product.getPrice() * 0.00004);
+            long score = (long) (product.getPrice() * 0.0004);
             list.add(new PromoCode(code, score, null, product));
         }
         return list;
