@@ -83,4 +83,13 @@ public class AuthController {
         return ResponseEntity.ok(result);
     }
 
+    @Operation(summary = "Change Password",description = "ushbu API parolni ")
+    @PutMapping("/repair_password/{user_id}/{password}")
+    public ResponseEntity<?> repairPassword(@PathVariable("user_id") Long userId,
+                                            @PathVariable("password")String password,
+                                            @RequestHeader(value = "Accept-Language",defaultValue = "UZ")Language language){
+
+        return ResponseEntity.ok().body(service.repairPassword(userId,password,language));
+    }
+
 }

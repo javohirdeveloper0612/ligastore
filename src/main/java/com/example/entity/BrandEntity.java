@@ -19,8 +19,7 @@ public class BrandEntity extends AbsEntity {
 
     @Column(name = "attach_id", nullable = false)
     private String attachId;
-
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name = "attach_id", insertable = false, updatable = false)
     private AttachEntity attach;
 

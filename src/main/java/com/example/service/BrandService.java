@@ -4,14 +4,17 @@ import com.example.dto.attach.AttachResponseDTO;
 import com.example.dto.brand.BrandDto;
 import com.example.dto.brand.ResponseBrandDto;
 import com.example.dto.jwt.ResponseMessage;
+import com.example.entity.AttachEntity;
 import com.example.entity.BrandEntity;
 import com.example.enums.Language;
 import com.example.exception.category.BrandNotFoundException;
 import com.example.exception.category.EmptyListException;
+import com.example.repository.AttachRepository;
 import com.example.repository.BrandRepository;
 import com.example.util.UrlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,13 +25,15 @@ public class BrandService {
     private final BrandRepository brandRepository;
     private final ResourceBundleService resourceBundleService;
     private final AttachService attachService;
+    private final AttachRepository attachRepository;
 
     @Autowired
     public BrandService(BrandRepository brandRepository, ResourceBundleService resourceBundleService,
-                        AttachService attachService) {
+                        AttachService attachService, AttachRepository attachRepository) {
         this.brandRepository = brandRepository;
         this.resourceBundleService = resourceBundleService;
         this.attachService = attachService;
+        this.attachRepository = attachRepository;
     }
 
     /**
@@ -87,7 +92,9 @@ public class BrandService {
         Optional<BrandEntity> optional = brandRepository.findById(brand_id);
         if (optional.isEmpty())
             throw new BrandNotFoundException(resourceBundleService.getMessage("brand.not.found", language));
+
         BrandEntity editedBrand = brandRepository.save(getBrand(optional.get(), brandDto));
+        attachRepository.deleteById(optional.get().getAttachId());
         return responseBrandDtoByLan(editedBrand, language);
     }
 
@@ -99,10 +106,12 @@ public class BrandService {
      * @param language Language
      * @return ResponseBrandDto
      */
+    @Transactional
     public ResponseMessage deleteBrand(Long brand_id, Language language) {
         Optional<BrandEntity> optional = brandRepository.findById(brand_id);
         if (optional.isEmpty())
             throw new BrandNotFoundException(resourceBundleService.getMessage("brand.not.found", language));
+        attachService.deleteById(optional.get().getAttachId());
         brandRepository.delete(optional.get());
         return new ResponseMessage("Successfully deleted", true, 200);
     }
@@ -163,10 +172,19 @@ public class BrandService {
      * @param brandEntity BrandEntity
      * @param brandDto    Branddto
      * @return BrandEntity
+     *
      */
+    @Transactional
     public BrandEntity getBrand(BrandEntity brandEntity, BrandDto brandDto) {
         brandEntity.setNameUz(brandDto.getNameUz());
         brandEntity.setNameRu(brandDto.getNameRu());
+
+        AttachEntity attach = attachService.getAttach(brandEntity.getAttachId());
+        if (attach != null) {
+            attachService.deleteById(brandEntity.getAttachId());
+            attachRepository.delete(attach);
+        }
+
         AttachResponseDTO attachResponseDTO = attachService.uploadFile(brandDto.getMultipartFile());
         brandEntity.setAttachId(attachResponseDTO.getId());
         return brandEntity;

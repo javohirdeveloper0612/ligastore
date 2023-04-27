@@ -131,15 +131,14 @@ public class AttachService {
             Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + fileName + "." + entity.getType());
             Files.delete(file);
             return "deleted";
-        } catch (
-                IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
     }
 
 
-    private AttachEntity getAttach(String fileName) {
+    public AttachEntity getAttach(String fileName) {
         String id = fileName.split("\\.")[0];
         Optional<AttachEntity> optional = repository.findById(id);
         if (optional.isEmpty()) {
@@ -168,4 +167,27 @@ public class AttachService {
     }
 
 
+    public String updateById(String attachId,AttachResponseDTO dto) {
+        Optional<AttachEntity> optional = repository.findById(attachId);
+        if (optional.isEmpty()) {
+            throw new FileNotFoundException(resourceBundleService.getMessage("file.not.found", Language.UZ));
+        }
+
+        try {
+            AttachEntity entity = getAttach(attachId);
+            Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + attachId + "." + entity.getType());
+            Files.delete(file);
+            entity.setId(dto.getId());
+            entity.setPath(dto.getPath());
+            entity.setSize(dto.getSize());
+            entity.setOriginName(dto.getOriginalName());
+            entity.setType(dto.getType());
+
+            repository.save(entity);
+
+            return "Updated";
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
