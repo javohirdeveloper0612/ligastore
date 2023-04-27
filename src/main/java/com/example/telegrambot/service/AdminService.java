@@ -4,7 +4,7 @@ import com.example.entity.ProfileEntity;
 import com.example.entity.PromoCode;
 import com.example.enums.ProfileRole;
 import com.example.repository.AuthRepository;
-import com.example.repository.PromocodeRepository;
+import com.example.repository.PromoCodeRepository;
 import com.example.telegrambot.constant.Constant;
 import com.example.telegrambot.myTelegrambot.MyTelegramBot;
 import com.example.telegrambot.util.Button;
@@ -19,19 +19,24 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.io.*;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import static com.example.entity.PromoCode.PromoCodeStatus.ACTIVE;
+
 
 @Service
 public class AdminService {
 
-
     private final MyTelegramBot myTelegramBot;
     private final AuthRepository authRepository;
-    private final PromocodeRepository promocodeRepository;
+    private final PromoCodeRepository promocodeRepository;
 
     @Lazy
     public AdminService(MyTelegramBot myTelegramBot, AuthRepository authRepository,
-                        PromocodeRepository promocodeRepository) {
+                        PromoCodeRepository promocodeRepository) {
         this.myTelegramBot = myTelegramBot;
         this.authRepository = authRepository;
         this.promocodeRepository = promocodeRepository;
@@ -100,12 +105,10 @@ public class AdminService {
                 workbook.write(out);
                 out.close();
 
-
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-
         InputStream inputStream = null;
         try {
             inputStream = new FileInputStream("Mijozlar ro'yxati.xlsx");
@@ -123,23 +126,20 @@ public class AdminService {
      * @param message Message
      */
     public void sendListPromoCode(Message message) {
-        boolean check = false;
         List<PromoCode> list = promocodeRepository.findAll();
         if (list.isEmpty()) {
             sendMessage(message.getChatId(), "*Promo-Code lar ro'yxati mavjud emas*");
             return;
         }
-
         Map<Long, Object[]> accountData = new TreeMap<>();
-        accountData.put(0L, new Object[]{"ID RAQAMI ", "PROMO-CODE", "BALL", "PRODUCT-MODEL", "PRODUCT NOMI"});
+        accountData.put(0L, new Object[]{"ID RAQAMI ", "PROMO-CODE", "BALL", "PRODUCT-MODEL", "PRODUCT NOMI", "HOLATI"});
 
         for (PromoCode promoCode : list) {
-
             XSSFWorkbook workbook = new XSSFWorkbook();
             XSSFSheet spreadsheet = workbook.createSheet("Promo-Code lar ro`yxati");
             XSSFRow row;
             accountData.put(promoCode.getId(), new Object[]{promoCode.getId().toString(), promoCode.getCode(),
-                    promoCode.getScore(), promoCode.getProduct().getModel(), promoCode.getProduct().getNameUz()});
+                    promoCode.getScore(), promoCode.getProduct().getModel(), promoCode.getProduct().getNameUz(),promoCode.getStatus()});
             Set<Long> keyid = accountData.keySet();
 
             int rowid = 0;
@@ -192,23 +192,21 @@ public class AdminService {
      * @param message Message
      */
     public void searchByModel(Message message) {
-        boolean check = false;
-        List<PromoCode> list = promocodeRepository.findAllByProductModel(message.getText());
+        List<PromoCode> list = promocodeRepository.findAllByProductModelAndStatus(message.getText(), ACTIVE);
         if (list.isEmpty()) {
             sendMessage(message.getChatId(), message.getText() + " modeli bo'yicha promo-code lar ro'yxati topilmadi");
             return;
         }
 
         Map<Long, Object[]> accountData = new TreeMap<>();
-        accountData.put(0L, new Object[]{"ID RAQAMI ", "PROMO-CODE", "BALL", "PRODUCT-MODEL", "PRODUCT NOMI"});
+        accountData.put(0L, new Object[]{"ID RAQAMI ", "PROMO-CODE", "BALL", "PRODUCT-MODEL", "PRODUCT NOMI", "HOLATI"});
 
         for (PromoCode promoCode : list) {
-
             XSSFWorkbook workbook = new XSSFWorkbook();
             XSSFSheet spreadsheet = workbook.createSheet("Promo-Code lar ro`yxati");
             XSSFRow row;
             accountData.put(promoCode.getId(), new Object[]{promoCode.getId().toString(), promoCode.getCode(),
-                    promoCode.getScore(), promoCode.getProduct().getModel(), promoCode.getProduct().getNameUz()});
+                    promoCode.getScore(), promoCode.getProduct().getModel(), promoCode.getProduct().getNameUz(), promoCode.getStatus()});
             Set<Long> keyid = accountData.keySet();
 
             int rowid = 0;
@@ -227,12 +225,10 @@ public class AdminService {
                 FileOutputStream out = new FileOutputStream("Promo-code lar ro'yxati.xlsx");
                 workbook.write(out);
                 out.close();
-
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-
         InputStream inputStream = null;
         try {
             inputStream = new FileInputStream("Promo-code lar ro'yxati.xlsx");
@@ -242,7 +238,6 @@ public class AdminService {
         InputFile inputFile = new InputFile();
         inputFile.setMedia(inputStream, "Promo-code lar ro'yxati.xlsx");
         myTelegramBot.send(SendMsg.sendDoc(message.getChatId(), inputFile));
-
     }
 
 

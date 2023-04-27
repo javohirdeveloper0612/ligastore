@@ -164,4 +164,6 @@ public class ProductController {
         ResponseMessage responseMessage = productService.sellProduct(product_model, language);
         return responseMessage.isSuccess() ? ResponseEntity.ok(responseMessage) : ResponseEntity.status(400).body(responseMessage);
     }
+
+
 }

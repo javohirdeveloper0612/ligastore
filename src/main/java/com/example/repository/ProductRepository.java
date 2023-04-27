@@ -12,6 +12,10 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     List<ProductEntity> findAllByCategoryId(Long category_id);
+
     Page<ProductEntity> findAllByCategoryId(Long category_id, Pageable pageable);
+
     Optional<ProductEntity> findByModel(String model);
+
+    boolean existsByModel(String model);
 }

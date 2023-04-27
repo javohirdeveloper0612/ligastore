@@ -53,7 +53,7 @@ public class AdminController {
                     return;
                 }
 
-                default -> adminService.sendError(message);
+               // default -> adminService.sendError(message);
             }
         }
 

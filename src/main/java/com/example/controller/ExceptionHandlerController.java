@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.exception.AlreadyProductModelException;
 import com.example.exception.attach.AttachNotFoundException;
 import com.example.exception.attach.FileNameNotFoundException;
 import com.example.exception.attach.FileUploadException;
@@ -136,7 +137,10 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     @ExceptionHandler({EmptyListException.class})
     private ResponseEntity<?> handler(EmptyListException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
 
-
+    @ExceptionHandler({AlreadyProductModelException.class})
+    private ResponseEntity<?> handler(AlreadyProductModelException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }

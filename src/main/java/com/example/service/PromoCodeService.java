@@ -7,6 +7,7 @@ import com.example.dto.promocode.ResponsePromCodeMessage;
 import com.example.entity.ProductEntity;
 import com.example.entity.ProfileEntity;
 import com.example.entity.PromoCode;
+import com.example.entity.PromoCode.PromoCodeStatus;
 import com.example.enums.Language;
 import com.example.exception.auth.ProfileNotFoundException;
 import com.example.exception.category.EmptyListException;
@@ -15,7 +16,7 @@ import com.example.exception.product.ProductNotFoundException;
 import com.example.exception.promocode.InvalidPromoCodeException;
 import com.example.repository.ProductRepository;
 import com.example.repository.ProfileRepository;
-import com.example.repository.PromocodeRepository;
+import com.example.repository.PromoCodeRepository;
 import com.example.security.CustomUserDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,15 +30,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import static com.example.entity.PromoCode.PromoCodeStatus.*;
+
 @Service
 public class PromoCodeService {
     private final ResourceBundleService resourceBundleService;
-    private final PromocodeRepository promocodeRepository;
+    private final PromoCodeRepository promocodeRepository;
     private final ProductRepository productRepository;
     private final ProfileRepository profileRepository;
 
     public PromoCodeService(ResourceBundleService resourceBundleService,
-                            PromocodeRepository promocodeRepository,
+                            PromoCodeRepository promocodeRepository,
                             ProductRepository productRepository, ProfileRepository profileRepository) {
         this.resourceBundleService = resourceBundleService;
         this.promocodeRepository = promocodeRepository;
@@ -58,8 +61,8 @@ public class PromoCodeService {
         List<PromoCode> list = new ArrayList<>();
         for (int i = 0; i < dto.getAmount(); i++) {
             String code = product.getModel() + random.nextInt(1111111, 9999999);
-            long score = (long) (product.getPrice() * 0.00004);
-            list.add(new PromoCode(code, score, null, product));
+            long score = (long) (product.getPrice() * 0.0004);
+            list.add(new PromoCode(code, score, null, product, ACTIVE));
         }
         return list;
     }
@@ -163,6 +166,7 @@ public class PromoCodeService {
         long score = user.getScore() + code.getScore();
         user.setScore(score);
         code.setProfile(user);
+        code.setStatus(BLOCK);
         promocodeRepository.save(code);
         return new CheckPromoCodeDTO("PromoCode verification done successfully and added score", true, 200);
     }
