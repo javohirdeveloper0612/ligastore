@@ -4,7 +4,7 @@ import com.example.entity.ProfileEntity;
 import com.example.entity.PromoCode;
 import com.example.enums.ProfileRole;
 import com.example.repository.AuthRepository;
-import com.example.repository.PromocodeRepository;
+import com.example.repository.PromoCodeRepository;
 import com.example.telegrambot.constant.Constant;
 import com.example.telegrambot.myTelegrambot.MyTelegramBot;
 import com.example.telegrambot.util.Button;
@@ -19,8 +19,12 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.io.*;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
+import static com.example.entity.PromoCode.PromoCodeStatus.ACTIVE;
 
 
 @Service
@@ -28,11 +32,11 @@ public class AdminService {
 
     private final MyTelegramBot myTelegramBot;
     private final AuthRepository authRepository;
-    private final PromocodeRepository promocodeRepository;
+    private final PromoCodeRepository promocodeRepository;
 
     @Lazy
     public AdminService(MyTelegramBot myTelegramBot, AuthRepository authRepository,
-                        PromocodeRepository promocodeRepository) {
+                        PromoCodeRepository promocodeRepository) {
         this.myTelegramBot = myTelegramBot;
         this.authRepository = authRepository;
         this.promocodeRepository = promocodeRepository;
@@ -188,7 +192,7 @@ public class AdminService {
      * @param message Message
      */
     public void searchByModel(Message message) {
-        List<PromoCode> list = promocodeRepository.findAllByProductModel(message.getText());
+        List<PromoCode> list = promocodeRepository.findAllByProductModelAndStatus(message.getText(), ACTIVE);
         if (list.isEmpty()) {
             sendMessage(message.getChatId(), message.getText() + " modeli bo'yicha promo-code lar ro'yxati topilmadi");
             return;

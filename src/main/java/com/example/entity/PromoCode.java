@@ -26,5 +26,10 @@ public class PromoCode extends AbsEntity {
     @ManyToOne
     private ProductEntity product;
 
+    private PromoCodeStatus status;
+
+    public enum PromoCodeStatus {
+        ACTIVE, BLOCK
+    }
 
 }

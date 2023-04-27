@@ -1,12 +1,12 @@
 package com.example.service;
 
-import com.example.dto.jwt.ResponseMessage;
 import com.example.dto.attach.AttachResponseDTO;
+import com.example.dto.jwt.ResponseMessage;
 import com.example.dto.product.ProductDto;
 import com.example.dto.product.ResponseProductDto;
+import com.example.entity.AdminMessageEntity;
 import com.example.entity.CategoryEntity;
 import com.example.entity.ProductEntity;
-import com.example.entity.AdminMessageEntity;
 import com.example.entity.ProfileEntity;
 import com.example.enums.Language;
 import com.example.exception.AlreadyProductModelException;
@@ -14,12 +14,11 @@ import com.example.exception.auth.ProfileNotFoundException;
 import com.example.exception.category.EmptyListException;
 import com.example.exception.category.NotFoundParentCategory;
 import com.example.exception.product.ProductNotFoundException;
+import com.example.repository.AdminMesageRepository;
 import com.example.repository.CategoryRepository;
 import com.example.repository.ProductRepository;
-import com.example.repository.AdminMesageRepository;
 import com.example.repository.ProfileRepository;
 import com.example.security.CustomUserDetail;
-
 import com.example.util.UrlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,7 +36,6 @@ import java.util.Optional;
 
 @Service
 public class ProductService {
-    public static int orderId = 1;
     private final ProductRepository productRepository;
     private final AttachService attachService;
     private final CategoryRepository categoryRepository;
@@ -300,21 +298,26 @@ public class ProductService {
         if (optional.isEmpty()) {
             throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
         }
+
         ProfileEntity user = getUser(language);
         ProductEntity product = optional.get();
 
         if (user.getScore() >= product.getScore()) {
-            AdminMessageEntity productUser = new AdminMessageEntity();
-            productUser.setUser_id(user.getId());
-            productUser.setUser_name(user.getNameUz());
-            productUser.setUser_surname(user.getSurnameUz());
-            productUser.setPhone(user.getPhoneUser());
-            productUser.setProduct_name(product.getNameUz());
-            productUser.setProduct_model(product.getModel());
-            productUserRepository.save(productUser);
+            productUserRepository.save(getProductUser(user, product));
             return new ResponseMessage("So'rovingiz adminga xabar jo'natildi", true, 200);
         }
         return new ResponseMessage("Sizning balingiz yetarli emas", false, 400);
+    }
+
+    private AdminMessageEntity getProductUser(ProfileEntity user, ProductEntity product) {
+        AdminMessageEntity productUser = new AdminMessageEntity();
+        productUser.setUser_id(user.getId());
+        productUser.setUser_name(user.getNameUz());
+        productUser.setUser_surname(user.getSurnameUz());
+        productUser.setPhone(user.getPhoneUser());
+        productUser.setProduct_name(product.getNameUz());
+        productUser.setProduct_model(product.getModel());
+        return productUser;
     }
 
 
@@ -333,7 +336,6 @@ public class ProductService {
         }
         return optional.get();
     }
-
 
 
 }

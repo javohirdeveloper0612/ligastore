@@ -22,9 +22,9 @@ public class AdminMessageController {
 
 
     /**
-     * This method is used for
+     * This method is used for getting message list
      *
-     * @return List<></>
+     * @return List<AdminMessageEntity></>
      */
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
@@ -35,16 +35,20 @@ public class AdminMessageController {
     }
 
     /**
+     * This method is used for checking user press accept button or not
+     * If not founded user_id throw new ProfileNotFoundException
+     * If not founded product_model throw new ProductNotFoundException
      *
-     * @param user_id Long
+     * @param user_id       Long
      * @param product_model String
-     * @return
+     * @return ResponseMessage
      */
     @Operation(summary = "Check SMS API", description = "This API for checking SMS")
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/accept")
-    public ResponseEntity<?> checkAcceptable(@RequestParam Long user_id, @RequestParam String product_model) {
+    public ResponseEntity<?> checkAcceptable(@RequestParam Long user_id,
+                                             @RequestParam String product_model) {
         ResponseMessage responseMessage = adminMessageService.checkAcceptable(user_id, product_model);
         return ResponseEntity.ok(responseMessage);
     }

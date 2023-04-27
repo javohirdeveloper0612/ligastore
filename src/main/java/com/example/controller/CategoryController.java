@@ -47,7 +47,8 @@ public class CategoryController {
     @Operation(summary = "ADD_CATEGORY API", description = "This API for adding new Category")
     public ResponseEntity<?> addCategory(@Valid
                                          @ModelAttribute CategoryDto categoryCreationDTO,
-                                         @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
+                                         @RequestHeader(name = "Accept-Language", defaultValue = "UZ")
+                                         Language language) {
         log.info("Creation Category : categoryCreationDTO {} ", categoryCreationDTO);
         ResponseCategoryDto result = categoryService.add_category(categoryCreationDTO, language);
         return ResponseEntity.ok(result);
@@ -84,7 +85,8 @@ public class CategoryController {
     @GetMapping("/get_category_by_id/{id}")
     @Operation(summary = "Get Category By ID API", description = "This API is used  category get by id ( public )")
     public ResponseEntity<?> getCategoryById(@PathVariable("id") Long id,
-                                             @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
+                                             @RequestHeader(name = "Accept-Language", defaultValue = "UZ")
+                                             Language language) {
         log.info("getCategoryById : id {}", id);
         ResponseCategoryDto result = categoryService.getCategoryById(id, language);
         return ResponseEntity.ok().body(result);
@@ -146,7 +148,8 @@ public class CategoryController {
     @GetMapping("/get_category_list_by_page")
     public ResponseEntity<?> getCategoryByPage(@RequestParam(name = "page", defaultValue = "0") int page,
                                                @RequestParam(name = "size", defaultValue = "1") int size,
-                                               @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
+                                               @RequestHeader(name = "Accept-Language", defaultValue = "UZ")
+                                                   Language language) {
         log.info("categoryGetPages : page {},size{}", page, size);
         Page<ResponseCategoryDto> allCategory = categoryService.categoryGetPaginationList(page, size, language);
         return ResponseEntity.ok().body(allCategory);

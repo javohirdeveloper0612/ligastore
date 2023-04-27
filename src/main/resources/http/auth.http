@@ -15,3 +15,8 @@ Content-Type: application/json
   "district": "Pastdargom",
   "phoneHome": "+998997684433"
 }
+
+
+
+###
+GET https://a.nel.cloudflare.com/report/v3?s=fBtUH50muHn62jeLYrnRjh8CjYdg8H2f2dBpLO3I612zuqYf7N2piXX%2BFRgRoAyoCTCmjy914zVmOEY7hAmH3U2uk7SwteBqeoeqaQWpVdmAr1pTXPIaEX7kOJ9%2BEG5P
