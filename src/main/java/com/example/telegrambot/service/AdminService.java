@@ -132,14 +132,14 @@ public class AdminService {
             return;
         }
         Map<Long, Object[]> accountData = new TreeMap<>();
-        accountData.put(0L, new Object[]{"ID RAQAMI ", "PROMO-CODE", "BALL", "PRODUCT-MODEL", "PRODUCT NOMI"});
+        accountData.put(0L, new Object[]{"ID RAQAMI ", "PROMO-CODE", "BALL", "PRODUCT-MODEL", "PRODUCT NOMI", "HOLATI"});
 
         for (PromoCode promoCode : list) {
             XSSFWorkbook workbook = new XSSFWorkbook();
             XSSFSheet spreadsheet = workbook.createSheet("Promo-Code lar ro`yxati");
             XSSFRow row;
             accountData.put(promoCode.getId(), new Object[]{promoCode.getId().toString(), promoCode.getCode(),
-                    promoCode.getScore(), promoCode.getProduct().getModel(), promoCode.getProduct().getNameUz()});
+                    promoCode.getScore(), promoCode.getProduct().getModel(), promoCode.getProduct().getNameUz(),promoCode.getStatus()});
             Set<Long> keyid = accountData.keySet();
 
             int rowid = 0;
@@ -199,14 +199,14 @@ public class AdminService {
         }
 
         Map<Long, Object[]> accountData = new TreeMap<>();
-        accountData.put(0L, new Object[]{"ID RAQAMI ", "PROMO-CODE", "BALL", "PRODUCT-MODEL", "PRODUCT NOMI"});
+        accountData.put(0L, new Object[]{"ID RAQAMI ", "PROMO-CODE", "BALL", "PRODUCT-MODEL", "PRODUCT NOMI", "HOLATI"});
 
         for (PromoCode promoCode : list) {
             XSSFWorkbook workbook = new XSSFWorkbook();
             XSSFSheet spreadsheet = workbook.createSheet("Promo-Code lar ro`yxati");
             XSSFRow row;
             accountData.put(promoCode.getId(), new Object[]{promoCode.getId().toString(), promoCode.getCode(),
-                    promoCode.getScore(), promoCode.getProduct().getModel(), promoCode.getProduct().getNameUz()});
+                    promoCode.getScore(), promoCode.getProduct().getModel(), promoCode.getProduct().getNameUz(), promoCode.getStatus()});
             Set<Long> keyid = accountData.keySet();
 
             int rowid = 0;

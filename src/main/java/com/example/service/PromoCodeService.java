@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import static com.example.entity.PromoCode.PromoCodeStatus.*;
+
 @Service
 public class PromoCodeService {
     private final ResourceBundleService resourceBundleService;
@@ -60,7 +62,7 @@ public class PromoCodeService {
         for (int i = 0; i < dto.getAmount(); i++) {
             String code = product.getModel() + random.nextInt(1111111, 9999999);
             long score = (long) (product.getPrice() * 0.0004);
-            list.add(new PromoCode(code, score, null, product, PromoCodeStatus.ACTIVE));
+            list.add(new PromoCode(code, score, null, product, ACTIVE));
         }
         return list;
     }
@@ -164,7 +166,7 @@ public class PromoCodeService {
         long score = user.getScore() + code.getScore();
         user.setScore(score);
         code.setProfile(user);
-        code.setStatus(PromoCodeStatus.BLOCK);
+        code.setStatus(BLOCK);
         promocodeRepository.save(code);
         return new CheckPromoCodeDTO("PromoCode verification done successfully and added score", true, 200);
     }
