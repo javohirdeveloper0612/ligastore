@@ -31,7 +31,6 @@ public class AuthController {
     @Operation(summary = "Login Method", description = "this method for registration")
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO dto) {
-
         LoginResponseDTO response = service.login(dto, Language.UZ);
         log.info(" login method dtoUsername {}", dto.getUsername());
         return ResponseEntity.ok().body(response);
@@ -83,13 +82,20 @@ public class AuthController {
         return ResponseEntity.ok(result);
     }
 
-    @Operation(summary = "Change Password",description = "ushbu API parolni ")
+    /**
+     * This method is used for changing password
+     *
+     * @param userId   Long
+     * @param password String
+     * @param language Language
+     * @return String
+     */
+    @Operation(summary = "Change Password", description = "This API for changin password ")
     @PutMapping("/repair_password/{user_id}/{password}")
-    public ResponseEntity<?> repairPassword(@PathVariable("user_id") Long userId,
-                                            @PathVariable("password")String password,
-                                            @RequestHeader(value = "Accept-Language",defaultValue = "UZ")Language language){
-
-        return ResponseEntity.ok().body(service.repairPassword(userId,password,language));
+    public ResponseEntity<?> changePassword(@PathVariable("user_id") Long userId,
+                                            @PathVariable("password") String password,
+                                            @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
+        return ResponseEntity.ok().body(service.repairPassword(userId, password, language));
     }
 
 }
