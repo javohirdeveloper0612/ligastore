@@ -65,7 +65,6 @@ public class AdminMessageService {
             profile.setScore(score);
             authRepository.save(profile);
             return new ResponseMessage("Ball muvaffaqqiyatli yechildi", true, 200);
-
         }
 
         return new ResponseMessage("Ball yetarli emas", false, 400);

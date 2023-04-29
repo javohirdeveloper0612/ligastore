@@ -1,6 +1,5 @@
 package com.example.service;
 
-import com.example.dto.attach.AttachResponseDTO;
 import com.example.dto.category.CategoryDto;
 import com.example.dto.category.EditeCategoryDto;
 import com.example.dto.category.ResponseCategoryDto;
@@ -17,12 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CategoryService {
@@ -30,7 +27,7 @@ public class CategoryService {
     private final AttachService attachService;
     private final CategoryRepository categoryRepository;
     private final BrandRepository brandRepository;
-    private final ResourceBundleService resourceBundleService;
+    private final ResourceBundleService bundleService;
 
     @Autowired
     public CategoryService(AttachService attachService, CategoryRepository categoryRepository,
@@ -38,7 +35,7 @@ public class CategoryService {
         this.attachService = attachService;
         this.categoryRepository = categoryRepository;
         this.brandRepository = brandRepository;
-        this.resourceBundleService = resourceBundleService;
+        this.bundleService = resourceBundleService;
     }
 
     /**
@@ -49,10 +46,10 @@ public class CategoryService {
      * @return ResponseCategoryDto
      */
     public ResponseCategoryDto add_category(CategoryDto dto, Language language) {
-        Optional<BrandEntity> optionalBrand = brandRepository.findById(dto.getBrandId());
+        var optionalBrand = brandRepository.findById(dto.getBrandId());
         if (optionalBrand.isEmpty())
-            throw new BrandNotFoundException(resourceBundleService.getMessage("brand.not.found", language));
-        CategoryEntity savedCategory = categoryRepository.save(getCategory(dto, optionalBrand.get()));
+            throw new BrandNotFoundException(bundleService.getMessage("brand.not.found", language));
+        var savedCategory = categoryRepository.save(getCategory(dto, optionalBrand.get()));
         return responseCategoryDto(savedCategory);
 
     }
@@ -66,13 +63,8 @@ public class CategoryService {
      * @return CategoryEntity
      */
     public CategoryEntity getCategory(CategoryDto dto, BrandEntity brand) {
-        CategoryEntity categoryEntity = new CategoryEntity();
-        AttachResponseDTO responseDTO = attachService.uploadFile(dto.getMultipartFile());
-        categoryEntity.setNameUz(dto.getNameUz());
-        categoryEntity.setNameRu(dto.getNameRu());
-        categoryEntity.setAttachId(responseDTO.getId());
-        categoryEntity.setBrand(brand);
-        return categoryEntity;
+        var responseDTO = attachService.uploadFile(dto.getMultipartFile());
+        return new CategoryEntity(dto.getNameUz(), dto.getNameRu(), responseDTO.getId(), brand);
     }
 
     /**
@@ -82,12 +74,8 @@ public class CategoryService {
      * @return ResponsecategoryDto
      */
     public ResponseCategoryDto responseCategoryDto(CategoryEntity category) {
-        ResponseCategoryDto dto = new ResponseCategoryDto();
-        dto.setId(category.getId());
-        dto.setNameUz(category.getNameUz());
-        dto.setNameRu(category.getNameRu());
-        dto.setPhotoUrl(UrlUtil.url + category.getAttachId());
-        return dto;
+        return new ResponseCategoryDto(category.getId(), category.getNameUz(), category.getNameRu(),
+                UrlUtil.url + category.getAttachId());
     }
 
     /**
@@ -98,10 +86,10 @@ public class CategoryService {
      * @return dtoList
      */
     public List<ResponseCategoryDto> getCategoryList(Long id, Language language) {
-        List<CategoryEntity> list = categoryRepository.findAllByBrandId(id);
+        var list = categoryRepository.findAllByBrandId(id);
         if (list.isEmpty())
-            throw new EmptyListException(resourceBundleService.getMessage("category.not.found", language));
-        List<ResponseCategoryDto> dtoList = new LinkedList<>();
+            throw new EmptyListException(bundleService.getMessage("category.not.found", language));
+        var dtoList = new LinkedList<ResponseCategoryDto>();
         list.forEach(categoryEntity -> dtoList.add(responseCategoryDtoByLan(language, categoryEntity)));
         return dtoList;
     }
@@ -114,27 +102,25 @@ public class CategoryService {
      * @return category
      */
     public ResponseCategoryDto getCategoryById(Long id, Language language) {
-        Optional<CategoryEntity> optional = categoryRepository.findById(id);
+        var optional = categoryRepository.findById(id);
         if (optional.isEmpty())
-            throw new BrandNotFoundException(resourceBundleService.getMessage("category.not.found", language));
+            throw new BrandNotFoundException(bundleService.getMessage("category.not.found", language));
         return responseCategoryDtoByLan(language, optional.get());
     }
 
     /**
      * this method is used to find the category by id and replace the not.found.category.id exception if the category id is not found
      *
-     * @param id                Long
-     * @param categoryUpdateDTO categoryUpdateDTO
-     * @param language          language
+     * @param id       Long
+     * @param dto      categoryUpdateDTO
+     * @param language language
      * @return categoryUpdateDTO
      */
-    public ResponseCategoryDto editeCategory(Long id, EditeCategoryDto categoryUpdateDTO, Language language) {
-        Optional<CategoryEntity> optional = categoryRepository.findById(id);
+    public ResponseCategoryDto editeCategory(Long id, EditeCategoryDto dto, Language language) {
+        var optional = categoryRepository.findById(id);
         if (optional.isEmpty())
-            throw new BrandNotFoundException(resourceBundleService.getMessage("category.not.found", language));
-        CategoryEntity save = categoryRepository.save(getCategory(optional.get(), categoryUpdateDTO));
-        return responseCategoryDto(save);
-
+            throw new BrandNotFoundException(bundleService.getMessage("category.not.found", language));
+        return responseCategoryDto(categoryRepository.save(getCategory(optional.get(), dto)));
     }
 
     /**
@@ -146,9 +132,9 @@ public class CategoryService {
      * @return String result
      */
     public ResponseMessage deleteCategory(Long id, Language language) {
-        Optional<CategoryEntity> optional = categoryRepository.findById(id);
+        var optional = categoryRepository.findById(id);
         if (optional.isEmpty()) {
-            throw new BrandNotFoundException(resourceBundleService.getMessage("category.not.found", language));
+            throw new BrandNotFoundException(bundleService.getMessage("category.not.found", language));
         }
         attachService.deleteById(optional.get().getAttachId());
         categoryRepository.deleteById(optional.get().getId());
@@ -167,11 +153,11 @@ public class CategoryService {
      */
 
     public Page<ResponseCategoryDto> categoryGetPaginationList(int page, int size, Language language) {
-        List<ResponseCategoryDto> dtoList = new LinkedList<>();
-        Pageable pageable = PageRequest.of(page, size);
-        Page<CategoryEntity> entityPage = categoryRepository.findAll(pageable);
+        var dtoList = new LinkedList<ResponseCategoryDto>();
+        var pageable = PageRequest.of(page, size);
+        var entityPage = categoryRepository.findAll(pageable);
         if (entityPage.isEmpty())
-            throw new EmptyListException(resourceBundleService.getMessage("category.not.found", language));
+            throw new EmptyListException(bundleService.getMessage("category.not.found", language));
         entityPage.forEach(categoryEntity -> dtoList.add(responseCategoryDtoByLan(language, categoryEntity)));
         return new PageImpl<>(dtoList, pageable, entityPage.getTotalElements());
 
@@ -186,29 +172,26 @@ public class CategoryService {
      * @return ResponseCategoryDto
      */
     public ResponseCategoryDto responseCategoryDtoByLan(Language language, CategoryEntity category) {
-        ResponseCategoryDto responseCategoryDto = new ResponseCategoryDto();
-        if (language.equals(Language.UZ)) {
-            responseCategoryDto.setNameUz(category.getNameUz());
-        } else {
-            responseCategoryDto.setNameRu(category.getNameRu());
-        }
-        responseCategoryDto.setId(category.getId());
-        responseCategoryDto.setPhotoUrl(UrlUtil.url + category.getAttachId());
-        return responseCategoryDto;
+        var dto = new ResponseCategoryDto();
+        if (language.equals(Language.UZ)) dto.setNameUz(category.getNameUz());
+        else dto.setNameRu(category.getNameRu());
+        dto.setId(category.getId());
+        dto.setPhotoUrl(UrlUtil.url + category.getAttachId());
+        return dto;
     }
 
 
     /**
      * This method is used for  getting category
      *
-     * @param category         CategoryEntity
-     * @param editeCategoryDto EditeCategoryDto
+     * @param category CategoryEntity
+     * @param dto      EditeCategoryDto
      * @return CategoryEntity
      */
-    public CategoryEntity getCategory(CategoryEntity category, EditeCategoryDto editeCategoryDto) {
-        AttachResponseDTO attach = attachService.uploadFile(editeCategoryDto.getMultipartFile());
-        category.setNameUz(editeCategoryDto.getNameUz());
-        category.setNameRu(editeCategoryDto.getNameRu());
+    public CategoryEntity getCategory(CategoryEntity category, EditeCategoryDto dto) {
+        var attach = attachService.uploadFile(dto.getMultipartFile());
+        category.setNameUz(dto.getNameUz());
+        category.setNameRu(dto.getNameRu());
         category.setAttachId(attach.getId());
         return category;
     }

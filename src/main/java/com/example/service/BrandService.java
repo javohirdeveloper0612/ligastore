@@ -1,10 +1,8 @@
 package com.example.service;
 
-import com.example.dto.attach.AttachResponseDTO;
 import com.example.dto.brand.BrandDto;
 import com.example.dto.brand.ResponseBrandDto;
 import com.example.dto.jwt.ResponseMessage;
-import com.example.entity.AttachEntity;
 import com.example.entity.BrandEntity;
 import com.example.enums.Language;
 import com.example.exception.category.BrandNotFoundException;
@@ -18,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Service
 public class BrandService {
@@ -43,7 +41,7 @@ public class BrandService {
      * @return ResponseBrandDto
      */
     public ResponseBrandDto addBrand(BrandDto brandDto) {
-        BrandEntity savedBrand = brandRepository.save(getBrand(brandDto));
+        var savedBrand = brandRepository.save(getBrand(brandDto));
         return responseBrandDto(savedBrand);
     }
 
@@ -55,10 +53,10 @@ public class BrandService {
      * @return ResponseBrandDto
      */
     public List<ResponseBrandDto> getAllBrand(Language language) {
-        List<BrandEntity> list = brandRepository.findAll();
+        var list = brandRepository.findAll();
         if (list.isEmpty())
             throw new EmptyListException(resourceBundleService.getMessage("brand.list.not.found", language));
-        List<ResponseBrandDto> brandDtoList = new LinkedList<>();
+        var brandDtoList = new LinkedList<ResponseBrandDto>();
         for (BrandEntity brandEntity : list)
             brandDtoList.add(responseBrandDtoByLan(brandEntity, language));
         return brandDtoList;
@@ -73,7 +71,7 @@ public class BrandService {
      * @return ResponseBrandDto
      */
     public ResponseBrandDto getBrandById(Long brand_id, Language language) {
-        Optional<BrandEntity> brand = brandRepository.findById(brand_id);
+        var brand = brandRepository.findById(brand_id);
         if (brand.isEmpty())
             throw new BrandNotFoundException(resourceBundleService.getMessage("brand.not.found", language));
         return responseBrandDtoByLan(brand.get(), language);
@@ -89,11 +87,10 @@ public class BrandService {
      * @return ResponseBrandDto
      */
     public ResponseBrandDto editeBrand(Long brand_id, Language language, BrandDto brandDto) {
-        Optional<BrandEntity> optional = brandRepository.findById(brand_id);
+        var optional = brandRepository.findById(brand_id);
         if (optional.isEmpty())
             throw new BrandNotFoundException(resourceBundleService.getMessage("brand.not.found", language));
-
-        BrandEntity editedBrand = brandRepository.save(getBrand(optional.get(), brandDto));
+        var editedBrand = brandRepository.save(getBrand(optional.get(), brandDto));
         attachRepository.deleteById(optional.get().getAttachId());
         return responseBrandDtoByLan(editedBrand, language);
     }
@@ -108,7 +105,7 @@ public class BrandService {
      */
     @Transactional
     public ResponseMessage deleteBrand(Long brand_id, Language language) {
-        Optional<BrandEntity> optional = brandRepository.findById(brand_id);
+        var optional = brandRepository.findById(brand_id);
         if (optional.isEmpty())
             throw new BrandNotFoundException(resourceBundleService.getMessage("brand.not.found", language));
         attachService.deleteById(optional.get().getAttachId());
@@ -125,7 +122,7 @@ public class BrandService {
      * @return ResponseBranddto
      */
     public ResponseBrandDto responseBrandDtoByLan(BrandEntity brand, Language language) {
-        ResponseBrandDto responseBrandDto = new ResponseBrandDto();
+        var responseBrandDto = new ResponseBrandDto();
         responseBrandDto.setId(brand.getId());
         if (language.equals(Language.UZ))
             responseBrandDto.setNameUz(brand.getNameUz());
@@ -142,12 +139,8 @@ public class BrandService {
      * @return ResponseBrandDto
      */
     public ResponseBrandDto responseBrandDto(BrandEntity brand) {
-        ResponseBrandDto responseBrandDto = new ResponseBrandDto();
-        responseBrandDto.setId(brand.getId());
-        responseBrandDto.setNameUz(brand.getNameUz());
-        responseBrandDto.setNameRu(brand.getNameRu());
-        responseBrandDto.setFileUrl(UrlUtil.url + brand.getAttachId());
-        return responseBrandDto;
+        return new ResponseBrandDto(brand.getId(), brand.getNameUz(), brand.getNameRu(),
+                UrlUtil.url + brand.getAttachId());
     }
 
 
@@ -158,12 +151,8 @@ public class BrandService {
      * @return BrandEntity
      */
     public BrandEntity getBrand(BrandDto brandDto) {
-        BrandEntity brand = new BrandEntity();
-        brand.setNameUz(brandDto.getNameUz());
-        brand.setNameRu(brandDto.getNameRu());
-        AttachResponseDTO attach = attachService.uploadFile(brandDto.getMultipartFile());
-        brand.setAttachId(attach.getId());
-        return brand;
+        var attach = attachService.uploadFile(brandDto.getMultipartFile());
+        return new BrandEntity(brandDto.getNameUz(), brandDto.getNameRu(), attach.getId());
     }
 
     /**
@@ -172,21 +161,15 @@ public class BrandService {
      * @param brandEntity BrandEntity
      * @param brandDto    Branddto
      * @return BrandEntity
-     *
      */
     @Transactional
     public BrandEntity getBrand(BrandEntity brandEntity, BrandDto brandDto) {
-        brandEntity.setNameUz(brandDto.getNameUz());
-        brandEntity.setNameRu(brandDto.getNameRu());
-
-        AttachEntity attach = attachService.getAttach(brandEntity.getAttachId());
-        if (attach != null) {
+        var attach = attachService.getAttach(brandEntity.getAttachId());
+        if (Objects.nonNull(attach)) {
             attachService.deleteById(brandEntity.getAttachId());
             attachRepository.delete(attach);
         }
-
-        AttachResponseDTO attachResponseDTO = attachService.uploadFile(brandDto.getMultipartFile());
-        brandEntity.setAttachId(attachResponseDTO.getId());
-        return brandEntity;
+        var attachResponseDTO = attachService.uploadFile(brandDto.getMultipartFile());
+        return new BrandEntity(brandDto.getNameUz(), brandDto.getNameRu(), attachResponseDTO.getId());
     }
 }

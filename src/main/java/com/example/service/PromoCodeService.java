@@ -2,12 +2,11 @@ package com.example.service;
 
 import com.example.dto.promocode.CheckPromoCodeDTO;
 import com.example.dto.promocode.CreatePromoCodeDto;
-import com.example.dto.promocode.ResponsePromoCodeDto;
 import com.example.dto.promocode.ResponsePromCodeMessage;
+import com.example.dto.promocode.ResponsePromoCodeDto;
 import com.example.entity.ProductEntity;
 import com.example.entity.ProfileEntity;
 import com.example.entity.PromoCode;
-import com.example.entity.PromoCode.PromoCodeStatus;
 import com.example.enums.Language;
 import com.example.exception.auth.ProfileNotFoundException;
 import com.example.exception.category.EmptyListException;
@@ -20,17 +19,15 @@ import com.example.repository.PromoCodeRepository;
 import com.example.security.CustomUserDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
-import static com.example.entity.PromoCode.PromoCodeStatus.*;
+import static com.example.entity.PromoCode.PromoCodeStatus.ACTIVE;
+import static com.example.entity.PromoCode.PromoCodeStatus.BLOCK;
 
 @Service
 public class PromoCodeService {
@@ -57,8 +54,8 @@ public class PromoCodeService {
      */
 
     public List<PromoCode> generatePromoCode(CreatePromoCodeDto dto, ProductEntity product) {
-        Random random = new Random();
-        List<PromoCode> list = new ArrayList<>();
+        var random = new Random();
+        var list = new ArrayList<PromoCode>();
         for (int i = 0; i < dto.getAmount(); i++) {
             String code = product.getModel() + random.nextInt(1111111, 9999999);
             long score = (long) (product.getPrice() * 0.0004);
@@ -77,10 +74,9 @@ public class PromoCodeService {
      * @return Page<PromoCodeDto></>
      */
     public List<ResponsePromoCodeDto> getListPromoCodeByPage(int page, int size, Language language) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<PromoCode> codes = promocodeRepository.findAll(pageable);
+        var pageable = PageRequest.of(page, size);
+        var codes = promocodeRepository.findAll(pageable);
         if (codes.isEmpty()) throw new EmptyListException(resourceBundleService.getMessage("empty.list", language));
-        if (size <= 0) throw new IllegalArgumentException();
         return convertToList(codes);
 
     }
@@ -93,7 +89,7 @@ public class PromoCodeService {
      * @return List<PromoCodeDto></>
      */
     public List<ResponsePromoCodeDto> getAllList(Language language) {
-        List<PromoCode> codeList = promocodeRepository.findAll();
+        var codeList = promocodeRepository.findAll();
         if (codeList.isEmpty()) throw new EmptyListException(resourceBundleService.getMessage("empty.list", language));
         return convertToList(codeList);
     }
@@ -135,12 +131,8 @@ public class PromoCodeService {
      * @return ResponsePromoCodeDto
      */
     public ResponsePromoCodeDto responsePromoCodeDto(PromoCode code) {
-        ResponsePromoCodeDto dto = new ResponsePromoCodeDto();
-        dto.setId(code.getId());
-        dto.setPromo_code(code.getCode());
-        dto.setScore(code.getScore());
-        dto.setProduct_model(code.getProduct().getModel());
-        return dto;
+        return new ResponsePromoCodeDto(code.getId(), code.getCode(), code.getScore(),
+                code.getProduct().getModel());
     }
 
     /**
@@ -158,7 +150,7 @@ public class PromoCodeService {
         boolean exists = promocodeRepository.existsByCodeAndProfileId(promoCode, user.getId());
         if (exists)
             throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));
-        Optional<PromoCode> optional = promocodeRepository.findByCode(promoCode);
+        var optional = promocodeRepository.findByCode(promoCode);
         if (optional.isEmpty())
             throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));
 
@@ -182,8 +174,7 @@ public class PromoCodeService {
     public ResponsePromCodeMessage generateCode(CreatePromoCodeDto dto, Language language) {
         if (dto.getAmount() == 0 || dto.getAmount() < 0)
             throw new NotMatchException(resourceBundleService.getMessage("not.match", language));
-
-        Optional<ProductEntity> product = productRepository.findByModel(dto.getModel());
+        var product = productRepository.findByModel(dto.getModel());
         if (product.isEmpty())
             throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
         promocodeRepository.saveAll(generatePromoCode(dto, product.get()));
@@ -198,7 +189,7 @@ public class PromoCodeService {
      * @return List<ResponsePromoCode></>
      */
     public List<ResponsePromoCodeDto> findPromoCodeListByProductModel(String model, Language language) {
-        List<PromoCode> codeList = promocodeRepository.findAllByProductModel(model);
+        var codeList = promocodeRepository.findAllByProductModel(model);
         if (codeList.isEmpty()) throw new EmptyListException(resourceBundleService.getMessage("empty.list", language));
         return convertToList(codeList);
     }
@@ -210,12 +201,12 @@ public class PromoCodeService {
      * @return ProfileEntity
      */
     public ProfileEntity getUser(Language language) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
-        Optional<ProfileEntity> optional = profileRepository.findById(customUserDetail.getId());
-        if (optional.isEmpty()) {
-            throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language));
-        }
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var customUserDetail = (CustomUserDetail) authentication.getPrincipal();
+        var optional = profileRepository.findById(customUserDetail.getId());
+        if (optional.isEmpty()) throw new ProfileNotFoundException(resourceBundleService.
+                getMessage("profile.not.found", language));
+
         return optional.get();
     }
 }

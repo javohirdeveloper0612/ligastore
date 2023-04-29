@@ -67,15 +67,14 @@ public class ProductService {
      * @return ResponseProductDto
      */
     public ResponseProductDto addProduct(Long categoryId, ProductDto dto, Language language) {
-        Optional<CategoryEntity> optional = categoryRepository.findById(categoryId);
+        var optional = categoryRepository.findById(categoryId);
         if (optional.isEmpty())
             throw new NotFoundParentCategory(resourceBundleService.getMessage("category.not.found", language));
 
         if (productRepository.existsByModel(dto.getModel()))
             throw new AlreadyProductModelException(resourceBundleService.getMessage("model.exist", language));
 
-        ProductEntity savedProduct = productRepository.save(getProductEntity(dto, optional.get()));
-        return responseProductDto(savedProduct);
+        return responseProductDto(productRepository.save(getProductEntity(dto, optional.get())));
     }
 
 
@@ -83,16 +82,15 @@ public class ProductService {
      * This method is used for editing product data if product_id not founded
      * throw new ProductNotFoundException
      *
-     * @param productDto ProductDto
-     * @param language   Language
+     * @param dto ProductDto
+     * @param lan Language
      * @return ResponseProductDto
      */
-    public ResponseProductDto editeProduct(Long productId, ProductDto productDto, Language language) {
-        Optional<ProductEntity> optional = productRepository.findById(productId);
+    public ResponseProductDto editeProduct(Long productId, ProductDto dto, Language lan) {
+        var optional = productRepository.findById(productId);
         if (optional.isEmpty())
-            throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
-        ProductEntity editedProduct = productRepository.save(getProductEntity(productDto, optional.get()));
-        return responseProductDto(editedProduct);
+            throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", lan));
+        return responseProductDto(productRepository.save(getProductEntity(dto, optional.get())));
 
     }
 
@@ -102,17 +100,16 @@ public class ProductService {
      * throw EmptyListException
      *
      * @param category_id Long
-     * @param language    Language
+     * @param lan         Language
      * @return List<ResponseProductDto></>
      */
-    public List<ResponseProductDto> getProductList(Long category_id, Language language) {
-        Optional<CategoryEntity> optional = categoryRepository.findById(category_id);
+    public List<ResponseProductDto> getProductList(Long category_id, Language lan) {
+        var optional = categoryRepository.findById(category_id);
         if (optional.isEmpty())
-            throw new NotFoundParentCategory(resourceBundleService.getMessage("category.not.found", language));
-        List<ProductEntity> list = productRepository.findAllByCategoryId(category_id);
-        if (list.isEmpty())
-            throw new EmptyListException(resourceBundleService.getMessage("empty.list.product", language));
-        return getProductEntityList(list, language);
+            throw new NotFoundParentCategory(resourceBundleService.getMessage("category.not.found", lan));
+        var list = productRepository.findAllByCategoryId(category_id);
+        if (list.isEmpty()) throw new EmptyListException(resourceBundleService.getMessage("empty.list.product", lan));
+        return getProductEntityList(list, lan);
     }
 
 
@@ -124,11 +121,11 @@ public class ProductService {
      * @return List<ResponseProductEntity></>
      */
     public List<ResponseProductDto> getProductEntityList(List<ProductEntity> list, Language language) {
-        List<ResponseProductDto> productDtoList = new ArrayList<>();
+        var dtoList = new ArrayList<ResponseProductDto>();
         for (ProductEntity product : list) {
-            productDtoList.add(responseProductDtoByLan(product, language));
+            dtoList.add(responseProductDtoByLan(product, language));
         }
-        return productDtoList;
+        return dtoList;
     }
 
     /**
@@ -137,16 +134,16 @@ public class ProductService {
      *
      * @param page        int
      * @param size        int
-     * @param language    Language
+     * @param lan         Language
      * @param category_id Long
      * @return List<ResponseProductDto></>
      */
-    public List<ResponseProductDto> getProductListByPage(int page, int size, Language language, Long category_id) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ProductEntity> entityPage = productRepository.findAllByCategoryId(category_id, pageable);
+    public List<ResponseProductDto> getProductListByPage(int page, int size, Language lan, Long category_id) {
+        var pageable = PageRequest.of(page, size);
+        var entityPage = productRepository.findAllByCategoryId(category_id, pageable);
         if (entityPage.isEmpty())
-            throw new EmptyListException(resourceBundleService.getMessage("empty.list.product", language));
-        return getProductList(entityPage, language);
+            throw new EmptyListException(resourceBundleService.getMessage("empty.list.product", lan));
+        return getProductList(entityPage, lan);
 
     }
 
@@ -158,7 +155,7 @@ public class ProductService {
      * @return ProductEntity
      */
     public ProductEntity getProductEntity(ProductDto dto, ProductEntity product) {
-        AttachResponseDTO uploadFile = attachService.uploadFile(dto.getFile());
+        var uploadFile = attachService.uploadFile(dto.getFile());
         product.setNameUz(dto.getName_uz());
         product.setNameRu(dto.getName_ru());
         product.setDescriptionUz(dto.getDescription_uz());
@@ -178,8 +175,8 @@ public class ProductService {
      * @return ProductEntity
      */
     public ProductEntity getProductEntity(ProductDto dto, CategoryEntity categoryEntity) {
-        AttachResponseDTO uploadFile = attachService.uploadFile(dto.getFile());
-        ProductEntity product = new ProductEntity();
+        var uploadFile = attachService.uploadFile(dto.getFile());
+        var product = new ProductEntity();
         product.setNameUz(dto.getName_uz());
         product.setNameRu(dto.getName_ru());
         product.setDescriptionUz(dto.getDescription_uz());
@@ -195,44 +192,43 @@ public class ProductService {
     /**
      * This method is used for converting ProductEntity to responseProductEntity
      *
-     * @param productEntity ProductEntity
+     * @param product ProductEntity
      * @return ResponseProductDto
      */
-    public ResponseProductDto responseProductDtoByLan(ProductEntity productEntity, Language language) {
-        ResponseProductDto dto = new ResponseProductDto();
-
+    public ResponseProductDto responseProductDtoByLan(ProductEntity product, Language language) {
+        var dto = new ResponseProductDto();
         if (language.equals(Language.UZ)) {
-            dto.setName_uz(productEntity.getNameUz());
-            dto.setDescription_uz(productEntity.getDescriptionUz());
+            dto.setName_uz(product.getNameUz());
+            dto.setDescription_uz(product.getDescriptionUz());
         } else {
-            dto.setName_ru(productEntity.getNameRu());
-            dto.setDescription_ru(productEntity.getDescriptionRu());
+            dto.setName_ru(product.getNameRu());
+            dto.setDescription_ru(product.getDescriptionRu());
         }
-        dto.setId(productEntity.getId());
-        dto.setScore(productEntity.getScore());
-        dto.setPrice(productEntity.getPrice());
-        dto.setModel(productEntity.getModel());
-        dto.setPhotoUrl(UrlUtil.url + productEntity.getAttachId());
+        dto.setId(product.getId());
+        dto.setScore(product.getScore());
+        dto.setPrice(product.getPrice());
+        dto.setModel(product.getModel());
+        dto.setPhotoUrl(UrlUtil.url + product.getAttachId());
         return dto;
     }
 
     /**
      * This method is used for converting ProductEntity to ResponseProductDto
      *
-     * @param productEntity ProductEntity
+     * @param product ProductEntity
      * @return ResponseProductDto
      */
-    public ResponseProductDto responseProductDto(ProductEntity productEntity) {
-        ResponseProductDto dto = new ResponseProductDto();
-        dto.setName_uz(productEntity.getNameUz());
-        dto.setDescription_uz(productEntity.getDescriptionUz());
-        dto.setName_ru(productEntity.getNameRu());
-        dto.setDescription_ru(productEntity.getDescriptionRu());
-        dto.setId(productEntity.getId());
-        dto.setScore(productEntity.getScore());
-        dto.setPrice(productEntity.getPrice());
-        dto.setModel(productEntity.getModel());
-        dto.setPhotoUrl(UrlUtil.url + productEntity.getAttachId());
+    public ResponseProductDto responseProductDto(ProductEntity product) {
+        var dto = new ResponseProductDto();
+        dto.setName_uz(product.getNameUz());
+        dto.setDescription_uz(product.getDescriptionUz());
+        dto.setName_ru(product.getNameRu());
+        dto.setDescription_ru(product.getDescriptionRu());
+        dto.setId(product.getId());
+        dto.setScore(product.getScore());
+        dto.setPrice(product.getPrice());
+        dto.setModel(product.getModel());
+        dto.setPhotoUrl(UrlUtil.url + product.getAttachId());
         return dto;
     }
 
@@ -245,7 +241,7 @@ public class ProductService {
      * @return List<ResponseProductDto></>
      */
     public List<ResponseProductDto> getProductList(Page<ProductEntity> entityPage, Language language) {
-        List<ResponseProductDto> list = new LinkedList<>();
+        var list = new LinkedList<ResponseProductDto>();
         for (ProductEntity productEntity : entityPage) {
             list.add(responseProductDtoByLan(productEntity, language));
         }
@@ -261,7 +257,7 @@ public class ProductService {
      * @return ResponseProductDto
      */
     public ResponseProductDto getProductById(Long productId, Language language) {
-        Optional<ProductEntity> optional = productRepository.findById(productId);
+        var optional = productRepository.findById(productId);
         if (optional.isEmpty())
             throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
         return responseProductDtoByLan(optional.get(), language);
@@ -278,7 +274,7 @@ public class ProductService {
      */
     @Transactional
     public ResponseMessage deleteProduct(Long productId, Language language) {
-        Optional<ProductEntity> optional = productRepository.findById(productId);
+        var optional = productRepository.findById(productId);
         if (optional.isEmpty())
             throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
         attachService.deleteById(optional.get().getAttachId());
@@ -294,7 +290,7 @@ public class ProductService {
      */
     public ResponseMessage sellProduct(String product_model, Language language) {
 
-        Optional<ProductEntity> optional = productRepository.findByModel(product_model);
+        var optional = productRepository.findByModel(product_model);
         if (optional.isEmpty()) {
             throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
         }
@@ -310,7 +306,7 @@ public class ProductService {
     }
 
     private AdminMessageEntity getProductUser(ProfileEntity user, ProductEntity product) {
-        AdminMessageEntity productUser = new AdminMessageEntity();
+        var productUser = new AdminMessageEntity();
         productUser.setUser_id(user.getId());
         productUser.setUser_name(user.getNameUz());
         productUser.setUser_surname(user.getSurnameUz());
@@ -328,9 +324,9 @@ public class ProductService {
      * @return ProfileEntity
      */
     public ProfileEntity getUser(Language language) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
-        Optional<ProfileEntity> optional = profileRepository.findById(customUserDetail.getId());
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var customUserDetail = (CustomUserDetail) authentication.getPrincipal();
+        var optional = profileRepository.findById(customUserDetail.getId());
         if (optional.isEmpty()) {
             throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language));
         }
