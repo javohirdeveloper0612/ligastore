@@ -31,8 +31,6 @@ public class DataLoader implements CommandLineRunner {
         if (modeType.equals("always")) {
             profile.setNameUz("ADMIN");
             profile.setNameRu("ADMIN");
-            profile.setUsername("admin");
-            profile.setPassword("202cb962ac59075b964b07152d234b70");
             profile.setRole(ProfileRole.ROLE_ADMIN);
             profile.setStatus(ProfileStatus.ACTIVE);
             profile.setPhoneUser("+998971234567");

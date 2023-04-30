@@ -23,11 +23,6 @@ public class RegistrationDTO {
 
     @NotBlank(message = "Surname required")
     private String surname;
-    @NotBlank(message = "Username required")
-    private String username;
-
-    @NotBlank(message = "Password required")
-    private String password;
 
     @NotNull(message = "Birthdate required")
     private Date birthdate;

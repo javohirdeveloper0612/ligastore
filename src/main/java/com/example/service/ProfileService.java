@@ -66,7 +66,6 @@ public class ProfileService {
         dto.setNameRu(entity.getNameRu());
         dto.setSurnameRu(entity.getSurnameRu());
         dto.setSurnameUz(entity.getSurnameUz());
-        dto.setUsername(entity.getUsername());
         dto.setProfessionUz(entity.getProfessionUz());
         dto.setProfessionRu(entity.getProfessionRu());
         dto.setRegionUz(entity.getRegion());
@@ -99,7 +98,6 @@ public class ProfileService {
             dto.setDistrictRu(TranslaterUtil.latinToCryllic(entity.getDistrict()));
             dto.setRegionRu(TranslaterUtil.latinToCryllic(entity.getRegion()));
         }
-        dto.setUsername(entity.getUsername());
         dto.setPhoneUser(entity.getPhoneUser());
         dto.setPhoneHome(entity.getPhoneHome());
         dto.setScore(entity.getScore());

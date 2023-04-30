@@ -10,17 +10,17 @@ public class JwtUtil {
     private static final String secretKey = "mazgiTopSecret123!";
     private static final int tokenLiveTime = 1000 * 3600 * 24 * 7;
 
-    public static String encode(String username, ProfileRole role){
+    public static String encode(String phone, ProfileRole role){
         JwtBuilder jwtBuilder = Jwts.builder();
         jwtBuilder.setIssuedAt(new Date());
         jwtBuilder.signWith(SignatureAlgorithm.HS512,secretKey);
 
-        jwtBuilder.claim("username", username);
+        jwtBuilder.claim("phone", phone);
 
         jwtBuilder.claim("role", role);
 
         jwtBuilder.setExpiration(new Date(System.currentTimeMillis() + (tokenLiveTime)));
-        jwtBuilder.setIssuer("LigaStore  application");
+        jwtBuilder.setIssuer("LigaStore application");
         return jwtBuilder.compact();
     }
 
@@ -33,12 +33,12 @@ public class JwtUtil {
 
         Claims claims = jws.getBody();
 
-        String username = (String) claims.get("username");
+        String phone = (String) claims.get("phone");
 
         String role = (String) claims.get("role");
         ProfileRole profileRole = ProfileRole.valueOf(role);
 
-        return new JwtDTO(username, profileRole);
+        return new JwtDTO(phone, profileRole);
 
     }
 }

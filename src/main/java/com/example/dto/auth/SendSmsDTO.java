@@ -15,8 +15,4 @@ public class SendSmsDTO {
     @Size(min = 13, max = 13)
     @NotBlank(message = "Phone cannot be null or empty")
     private String phone;
-
-    @NotNull(message = "Type cannot be null or empty")
-    private SmsType type;
-
 }

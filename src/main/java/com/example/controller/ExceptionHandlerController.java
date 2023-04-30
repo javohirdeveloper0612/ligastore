@@ -143,4 +143,16 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     private ResponseEntity<?> handler(AlreadyProductModelException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+    @ExceptionHandler({ProfileAlReadyRegistrationException.class})
+    private ResponseEntity<?> handler(ProfileAlReadyRegistrationException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+    @ExceptionHandler({SmsTimeOverException.class})
+    private ResponseEntity<?> handler(SmsTimeOverException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+    @ExceptionHandler({LimitOverException.class})
+    private ResponseEntity<?> handler(LimitOverException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
 }

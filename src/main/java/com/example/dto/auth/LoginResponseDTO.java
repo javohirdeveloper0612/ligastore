@@ -1,6 +1,7 @@
 package com.example.dto.auth;
 
 import com.example.enums.ProfileRole;
+import com.example.enums.ProfileStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,8 +9,7 @@ import lombok.Setter;
 @Setter
 
 public class LoginResponseDTO {
-    private String name;
-    private String username;
+    private ProfileStatus status;
     private ProfileRole role;
     private String token;
 }

@@ -25,15 +25,15 @@ public class CustomUserDetail implements UserDetails {
         return list;
     }
 
-
     @Override
     public String getPassword() {
-        return profile.getPassword();
+        return profile.getSmsCode();
     }
+
 
     @Override
     public String getUsername() {
-        return profile.getUsername();
+        return profile.getPhoneUser();
     }
 
     public Long getId() {

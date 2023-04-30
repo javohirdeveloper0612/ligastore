@@ -20,7 +20,6 @@ public class ProfileResponseDTO {
     private String nameRu;
     private String surnameUz;
     private String surnameRu;
-    private String username;
     private Date birthdate;
     private String professionUz;
     private String professionRu;

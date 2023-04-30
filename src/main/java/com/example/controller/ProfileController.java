@@ -36,7 +36,7 @@ public class ProfileController {
     }
 
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Update Profile",description = "This API for update Profile Details ")
     @GetMapping("/get")

@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Setter
@@ -24,11 +25,6 @@ public class ProfileEntity extends AbsEntity {
 
     @Column
     private String surnameRu;
-    @Column
-    private String username;
-    @Column
-    private String password;
-
     @Column
     private Date birthdate;
 
@@ -57,6 +53,8 @@ public class ProfileEntity extends AbsEntity {
 
     @Column(nullable = false)
     private String smsCode;
+    @Column
+    private LocalDateTime smsTime;
 
     @Column
     private Long score;
