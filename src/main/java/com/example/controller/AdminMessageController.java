@@ -9,6 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * This class for Admin
+ *
+ * @author Firdavs Amonov
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/admin_message")
 public class AdminMessageController {

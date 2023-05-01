@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * @author Firdavs Amonov
+ * @version 1.0
+ */
 @RestController
 @Slf4j
 @RequestMapping("/api/promo_code")
@@ -117,9 +121,10 @@ public class PromoCodeController {
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/promo_code_list_by_model")
-    @Operation(summary = "Find Promo-Code List By ProductModel", description = "This API for finding PromoCodeList By ProductModel ")
+    @Operation(summary = "Find Promo-Code List By ProductModel", description = "This API for finding" + " PromoCodeList By ProductModel ")
     public ResponseEntity<?> searchPromoCodeListByProductModel(@RequestParam String model,
-                                                               @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
+                                                               @RequestHeader(name = "Accept-Language",
+                                                                       defaultValue = "UZ") Language language) {
         log.info("Find Promo-Code List By ProductModel : model {}", model);
         List<ResponsePromoCodeDto> list = promoCodeService.findPromoCodeListByProductModel(model, language);
         return ResponseEntity.ok(list);

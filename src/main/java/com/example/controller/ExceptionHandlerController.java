@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.exception.AlreadyProductModelException;
+import com.example.exception.product.AlreadyProductModelException;
 import com.example.exception.attach.AttachNotFoundException;
 import com.example.exception.attach.FileNameNotFoundException;
 import com.example.exception.attach.FileUploadException;
@@ -26,6 +26,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.io.FileNotFoundException;
 import java.util.*;
 
+/**
+ * @author Firdavs Amonov
+ * @version 1.0
+ */
 @ControllerAdvice
 public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     @Override

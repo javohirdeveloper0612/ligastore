@@ -20,6 +20,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * This class for manipulating category data
+ * @author Firdavs Amonov
+ * @version 1.0
+ */
 @RestController
 @Slf4j
 @RequestMapping("/api/category")
@@ -103,7 +108,7 @@ public class CategoryController {
      */
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PutMapping(value = "/edite_category/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/edite_category/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "CATEGORY UPDATE BY ID", description = "This API is used for editing Category")
     public ResponseEntity<?> editeCategory(
             @PathVariable("id") Long id,
@@ -149,7 +154,7 @@ public class CategoryController {
     public ResponseEntity<?> getCategoryByPage(@RequestParam(name = "page", defaultValue = "0") int page,
                                                @RequestParam(name = "size", defaultValue = "1") int size,
                                                @RequestHeader(name = "Accept-Language", defaultValue = "UZ")
-                                                   Language language) {
+                                               Language language) {
         log.info("categoryGetPages : page {},size{}", page, size);
         Page<ResponseCategoryDto> allCategory = categoryService.categoryGetPaginationList(page, size, language);
         return ResponseEntity.ok().body(allCategory);

@@ -17,6 +17,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * This class for manipulating brand data
+ *
+ * @author Firdavs Amonov
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/brand")
 @Slf4j

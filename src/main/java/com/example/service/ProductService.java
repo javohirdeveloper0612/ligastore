@@ -1,6 +1,5 @@
 package com.example.service;
 
-import com.example.dto.attach.AttachResponseDTO;
 import com.example.dto.jwt.ResponseMessage;
 import com.example.dto.product.ProductDto;
 import com.example.dto.product.ResponseProductDto;
@@ -9,7 +8,7 @@ import com.example.entity.CategoryEntity;
 import com.example.entity.ProductEntity;
 import com.example.entity.ProfileEntity;
 import com.example.enums.Language;
-import com.example.exception.AlreadyProductModelException;
+import com.example.exception.product.AlreadyProductModelException;
 import com.example.exception.auth.ProfileNotFoundException;
 import com.example.exception.category.EmptyListException;
 import com.example.exception.category.NotFoundParentCategory;
@@ -23,8 +22,6 @@ import com.example.util.UrlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -41,9 +37,7 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final ResourceBundleService resourceBundleService;
     private final ProfileRepository profileRepository;
-
     private final AdminMesageRepository productUserRepository;
-
 
     @Autowired
     public ProductService(ProductRepository productRepository, AttachService attachService,
@@ -73,7 +67,6 @@ public class ProductService {
 
         if (productRepository.existsByModel(dto.getModel()))
             throw new AlreadyProductModelException(resourceBundleService.getMessage("model.exist", language));
-
         return responseProductDto(productRepository.save(getProductEntity(dto, optional.get())));
     }
 
@@ -122,9 +115,7 @@ public class ProductService {
      */
     public List<ResponseProductDto> getProductEntityList(List<ProductEntity> list, Language language) {
         var dtoList = new ArrayList<ResponseProductDto>();
-        for (ProductEntity product : list) {
-            dtoList.add(responseProductDtoByLan(product, language));
-        }
+        for (ProductEntity product : list) dtoList.add(responseProductDtoByLan(product, language));
         return dtoList;
     }
 
@@ -242,9 +233,7 @@ public class ProductService {
      */
     public List<ResponseProductDto> getProductList(Page<ProductEntity> entityPage, Language language) {
         var list = new LinkedList<ResponseProductDto>();
-        for (ProductEntity productEntity : entityPage) {
-            list.add(responseProductDtoByLan(productEntity, language));
-        }
+        for (ProductEntity productEntity : entityPage) list.add(responseProductDtoByLan(productEntity, language));
         return list;
     }
 
@@ -289,12 +278,9 @@ public class ProductService {
      * @return ResponseMessage
      */
     public ResponseMessage sellProduct(String product_model, Language language) {
-
         var optional = productRepository.findByModel(product_model);
-        if (optional.isEmpty()) {
+        if (optional.isEmpty())
             throw new ProductNotFoundException(resourceBundleService.getMessage("product.not.found", language));
-        }
-
         ProfileEntity user = getUser(language);
         ProductEntity product = optional.get();
 
@@ -327,9 +313,8 @@ public class ProductService {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var customUserDetail = (CustomUserDetail) authentication.getPrincipal();
         var optional = profileRepository.findById(customUserDetail.getId());
-        if (optional.isEmpty()) {
+        if (optional.isEmpty())
             throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language));
-        }
         return optional.get();
     }
 

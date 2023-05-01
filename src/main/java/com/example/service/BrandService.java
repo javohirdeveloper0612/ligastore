@@ -124,10 +124,8 @@ public class BrandService {
     public ResponseBrandDto responseBrandDtoByLan(BrandEntity brand, Language language) {
         var responseBrandDto = new ResponseBrandDto();
         responseBrandDto.setId(brand.getId());
-        if (language.equals(Language.UZ))
-            responseBrandDto.setNameUz(brand.getNameUz());
-        else
-            responseBrandDto.setNameRu(brand.getNameRu());
+        if (language.equals(Language.UZ)) responseBrandDto.setNameUz(brand.getNameUz());
+        else responseBrandDto.setNameRu(brand.getNameRu());
         responseBrandDto.setFileUrl(UrlUtil.url + brand.getAttachId());
         return responseBrandDto;
     }

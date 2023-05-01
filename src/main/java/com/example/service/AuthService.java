@@ -12,10 +12,7 @@ import com.example.util.JwtUtil;
 import com.example.util.MD5;
 import com.example.util.TranslaterUtil;
 import okhttp3.*;
-import org.apache.commons.codec.language.bm.Lang;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,50 +41,45 @@ public class AuthService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
-        Optional<ProfileEntity> optional = repository.findByPhoneUser(phone);
-
-        if (optional.isEmpty()) {
-            throw new UsernameNotFoundException("Bad Credentials");
-        }
-
+        var optional = repository.findByPhoneUser(phone);
+        if (optional.isEmpty()) throw new UsernameNotFoundException("Bad Credentials");
         return new CustomUserDetail(optional.get());
     }
 
 
     @Transactional
     public String sendSms(SendSmsDTO dto, Language language) {
-        Optional<ProfileEntity> optional = repository.findByPhoneUser(dto.getPhone());
+        var optional = repository.findByPhoneUser(dto.getPhone());
         if (optional.isPresent()) {
-            ProfileEntity entity = optional.get();
+            var entity = optional.get();
+            int attempt = repository.countBySmsCodeHistory(entity.getId());
+            if (attempt >= 5) throw new LimitOverException(resourceBundleService.getMessage("limit.over.sms", language));
 
-            int attempt= repository.countBySmsCodeHistory(entity.getId());
-
-            if (attempt>=5){
-                throw new LimitOverException(resourceBundleService.getMessage("limit.over.sms",language));
-            }
-            if (entity.getStatus().equals(ProfileStatus.ACTIVE)) {
-                return sendSms(entity, dto, ProfileStatus.ACTIVE, language);
-            } else if (entity.getStatus().equals(ProfileStatus.BLOCK)) {
-                throw new ProfileBlockedException(resourceBundleService.getMessage("profile.blocked", language.name()));
-            } else if (entity.getStatus().equals(ProfileStatus.NOT_ACTIVE)) {
-                return sendSms(entity, dto, ProfileStatus.NOT_ACTIVE, language);
+            switch (entity.getStatus()) {
+                case ACTIVE:
+                    return sendSms(entity, dto, ProfileStatus.ACTIVE, language);
+                case BLOCK:
+                    throw new ProfileBlockedException(resourceBundleService.getMessage("profile.blocked", language.name()));
+                case NOT_ACTIVE:
+                    return sendSms(entity, dto, ProfileStatus.NOT_ACTIVE, language);
             }
         }
+
+        getProfile(dto);
+        return "Tasdiqlash sms habar yuborildi";
+
+    }
+
+    public void getProfile(SendSmsDTO dto) {
         String smsCode = randomSmsCode();
         ProfileEntity profile = new ProfileEntity();
         profile.setPhoneUser(dto.getPhone());
         profile.setSmsTime(LocalDateTime.now());
         profile.setSmsCode(MD5.md5(smsCode));
-
         profile.setRole(ProfileRole.ROLE_USER);
         profile.setStatus(ProfileStatus.NOT_ACTIVE);
-
         repository.save(profile);
-
         sendSmsCode(removePlusSign(dto.getPhone()), smsCode);
-
-        return "Tasdiqlash sms habar yuborildi";
-
     }
 
     @Transactional
@@ -97,22 +89,23 @@ public class AuthService implements UserDetailsService {
         entity.setSmsTime(LocalDateTime.now());
         entity.setPhoneUser(dto.getPhone());
         entity.setStatus(status);
-
         repository.save(entity);
-
         sendSmsCode(removePlusSign(dto.getPhone()), smsCode);
-
         return "Tasdiqlash sms habar yuborildi";
     }
 
     public ProfileResponseDTO registration(Long userId, RegistrationDTO dto, Language language) {
-        Optional<ProfileEntity> optional = repository.findById(userId);
+        var optional = repository.findById(userId);
         if (optional.isEmpty()) {
             throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
         } else if (optional.get().getStatus().equals(ProfileStatus.ACTIVE))
             throw new ProfileAlReadyRegistrationException(resourceBundleService.getMessage("profile.ready.active", language));
+        var savedProfile = repository.save(getProfile(optional.get(), dto));
+        return getDTO(savedProfile);
+    }
 
-        ProfileEntity profile = optional.get();
+
+    public ProfileEntity getProfile(ProfileEntity profile, RegistrationDTO dto) {
         profile.setNameUz(dto.getName());
         profile.setNameRu(TranslaterUtil.latinToCryllic(dto.getName()));
         profile.setSurnameUz(dto.getSurname());
@@ -126,12 +119,8 @@ public class AuthService implements UserDetailsService {
         profile.setPhoneHome(dto.getPhoneHome());
         profile.setStatus(ProfileStatus.ACTIVE);
         profile.setScore(0L);
-
-        repository.save(profile);
-
-        return getDTO(profile);
+        return profile;
     }
-
 
     public void sendSmsCode(String phone, String message) {
         try {
@@ -160,10 +149,10 @@ public class AuthService implements UserDetailsService {
     }
 
     public LoginResponseDTO verification(VerificationDTO dto, Language language) {
-        Optional<ProfileEntity> optional = repository.findByPhoneUser(dto.getPhone());
-        if (optional.isEmpty()) {
-            throw new PhoneNotExistsException(resourceBundleService.getMessage("phone.not.exists", language.name()));
-        }
+        var optional = repository.findByPhoneUser(dto.getPhone());
+        if (optional.isEmpty()) throw new PhoneNotExistsException(resourceBundleService.
+                getMessage("phone.not.exists", language.name()));
+
         ProfileEntity entity = optional.get();
         if (!entity.getSmsCode().equals(MD5.md5(dto.getPassword()))) {
             throw new PasswordIncorrectException(resourceBundleService.getMessage("password.wrong", language.name()));
@@ -172,18 +161,15 @@ public class AuthService implements UserDetailsService {
         } else if (LocalDateTime.now().isAfter(entity.getSmsTime().plusMinutes(2))) {
             throw new SmsTimeOverException(resourceBundleService.getMessage("sms.time.over", language));
         }
-
-        LoginResponseDTO response = new LoginResponseDTO();
+        var response = new LoginResponseDTO();
         response.setStatus(entity.getStatus());
         response.setRole(entity.getRole());
         response.setToken(JwtUtil.encode(entity.getPhoneUser(), entity.getRole()));
-
         return response;
     }
 
 
     public ProfileResponseDTO getDTO(ProfileEntity entity) {
-
         ProfileResponseDTO dto = new ProfileResponseDTO();
         dto.setId(entity.getId());
         dto.setNameUz(entity.getNameUz());
@@ -199,17 +185,12 @@ public class AuthService implements UserDetailsService {
         dto.setPhoneUser(entity.getPhoneUser());
         dto.setPhoneHome(entity.getPhoneHome());
         dto.setScore(entity.getScore());
-
-
         return dto;
     }
 
 
     public String removePlusSign(String phoneNumber) {
-        if (phoneNumber.startsWith("+")) {
-            return phoneNumber.substring(1);
-        }
-        return phoneNumber;
+        return phoneNumber.startsWith("+") ? phoneNumber.substring(1) : phoneNumber;
     }
 
 

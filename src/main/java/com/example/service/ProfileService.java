@@ -25,14 +25,13 @@ public class ProfileService {
 
 
     public ProfileResponseDTO update(UpdateProfileDTO dto, Long userId, Language language) {
-
-        Optional<ProfileEntity> optional = repository.findById(userId);
-        if (optional.isEmpty()) {
+        var optional = repository.findById(userId);
+        if (optional.isEmpty())
             throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
-        }
+        return getDTO(repository.save(getProfile(optional.get(), dto)));
+    }
 
-
-        ProfileEntity profile = optional.get();
+    public ProfileEntity getProfile(ProfileEntity profile, UpdateProfileDTO dto) {
         profile.setNameUz(dto.getName());
         profile.setNameRu(TranslaterUtil.latinToCryllic(dto.getName()));
         profile.setSurnameUz(dto.getSurname());
@@ -42,25 +41,18 @@ public class ProfileService {
         profile.setRegion(dto.getRegion());
         profile.setDistrict(dto.getDistrict());
         profile.setPhoneHome(dto.getPhoneHome());
-
-        repository.save(profile);
-
-
-        return getDTO(profile);
+        return profile;
     }
 
     public ProfileResponseDTO getById(Long userId, Language language) {
-        Optional<ProfileEntity> optional = repository.findById(userId);
+        var optional = repository.findById(userId);
         if (optional.isEmpty())
             throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
-
-
-        return getDTOByLang(optional.get(),language);
+        return getDTOByLang(optional.get(), language);
     }
 
     public ProfileResponseDTO getDTO(ProfileEntity entity) {
-
-        ProfileResponseDTO dto = new ProfileResponseDTO();
+        var dto = new ProfileResponseDTO();
         dto.setId(entity.getId());
         dto.setNameUz(entity.getNameUz());
         dto.setNameRu(entity.getNameRu());
@@ -79,19 +71,18 @@ public class ProfileService {
 
         return dto;
     }
-    public ProfileResponseDTO getDTOByLang(ProfileEntity entity,Language language) {
 
-        ProfileResponseDTO dto = new ProfileResponseDTO();
-
+    public ProfileResponseDTO getDTOByLang(ProfileEntity entity, Language language) {
+        var dto = new ProfileResponseDTO();
         dto.setId(entity.getId());
-        if (language.equals(Language.UZ)){
+        if (language.equals(Language.UZ)) {
             dto.setNameUz(entity.getNameUz());
             dto.setSurnameUz(entity.getSurnameUz());
             dto.setProfessionUz(entity.getProfessionUz());
             dto.setRegionUz(entity.getRegion());
             dto.setDistrictUz(entity.getDistrict());
 
-        }else if (language.equals(Language.RU)){
+        } else if (language.equals(Language.RU)) {
             dto.setNameRu(entity.getNameRu());
             dto.setSurnameRu(entity.getSurnameRu());
             dto.setProfessionRu(entity.getProfessionRu());

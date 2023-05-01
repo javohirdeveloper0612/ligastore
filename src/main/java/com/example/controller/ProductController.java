@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * @author Firdavs Amonov
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/product")
 @Tag(name = "ProductController")
