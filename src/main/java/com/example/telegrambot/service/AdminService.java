@@ -19,10 +19,7 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.io.*;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 import static com.example.entity.PromoCode.PromoCodeStatus.ACTIVE;
 
@@ -48,6 +45,9 @@ public class AdminService {
      * @param message Message
      */
     public void mainMenu(Message message) {
+
+
+
         myTelegramBot.send(SendMsg.sendMsg(message.getChatId(),
                 "*ASSALOMU ALEKUM ADMIN PANELGA XUSH KELIBSIZ !" +
                         " ILTIMOS O'ZINGIZGA KERAKLI MENUNI TANLANG*",
@@ -67,7 +67,6 @@ public class AdminService {
      */
     public void sendListOfClient(Message message) {
         var list = authRepository.findAllByRole(ProfileRole.ROLE_USER);
-
         if (list.isEmpty()) {
             sendMessage(message.getChatId(), "*Mijozlar ro'yxati mavjud emas*");
             return;
@@ -77,6 +76,20 @@ public class AdminService {
         accountData.put(0L, new Object[]{"ID raqami ", "Ismi", "Familiyasi", "Tug'ilgan sanasi", "Kasbi",
                 "Viloyat", "Tuman", "Telefon raqami", "Ball", "Holati"});
 
+        setClientData(list, accountData);
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream("Mijozlar ro'yxati.xlsx");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        InputFile inputFile = new InputFile();
+        inputFile.setMedia(inputStream, "Mijozlar ro'yxati.xlsx");
+        myTelegramBot.send(SendMsg.sendDoc(message.getChatId(), inputFile));
+    }
+
+
+    public void setClientData(List<ProfileEntity> list, TreeMap<Long, Object[]> accountData) {
         for (ProfileEntity profile : list) {
             XSSFWorkbook workbook = new XSSFWorkbook();
             XSSFSheet spreadsheet = workbook.createSheet("Mijozlar ro`yxati");
@@ -87,34 +100,30 @@ public class AdminService {
                     profile.getRegion(), profile.getDistrict(), profile.getPhoneUser(), profile.getScore(), profile.getStatus().toString()});
             Set<Long> keyid = accountData.keySet();
             int rowid = 0;
+
             for (Long key : keyid) {
                 row = spreadsheet.createRow(rowid++);
                 Object[] objectArr = accountData.get(key);
                 int cellid = 0;
+
                 for (Object obj : objectArr) {
                     Cell cell = row.createCell(cellid++);
                     cell.setCellValue(String.valueOf(obj));
                 }
             }
-
-            try {
-                var out = new FileOutputStream("Mijozlar ro'yxati.xlsx");
-                workbook.write(out);
-                out.close();
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            writeclientData(workbook);
         }
-        InputStream inputStream = null;
+    }
+
+    public void writeclientData(XSSFWorkbook workbook) {
         try {
-            inputStream = new FileInputStream("Mijozlar ro'yxati.xlsx");
-        } catch (FileNotFoundException e) {
+            var out = new FileOutputStream("Mijozlar ro'yxati.xlsx");
+            workbook.write(out);
+            out.close();
+
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        InputFile inputFile = new InputFile();
-        inputFile.setMedia(inputStream, "Mijozlar ro'yxati.xlsx");
-        myTelegramBot.send(SendMsg.sendDoc(message.getChatId(), inputFile));
     }
 
     /**
@@ -194,7 +203,6 @@ public class AdminService {
             sendMessage(message.getChatId(), message.getText() + " modeli bo'yicha promo-code lar ro'yxati topilmadi");
             return;
         }
-
         Map<Long, Object[]> accountData = new TreeMap<>();
         accountData.put(0L, new Object[]{"ID RAQAMI ", "PROMO-CODE", "BALL", "PRODUCT-MODEL", "PRODUCT NOMI", "HOLATI"});
 
@@ -219,7 +227,7 @@ public class AdminService {
             }
 
             try {
-                var out = new FileOutputStream("Promo-code lar ro'yxati.xlsx");
+                var out = new FileOutputStream("Model bo'yicha Promo-code lar ro'yxati.xlsx");
                 workbook.write(out);
                 out.close();
             } catch (IOException e) {
@@ -228,7 +236,7 @@ public class AdminService {
         }
         InputStream inputStream = null;
         try {
-            inputStream = new FileInputStream("Promo-code lar ro'yxati.xlsx");
+            inputStream = new FileInputStream("Model bo'yicha Promo-code lar ro'yxati.xlsx");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }

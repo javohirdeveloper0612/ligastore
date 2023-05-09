@@ -10,7 +10,7 @@ import com.example.repository.AuthRepository;
 import com.example.security.CustomUserDetail;
 import com.example.util.JwtUtil;
 import com.example.util.MD5;
-import com.example.util.TranslaterUtil;
+import com.example.util.TranslateUtil;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -53,7 +52,8 @@ public class AuthService implements UserDetailsService {
         if (optional.isPresent()) {
             var entity = optional.get();
             int attempt = repository.countBySmsCodeHistory(entity.getId());
-            if (attempt >= 5) throw new LimitOverException(resourceBundleService.getMessage("limit.over.sms", language));
+            if (attempt >= 5)
+                throw new LimitOverException(resourceBundleService.getMessage("limit.over.sms", language));
 
             switch (entity.getStatus()) {
                 case ACTIVE:
@@ -107,12 +107,12 @@ public class AuthService implements UserDetailsService {
 
     public ProfileEntity getProfile(ProfileEntity profile, RegistrationDTO dto) {
         profile.setNameUz(dto.getName());
-        profile.setNameRu(TranslaterUtil.latinToCryllic(dto.getName()));
+        profile.setNameRu(TranslateUtil.LatinToAcrylic(dto.getName()));
         profile.setSurnameUz(dto.getSurname());
-        profile.setSurnameRu(TranslaterUtil.latinToCryllic(dto.getSurname()));
+        profile.setSurnameRu(TranslateUtil.LatinToAcrylic(dto.getSurname()));
         profile.setBirthdate(dto.getBirthdate());
         profile.setProfessionUz(dto.getProfession());
-        profile.setProfessionRu(TranslaterUtil.latinToCryllic(dto.getProfession()));
+        profile.setProfessionRu(TranslateUtil.LatinToAcrylic(dto.getProfession()));
         profile.setTeam(dto.getTeam());
         profile.setRegion(dto.getRegion());
         profile.setDistrict(dto.getDistrict());
@@ -124,19 +124,19 @@ public class AuthService implements UserDetailsService {
 
     public void sendSmsCode(String phone, String message) {
         try {
-            OkHttpClient client = new OkHttpClient().newBuilder().build();
-            MediaType mediaType = MediaType.parse("text/plain");
-            RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+            var client = new OkHttpClient().newBuilder().build();
+            MediaType.parse("text/plain");
+            var body = new MultipartBody.Builder().setType(MultipartBody.FORM)
                     .addFormDataPart("mobile_phone", phone)
-                    .addFormDataPart("message", "LigaStore:\nTasdiqlash kodi: " + message)
+                    .addFormDataPart("message", "LegaStore:\nTasdiqlash kodi: " + message)
                     .addFormDataPart("from", "4546")
                     .addFormDataPart("callback_url", "http://0000.uz/test.php")
                     .build();
-            Request request = new Request.Builder().url("https:notify.eskiz.uz/api/message/sms/send")
+            var request = new Request.Builder().url("https:notify.eskiz.uz/api/message/sms/send")
                     .addHeader("Authorization", "Bearer " + token)
                     .method("POST", body)
                     .build();
-            Response response = client.newCall(request).execute();
+            client.newCall(request).execute();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -144,8 +144,8 @@ public class AuthService implements UserDetailsService {
     }
 
     public static String randomSmsCode() {
-        Random r = new Random(System.currentTimeMillis());
-        return String.valueOf(((1 + r.nextInt(9)) * 10000 + r.nextInt(10000)));
+        Random random = new Random(System.currentTimeMillis());
+        return String.valueOf(((1 + random.nextInt(9)) * 10000 + random.nextInt(10000)));
     }
 
     public LoginResponseDTO verification(VerificationDTO dto, Language language) {
@@ -153,7 +153,7 @@ public class AuthService implements UserDetailsService {
         if (optional.isEmpty()) throw new PhoneNotExistsException(resourceBundleService.
                 getMessage("phone.not.exists", language.name()));
 
-        ProfileEntity entity = optional.get();
+        var entity = optional.get();
         if (!entity.getSmsCode().equals(MD5.md5(dto.getPassword()))) {
             throw new PasswordIncorrectException(resourceBundleService.getMessage("password.wrong", language.name()));
         } else if (entity.getStatus().equals(ProfileStatus.BLOCK)) {
@@ -179,9 +179,9 @@ public class AuthService implements UserDetailsService {
         dto.setProfessionUz(entity.getProfessionUz());
         dto.setProfessionRu(entity.getProfessionRu());
         dto.setRegionUz(entity.getRegion());
-        dto.setRegionRu(TranslaterUtil.latinToCryllic(entity.getRegion()));
+        dto.setRegionRu(TranslateUtil.LatinToAcrylic(entity.getRegion()));
         dto.setDistrictUz(entity.getDistrict());
-        dto.setDistrictRu(TranslaterUtil.latinToCryllic(entity.getDistrict()));
+        dto.setDistrictRu(TranslateUtil.LatinToAcrylic(entity.getDistrict()));
         dto.setPhoneUser(entity.getPhoneUser());
         dto.setPhoneHome(entity.getPhoneHome());
         dto.setScore(entity.getScore());

@@ -1,8 +1,6 @@
 package com.example.controller;
 
 import com.example.dto.brand.BrandDto;
-import com.example.dto.brand.ResponseBrandDto;
-import com.example.dto.jwt.ResponseMessage;
 import com.example.enums.Language;
 import com.example.service.BrandService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,8 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * This class for manipulating brand data
@@ -47,7 +43,7 @@ public class BrandController {
     @Operation(summary = "ADD BRAND API", description = "This API for adding new BRAND")
     public ResponseEntity<?> addBrand(@Valid @ModelAttribute BrandDto brandDto) {
         log.info("ADD BRAND : brandDto {}", brandDto);
-        ResponseBrandDto responseBrandDto = brandService.addBrand(brandDto);
+        var responseBrandDto = brandService.addBrand(brandDto);
         return ResponseEntity.status(201).body(responseBrandDto);
     }
 
@@ -63,7 +59,7 @@ public class BrandController {
     @GetMapping("/get_all_brand")
     @Operation(summary = "VIEW ALL BRAND API", description = "This API for viewing all brand data")
     public ResponseEntity<?> getAllBrand(@RequestHeader(name = "Accept-Language") Language language) {
-        List<ResponseBrandDto> list = brandService.getAllBrand(language);
+        var list = brandService.getAllBrand(language);
         return ResponseEntity.ok(list);
     }
 
@@ -82,7 +78,7 @@ public class BrandController {
     @Operation(summary = "VIEW BRAND BY ID API", description = "This API for viewing brand data by id")
     public ResponseEntity<?> getBrandById(@PathVariable Long brand_id, @RequestHeader(name = "Accept-Language") Language language) {
         log.info("GET BRAND BY ID  :  brand_id {}", brand_id);
-        ResponseBrandDto brand = brandService.getBrandById(brand_id, language);
+        var brand = brandService.getBrandById(brand_id, language);
         return ResponseEntity.ok(brand);
     }
 
@@ -91,7 +87,7 @@ public class BrandController {
      * if not founded brand data throw new BrandNotFoundException
      *
      * @param brand_id Long
-     * @param brandDto BrandDto
+     * @param dto      BrandDto
      * @param language Language
      * @return ResponseBrandDto
      */
@@ -99,10 +95,9 @@ public class BrandController {
     @PreAuthorize(value = "hasAnyRole('ADMIN')")
     @PutMapping(value = "/edite_brand/{brand_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "EDITE BRAND API", description = "This API for editing BRAND DATA")
-    public ResponseEntity<?> editeBrand(@PathVariable Long brand_id,
-                                        @ModelAttribute BrandDto brandDto, @RequestHeader(name = "Accept-Language") Language language) {
-        log.info("EDITE BRAND : brandDto {}", brandDto);
-        ResponseBrandDto editeBrand = brandService.editeBrand(brand_id, language, brandDto);
+    public ResponseEntity<?> editeBrand(@PathVariable Long brand_id, @ModelAttribute BrandDto dto, @RequestHeader(name = "Accept-Language") Language language) {
+        log.info("EDITE BRAND : brandDto {}", dto);
+        var editeBrand = brandService.editeBrand(brand_id, language, dto);
         return ResponseEntity.ok(editeBrand);
     }
 
@@ -120,7 +115,7 @@ public class BrandController {
     @Operation(summary = "DELETE BRAND API", description = "This API for deleting brand data")
     public ResponseEntity<?> deleteBrand(@PathVariable Long brand_id, @RequestHeader(name = "Accept-Language") Language language) {
         log.info("DELETE BRAND : brand_id{}", brand_id);
-        ResponseMessage responseMessage = brandService.deleteBrand(brand_id, language);
+        var responseMessage = brandService.deleteBrand(brand_id, language);
         return ResponseEntity.ok(responseMessage);
     }
 }

@@ -6,11 +6,9 @@ import com.example.entity.ProfileEntity;
 import com.example.enums.Language;
 import com.example.exception.auth.ProfileNotFoundException;
 import com.example.repository.AuthRepository;
-import com.example.util.TranslaterUtil;
+import com.example.util.TranslateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class ProfileService {
@@ -33,11 +31,11 @@ public class ProfileService {
 
     public ProfileEntity getProfile(ProfileEntity profile, UpdateProfileDTO dto) {
         profile.setNameUz(dto.getName());
-        profile.setNameRu(TranslaterUtil.latinToCryllic(dto.getName()));
+        profile.setNameRu(TranslateUtil.LatinToAcrylic(dto.getName()));
         profile.setSurnameUz(dto.getSurname());
-        profile.setSurnameRu(TranslaterUtil.latinToCryllic(dto.getSurname()));
+        profile.setSurnameRu(TranslateUtil.LatinToAcrylic(dto.getSurname()));
         profile.setProfessionUz(dto.getProfession());
-        profile.setProfessionRu(TranslaterUtil.latinToCryllic(dto.getProfession()));
+        profile.setProfessionRu(TranslateUtil.LatinToAcrylic(dto.getProfession()));
         profile.setRegion(dto.getRegion());
         profile.setDistrict(dto.getDistrict());
         profile.setPhoneHome(dto.getPhoneHome());
@@ -61,9 +59,9 @@ public class ProfileService {
         dto.setProfessionUz(entity.getProfessionUz());
         dto.setProfessionRu(entity.getProfessionRu());
         dto.setRegionUz(entity.getRegion());
-        dto.setRegionRu(TranslaterUtil.latinToCryllic(entity.getRegion()));
+        dto.setRegionRu(TranslateUtil.LatinToAcrylic(entity.getRegion()));
         dto.setDistrictUz(entity.getDistrict());
-        dto.setDistrictRu(TranslaterUtil.latinToCryllic(entity.getDistrict()));
+        dto.setDistrictRu(TranslateUtil.LatinToAcrylic(entity.getDistrict()));
         dto.setPhoneUser(entity.getPhoneUser());
         dto.setPhoneHome(entity.getPhoneHome());
         dto.setScore(entity.getScore());
@@ -86,8 +84,8 @@ public class ProfileService {
             dto.setNameRu(entity.getNameRu());
             dto.setSurnameRu(entity.getSurnameRu());
             dto.setProfessionRu(entity.getProfessionRu());
-            dto.setDistrictRu(TranslaterUtil.latinToCryllic(entity.getDistrict()));
-            dto.setRegionRu(TranslaterUtil.latinToCryllic(entity.getRegion()));
+            dto.setDistrictRu(TranslateUtil.LatinToAcrylic(entity.getDistrict()));
+            dto.setRegionRu(TranslateUtil.LatinToAcrylic(entity.getRegion()));
         }
         dto.setPhoneUser(entity.getPhoneUser());
         dto.setPhoneHome(entity.getPhoneHome());

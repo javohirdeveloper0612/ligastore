@@ -6,6 +6,10 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 
 import java.util.Locale;
 
+/**
+ * @author Firdavs Amonov
+ * @version 1.0
+ */
 @Configuration
 public class ResourceBundleMessageConfig {
     @Bean

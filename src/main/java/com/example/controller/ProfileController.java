@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import com.example.dto.auth.ProfileResponseDTO;
 import com.example.dto.auth.UpdateProfileDTO;
 import com.example.enums.Language;
 import com.example.security.CustomUserDetail;
@@ -14,6 +13,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @author Javohir Yallayev
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/profile")
 public class ProfileController {
@@ -26,22 +29,20 @@ public class ProfileController {
 
     @PreAuthorize("hasRole('USER')")
     @SecurityRequirement(name = "Bearer Authentication")
-    @Operation(summary = "Update Profile",description = "This API for update Profile Details ")
+    @Operation(summary = "Update Profile", description = "This API for update Profile Details ")
     @PutMapping("/update")
-    public ResponseEntity<?> update(@Valid @RequestBody UpdateProfileDTO dto,
-                                    @RequestHeader(value = "Accept-Language",defaultValue = "UZ") Language language){
-
-        ProfileResponseDTO response = service.update(dto,getUserId(),language);
+    public ResponseEntity<?> update(@Valid @RequestBody UpdateProfileDTO dto, @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
+        var response = service.update(dto, getUserId(), language);
         return ResponseEntity.ok().body(response);
     }
 
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
-    @Operation(summary = "Update Profile",description = "This API for update Profile Details ")
+    @Operation(summary = "Update Profile", description = "This API for update Profile Details ")
     @GetMapping("/get")
-    public ResponseEntity<?> getById(@RequestHeader(value = "Accept-Language",defaultValue = "UZ")Language language){
-        ProfileResponseDTO response = service.getById(getUserId(),language);
+    public ResponseEntity<?> getById(@RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
+        var response = service.getById(getUserId(), language);
         return ResponseEntity.ok(response);
     }
 

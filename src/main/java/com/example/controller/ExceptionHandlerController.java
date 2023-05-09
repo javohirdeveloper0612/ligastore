@@ -34,14 +34,10 @@ import java.util.*;
 public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object>
-    handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                 HttpHeaders headers,
-                                 HttpStatusCode status,
-                                 WebRequest request) {
+    handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", status.value());
-
         List<String> errors = new LinkedList<>();
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
             errors.add(fieldError.getDefaultMessage());

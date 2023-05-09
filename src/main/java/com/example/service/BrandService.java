@@ -57,8 +57,7 @@ public class BrandService {
         if (list.isEmpty())
             throw new EmptyListException(resourceBundleService.getMessage("brand.list.not.found", language));
         var brandDtoList = new LinkedList<ResponseBrandDto>();
-        for (BrandEntity brandEntity : list)
-            brandDtoList.add(responseBrandDtoByLan(brandEntity, language));
+        for (BrandEntity brandEntity : list) brandDtoList.add(responseBrandDtoByLan(brandEntity, language));
         return brandDtoList;
     }
 

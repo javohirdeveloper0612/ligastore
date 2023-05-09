@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import com.example.dto.jwt.ResponseMessage;
 import com.example.service.AdminMessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -53,9 +52,8 @@ public class AdminMessageController {
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/accept")
-    public ResponseEntity<?> checkAcceptable(@RequestParam Long user_id,
-                                             @RequestParam String product_model) {
-        ResponseMessage responseMessage = adminMessageService.checkAcceptable(user_id, product_model);
+    public ResponseEntity<?> checkAcceptable(@RequestParam Long user_id, @RequestParam String product_model) {
+        var responseMessage = adminMessageService.checkAcceptable(user_id, product_model);
         return ResponseEntity.ok(responseMessage);
     }
 }
