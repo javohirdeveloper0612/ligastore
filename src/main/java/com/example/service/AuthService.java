@@ -10,7 +10,7 @@ import com.example.repository.AuthRepository;
 import com.example.security.CustomUserDetail;
 import com.example.util.JwtUtil;
 import com.example.util.MD5;
-import com.example.util.TranslaterUtil;
+import com.example.util.TranslateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -95,12 +95,12 @@ public class AuthService implements UserDetailsService {
 
         ProfileEntity profile = optional.get();
         profile.setNameUz(dto.getName());
-        profile.setNameRu(TranslaterUtil.latinToCryllic(dto.getName()));
+        profile.setNameRu(TranslateUtil.latinToAcrylic(dto.getName()));
         profile.setSurnameUz(dto.getSurname());
-        profile.setSurnameRu(TranslaterUtil.latinToCryllic(dto.getSurname()));
+        profile.setSurnameRu(TranslateUtil.latinToAcrylic(dto.getSurname()));
         profile.setBirthdate(dto.getBirthdate());
         profile.setProfessionUz(dto.getProfession());
-        profile.setProfessionRu(TranslaterUtil.latinToCryllic(dto.getProfession()));
+        profile.setProfessionRu(TranslateUtil.latinToAcrylic(dto.getProfession()));
         profile.setTeam(dto.getTeam());
         profile.setRegion(dto.getRegion());
         profile.setDistrict(dto.getDistrict());
@@ -152,9 +152,9 @@ public class AuthService implements UserDetailsService {
         dto.setProfessionUz(entity.getProfessionUz());
         dto.setProfessionRu(entity.getProfessionRu());
         dto.setRegionUz(entity.getRegion());
-        dto.setRegionRu(TranslaterUtil.latinToCryllic(entity.getRegion()));
+        dto.setRegionRu(TranslateUtil.latinToAcrylic(entity.getRegion()));
         dto.setDistrictUz(entity.getDistrict());
-        dto.setDistrictRu(TranslaterUtil.latinToCryllic(entity.getDistrict()));
+        dto.setDistrictRu(TranslateUtil.latinToAcrylic(entity.getDistrict()));
         dto.setPhoneUser(entity.getPhoneUser());
         dto.setPhoneHome(entity.getPhoneHome());
         dto.setScore(entity.getScore());
