@@ -59,6 +59,7 @@ public class BrandService {
         var brandDtoList = new LinkedList<ResponseBrandDto>();
         for (BrandEntity brandEntity : list) brandDtoList.add(responseBrandDtoByLan(brandEntity, language));
         return brandDtoList;
+
     }
 
     /**
@@ -169,4 +170,5 @@ public class BrandService {
         var attachResponseDTO = attachService.uploadFile(brandDto.getMultipartFile());
         return new BrandEntity(brandDto.getNameUz(), brandDto.getNameRu(), attachResponseDTO.getId());
     }
+
 }

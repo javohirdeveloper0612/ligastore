@@ -15,11 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/**
- * @author Firdavs Amonov
- * @version 1.0
- */
-
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
@@ -29,14 +24,15 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final AuthService authService;
 
-
     @Autowired
-    public SecurityConfig(AuthEntryPointJwt authEntryPointJwt, PasswordEncoder passwordEncoder, JwtFilter jwtFilter, AuthService authService) {
+    public SecurityConfig(AuthEntryPointJwt authEntryPointJwt, PasswordEncoder passwordEncoder,
+                          JwtFilter jwtFilter, AuthService authService) {
         this.authEntryPointJwt = authEntryPointJwt;
         this.passwordEncoder = passwordEncoder;
         this.jwtFilter = jwtFilter;
         this.authService = authService;
     }
+
 
     private static final String[] AUTH_WHITELIST = {
             "/v2/api-docs",
@@ -50,7 +46,6 @@ public class SecurityConfig {
             "/swagger-resources/"
     };
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -61,7 +56,6 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .cors();
-
         http
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/public/**").permitAll()

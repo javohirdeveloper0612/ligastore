@@ -45,12 +45,10 @@ public class AdminMessageService {
      */
     public ResponseMessage checkAcceptable(Long user_id, String product_model) {
         var optionalProduct = productRepository.findByModel(product_model);
-
         if (optionalProduct.isEmpty()) return new ResponseMessage(product_model + " product modeli topilmadi",
                 false, 400);
 
         var optionalProfile = authRepository.findById(user_id);
-
         if (optionalProfile.isEmpty()) return new ResponseMessage(user_id + " id li user topilmadi",
                 false, 400);
 
@@ -63,7 +61,6 @@ public class AdminMessageService {
             authRepository.save(profile);
             return new ResponseMessage("Ball muvaffaqqiyatli yechildi", true, 200);
         }
-
         return new ResponseMessage("Ball yetarli emas", false, 400);
 
     }

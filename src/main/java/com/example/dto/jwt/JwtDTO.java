@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 public class JwtDTO {
     private Integer id;
-
     private String phone;
     private ProfileRole role;
 

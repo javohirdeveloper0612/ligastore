@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/admin_message")
 public class AdminMessageController {
-
     private final AdminMessageService adminMessageService;
 
     @Autowired

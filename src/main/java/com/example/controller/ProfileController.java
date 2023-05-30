@@ -20,13 +20,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/profile")
 public class ProfileController {
-
     private final ProfileService service;
-
     public ProfileController(ProfileService service) {
         this.service = service;
     }
 
+    /**
+     * This method is used for editing profile if not founded profile throw ProfileNotFoundException
+     * @param dto UpdateProfileDto
+     * @param language Language
+     * @return ProfileResponseDto
+     */
     @PreAuthorize("hasRole('USER')")
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Update Profile", description = "This API for update Profile Details ")

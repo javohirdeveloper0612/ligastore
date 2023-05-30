@@ -26,8 +26,7 @@ import java.util.Random;
 @Service
 public class AuthService implements UserDetailsService {
 
-    private final static String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjM4MjcsInJvbGUiOm51bGwsImRhdGEiOnsiaWQiOjM4MjcsIm5hbWUiOiJPc29iZW5ubyIsImVtYWlsIjoidW1pZHN0eWxldXpAbWFpbC5ydSIsInJvbGUiOm51bGwsImFwaV90b2tlbiI6bnVsbCwic3RhdHVzIjoiYWN0aXZlIiwic21zX2FwaV9sb2dpbiI6ImVza2l6MiIsInNtc19hcGlfcGFzc3dvcmQiOiJlJCRrIXoiLCJ1el9wcmljZSI6NTAsInVjZWxsX3ByaWNlIjoxMTUsInRlc3RfdWNlbGxfcHJpY2UiOm51bGwsImJhbGFuY2UiOjQ4NTAsImlzX3ZpcCI6MCwiaG9zdCI6InNlcnZlcjEiLCJjcmVhdGVkX2F0IjoiMjAyMy0wNC0xMVQxMzowNToyNC4wMDAwMDBaIiwidXBkYXRlZF9hdCI6IjIwMjMtMDQtMTJUMTA6MjI6MTUuMDAwMDAwWiIsIndoaXRlbGlzdCI6bnVsbH0sImlhdCI6MTY4MTI5NTEwMCwiZXhwIjoxNjgzODg3MTAwfQ.GGj4-SMvy6csvI3cQOPHqbikXhmcwzUXGsrcl6n92XM";
-
+    private final static String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjM4MjcsInJvbGUiOiJ1c2VyIiwiZGF0YSI6eyJpZCI6MzgyNywibmFtZSI6Ik9PTyBPc29iZW5ubyIsImVtYWlsIjoidW1pZHN0eWxldXpAbWFpbC5ydSIsInJvbGUiOiJ1c2VyIiwiYXBpX3Rva2VuIjpudWxsLCJzdGF0dXMiOiJhY3RpdmUiLCJzbXNfYXBpX2xvZ2luIjoiZXNraXoyIiwic21zX2FwaV9wYXNzd29yZCI6ImUkJGsheiIsInV6X3ByaWNlIjo1MCwidWNlbGxfcHJpY2UiOjExNSwidGVzdF91Y2VsbF9wcmljZSI6bnVsbCwiYmFsYW5jZSI6Mjk5ODAwLCJpc192aXAiOjAsImhvc3QiOiJzZXJ2ZXIxIiwiY3JlYXRlZF9hdCI6IjIwMjMtMDQtMTFUMTM6MDU6MjQuMDAwMDAwWiIsInVwZGF0ZWRfYXQiOiIyMDIzLTA1LTEyVDEyOjAxOjA0LjAwMDAwMFoiLCJ3aGl0ZWxpc3QiOm51bGx9LCJpYXQiOjE2ODM4OTY5MjYsImV4cCI6MTY4NjQ4ODkyNn0.HNRKAYsrVIP1mCfr914lyEy2oLN5BFasrOcl4ziHV1M";
     private final AuthRepository repository;
     private final ResourceBundleService resourceBundleService;
 
@@ -51,9 +50,9 @@ public class AuthService implements UserDetailsService {
         var optional = repository.findByPhoneUser(dto.getPhone());
         if (optional.isPresent()) {
             var entity = optional.get();
-            int attempt = repository.countBySmsCodeHistory(entity.getId());
-            if (attempt >= 5)
-                throw new LimitOverException(resourceBundleService.getMessage("limit.over.sms", language));
+//            int attempt = repository.countBySmsCodeHistory(entity.getId());
+//            if (attempt >= 5)
+//                throw new LimitOverException(resourceBundleService.getMessage("limit.over.sms", language));
 
             switch (entity.getStatus()) {
                 case ACTIVE:

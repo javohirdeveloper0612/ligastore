@@ -155,6 +155,7 @@ public class ProductService {
         product.setAttachId(uploadFile.getId());
         product.setPrice(dto.getPrice());
         product.setModel(dto.getModel());
+        product.setIsFamous(dto.getIsFamous());
         return product;
     }
 
@@ -177,6 +178,7 @@ public class ProductService {
         product.setPrice(dto.getPrice());
         product.setModel(dto.getModel());
         product.setCategory(categoryEntity);
+        product.setIsFamous(dto.getIsFamous());
         return product;
     }
 
@@ -199,6 +201,7 @@ public class ProductService {
         dto.setScore(product.getScore());
         dto.setPrice(product.getPrice());
         dto.setModel(product.getModel());
+        dto.setIsFamous(product.getIsFamous());
         dto.setPhotoUrl(UrlUtil.url + product.getAttachId());
         return dto;
     }
@@ -219,6 +222,7 @@ public class ProductService {
         dto.setScore(product.getScore());
         dto.setPrice(product.getPrice());
         dto.setModel(product.getModel());
+        dto.setIsFamous(product.getIsFamous());
         dto.setPhotoUrl(UrlUtil.url + product.getAttachId());
         return dto;
     }
@@ -319,4 +323,11 @@ public class ProductService {
     }
 
 
+    public List<ResponseProductDto> getAllProduct(Language language) {
+        var list = productRepository.findAllByOrderByIdDesc();
+        if (list.isEmpty()) throw new ProductNotFoundException(resourceBundleService.getMessage("empty.list.product", language));
+        List<ResponseProductDto> dtoList = new LinkedList<>();
+        for (ProductEntity productEntity : list) dtoList.add(responseProductDtoByLan(productEntity,language));
+        return dtoList;
+    }
 }

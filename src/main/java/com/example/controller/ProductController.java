@@ -2,6 +2,7 @@ package com.example.controller;
 
 
 import com.example.dto.product.ProductDto;
+import com.example.dto.product.ResponseProductDto;
 import com.example.enums.Language;
 import com.example.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Firdavs Amonov
@@ -157,5 +160,20 @@ public class ProductController {
         return responseMessage.isSuccess() ? ResponseEntity.ok(responseMessage) : ResponseEntity.status(400).body(responseMessage);
     }
 
+
+    /**
+     * This API for getting all Product from DB
+     * @param language Language
+     * @return List<ResponseProductDto
+     */
+
+    @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping("/get_all_product")
+    @Operation(summary = "GET ALL PRODUCT FOR HEAD DATA")
+    public ResponseEntity<?> getALLProduct(@RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
+        List<ResponseProductDto> allProduct = productService.getAllProduct(language);
+        return ResponseEntity.ok(allProduct);
+    }
 
 }

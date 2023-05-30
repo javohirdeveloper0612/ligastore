@@ -34,7 +34,9 @@ import java.util.*;
 public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object>
-    handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                 HttpHeaders headers, HttpStatusCode status,
+                                 WebRequest request) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", status.value());
@@ -143,14 +145,17 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     private ResponseEntity<?> handler(AlreadyProductModelException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
     @ExceptionHandler({ProfileAlReadyRegistrationException.class})
     private ResponseEntity<?> handler(ProfileAlReadyRegistrationException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
     @ExceptionHandler({SmsTimeOverException.class})
     private ResponseEntity<?> handler(SmsTimeOverException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
     @ExceptionHandler({LimitOverException.class})
     private ResponseEntity<?> handler(LimitOverException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

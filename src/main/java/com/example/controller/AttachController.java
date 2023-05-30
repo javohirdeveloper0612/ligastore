@@ -53,7 +53,7 @@ public class AttachController {
      */
     @GetMapping(value = "/public/download/{id}", produces = MediaType.ALL_VALUE)
     @Operation(summary = "Download method", description = "This method used for downloading file")
-    public ResponseEntity<?> downloadFile(@PathVariable String id) {
+    public ResponseEntity<?> downloadFile(@PathVariable(name = "id") String id) {
         var file = attachService.downloadFile(id);
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);

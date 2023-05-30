@@ -8,6 +8,8 @@ import com.example.exception.attach.FileUploadException;
 import com.example.exception.attach.OriginalFileNameNullException;
 import com.example.repository.AttachRepository;
 import com.example.util.UrlUtil;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -25,6 +27,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class AttachService {
     private final ResourceBundleService resourceBundleService;
     private final AttachRepository repository;
@@ -64,7 +67,7 @@ public class AttachService {
             Path path = Paths.get(attachUploadFolder + pathFolder + "/" + fileName + "." + extension);
             Files.write(path, bytes);
             var entity = repository.save(getAttach(file, fileName, extension, pathFolder));
-            return getAttachdto(entity, fileName, extension);
+            return getAttachDTO(entity, fileName, extension);
         } catch (IOException e) {
             throw new FileUploadException(resourceBundleService.getMessage("file.upload", Language.UZ));
         }
@@ -81,7 +84,15 @@ public class AttachService {
         return entity;
     }
 
-    public AttachResponseDTO getAttachdto(AttachEntity entity, String fileName, String extension) {
+    /**
+     * This method is used for converting AttachEntity to DTO
+     *
+     * @param entity    AttachEntity
+     * @param fileName  String
+     * @param extension String
+     * @return AttachResponseDTO
+     */
+    public AttachResponseDTO getAttachDTO(AttachEntity entity, String fileName, String extension) {
         var dto = new AttachResponseDTO();
         dto.setId(entity.getId());
         dto.setSize(entity.getSize());
@@ -99,10 +110,7 @@ public class AttachService {
      * @param id Integer
      * @return Message
      */
-
     public Resource downloadFile(String id) {
-
-        //we get the AttachEntity object from DB
         try {
             var entity = getAttach(id);
             var file = Paths.get(attachUploadFolder + entity.getPath() + "/" + entity.getId() + "." +
@@ -113,7 +121,13 @@ public class AttachService {
         }
     }
 
-    public String deleteById(String fileName) {
+    /**
+     * This method is used for
+     *
+     * @param fileName String
+     * @return String
+     */
+    public void deleteById(String fileName) {
 
         var optional = repository.findById(fileName);
         if (optional.isEmpty()) throw new FileNotFoundException(resourceBundleService.getMessage
@@ -123,7 +137,6 @@ public class AttachService {
             var entity = getAttach(fileName);
             var file = Paths.get(attachUploadFolder + entity.getPath() + "/" + fileName + "." + entity.getType());
             Files.delete(file);
-            return "deleted";
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -149,20 +162,16 @@ public class AttachService {
 
 
     public String getExtension(String fileName, Language language) {
-        // mp3/jpg/npg/mp4.....
-        if (Objects.isNull(fileName)) {
+        if (Objects.isNull(fileName))
             throw new OriginalFileNameNullException(resourceBundleService.getMessage("file.name.null", language));
-        }
         int lastIndex = fileName.lastIndexOf(".");
         return fileName.substring(lastIndex + 1);
     }
 
     public String updateById(String attachId, AttachResponseDTO dto) {
         var optional = repository.findById(attachId);
-        if (optional.isEmpty()) {
+        if (optional.isEmpty())
             throw new FileNotFoundException(resourceBundleService.getMessage("file.not.found", Language.UZ));
-        }
-
         try {
             var entity = getAttach(attachId);
             Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + attachId + "." + entity.getType());
