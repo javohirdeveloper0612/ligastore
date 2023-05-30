@@ -13,7 +13,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 @Component
 public class BotInitializer {
-    private final MyTelegramBot telegramBot;
+  /*  private final MyTelegramBot telegramBot;
 
     @Autowired
     public BotInitializer(MyTelegramBot telegramBot) {
@@ -25,5 +25,5 @@ public class BotInitializer {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(telegramBot);
 
-    }
+    }*/
 }

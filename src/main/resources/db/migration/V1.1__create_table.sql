@@ -1,0 +1,12 @@
+-- CREATE TABLE sms_code_history (
+--                                 id serial primary key,
+--                                 profile_id BIGINT NOT NULL,
+--                                 detail_from json,
+--                                 detail_to json,
+--                                 changed_on DATE NOT NULL
+-- );
+--
+-- create table test_table(
+--     id serial,
+--     name varchar
+-- );

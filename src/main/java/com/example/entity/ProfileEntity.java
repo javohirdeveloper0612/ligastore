@@ -33,6 +33,11 @@ public class ProfileEntity extends AbsEntity {
 
     @Column
     private String professionRu;
+    @Column(unique = true)
+    private String username;
+
+    @Column
+    private String password;
 
     @Column
     private Boolean team;

@@ -31,11 +31,11 @@ public class ProfileService {
 
     public ProfileEntity getProfile(ProfileEntity profile, UpdateProfileDTO dto) {
         profile.setNameUz(dto.getName());
-        profile.setNameRu(TranslateUtil.LatinToAcrylic(dto.getName()));
+        profile.setNameRu(TranslateUtil.latinToAcrylic(dto.getName()));
         profile.setSurnameUz(dto.getSurname());
-        profile.setSurnameRu(TranslateUtil.LatinToAcrylic(dto.getSurname()));
+        profile.setSurnameRu(TranslateUtil.latinToAcrylic(dto.getSurname()));
         profile.setProfessionUz(dto.getProfession());
-        profile.setProfessionRu(TranslateUtil.LatinToAcrylic(dto.getProfession()));
+        profile.setProfessionRu(TranslateUtil.latinToAcrylic(dto.getProfession()));
         profile.setRegion(dto.getRegion());
         profile.setDistrict(dto.getDistrict());
         profile.setPhoneHome(dto.getPhoneHome());
@@ -59,9 +59,9 @@ public class ProfileService {
         dto.setProfessionUz(entity.getProfessionUz());
         dto.setProfessionRu(entity.getProfessionRu());
         dto.setRegionUz(entity.getRegion());
-        dto.setRegionRu(TranslateUtil.LatinToAcrylic(entity.getRegion()));
+        dto.setRegionRu(TranslateUtil.latinToAcrylic(entity.getRegion()));
         dto.setDistrictUz(entity.getDistrict());
-        dto.setDistrictRu(TranslateUtil.LatinToAcrylic(entity.getDistrict()));
+        dto.setDistrictRu(TranslateUtil.latinToAcrylic(entity.getDistrict()));
         dto.setPhoneUser(entity.getPhoneUser());
         dto.setPhoneHome(entity.getPhoneHome());
         dto.setScore(entity.getScore());
@@ -84,8 +84,8 @@ public class ProfileService {
             dto.setNameRu(entity.getNameRu());
             dto.setSurnameRu(entity.getSurnameRu());
             dto.setProfessionRu(entity.getProfessionRu());
-            dto.setDistrictRu(TranslateUtil.LatinToAcrylic(entity.getDistrict()));
-            dto.setRegionRu(TranslateUtil.LatinToAcrylic(entity.getRegion()));
+            dto.setDistrictRu(TranslateUtil.latinToAcrylic(entity.getDistrict()));
+            dto.setRegionRu(TranslateUtil.latinToAcrylic(entity.getRegion()));
         }
         dto.setPhoneUser(entity.getPhoneUser());
         dto.setPhoneHome(entity.getPhoneHome());

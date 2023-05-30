@@ -56,6 +56,14 @@ public class AuthController {
         return ResponseEntity.ok(result);
     }
 
+    @Operation(summary = "Login for ADMIN",description = "Login with username and password")
+    @GetMapping("/public/login")
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginDTO dto,
+                                          @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
+        var responseDTO = service.login(dto, language);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
     private Long getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetail user = (CustomUserDetail) authentication.getPrincipal();

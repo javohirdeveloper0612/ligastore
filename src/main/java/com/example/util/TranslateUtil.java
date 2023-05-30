@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 public class TranslateUtil {
 
-    public static String LatinToAcrylic(String text) {
+    public static String latinToAcrylic(String text) {
 
         String result = "";
         try {

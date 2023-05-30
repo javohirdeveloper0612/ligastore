@@ -15,8 +15,9 @@ public interface AuthRepository extends JpaRepository<ProfileEntity, Long> {
     List<ProfileEntity> findAllByRole(ProfileRole role);
 
 
-    @Query(value = "select count(*) from sms_code_history where profile_id = ?1",nativeQuery = true)
+    @Query(value = "SELECT COUNT(DISTINCT id) FROM sms_code_history WHERE profile_id = ?1 AND changed_on >= NOW() - INTERVAL '1 DAY'",nativeQuery = true)
     int countBySmsCodeHistory(Long id);
 
+    Optional<ProfileEntity> findByUsername(String username);
 
 }
