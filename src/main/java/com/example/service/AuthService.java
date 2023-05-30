@@ -54,11 +54,11 @@ public class AuthService implements UserDetailsService {
         if (optional.isPresent()) {
             ProfileEntity entity = optional.get();
 
-            int attempt= repository.countBySmsCodeHistory(entity.getId());
+       /*     int attempt= repository.countBySmsCodeHistory(entity.getId());
 
             if (attempt>=5){
                 throw new LimitOverException(resourceBundleService.getMessage("limit.over.sms",language));
-            }
+            }*/
             if (entity.getStatus().equals(ProfileStatus.ACTIVE)) {
                 return smsService.sendSms(entity, dto, ProfileStatus.ACTIVE, language);
             } else if (entity.getStatus().equals(ProfileStatus.BLOCK)) {
