@@ -16,6 +16,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @author Javohir Yallayev
+ * @version 1.0
+ */
 @Slf4j
 @Tag(name = "AuthController")
 @RestController
@@ -38,8 +42,7 @@ public class AuthController {
      */
     @Operation(summary = "Phone Registration", description = "This API for send message Phone number")
     @PostMapping("/public/send_sms")
-    public ResponseEntity<String> sendSms(@Valid @RequestBody SendSmsDTO dto,
-                                          @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
+    public ResponseEntity<String> sendSms(@Valid @RequestBody SendSmsDTO dto, @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
         String response = service.sendSms(dto, language);
         return ResponseEntity.ok(response);
     }
@@ -54,9 +57,8 @@ public class AuthController {
     @Operation(summary = "Verification", description = "Ushbu APIdan status NOT_ACTIVE bulsa registrationga utqaziladi yoki Status ACTIVE bulsa Avval ruyxatdan utgan buladi " +
             "shunchaki tokenni saqlab applicationga utadigan qilinadi tamom !")
     @PostMapping("/public/verification")
-    public ResponseEntity<?> verification(@Valid @RequestBody VerificationDTO dto,
-                                          @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
-        LoginResponseDTO responseDTO = service.verification(dto, language);
+    public ResponseEntity<?> verification(@Valid @RequestBody VerificationDTO dto, @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
+        var responseDTO = service.verification(dto, language);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -72,9 +74,8 @@ public class AuthController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @PostMapping("/registration")
-    public ResponseEntity<ProfileResponseDTO> registration(@Valid @RequestBody RegistrationDTO dto,
-                                                            @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
-        ProfileResponseDTO result = service.registration(getUserId(), dto, language);
+    public ResponseEntity<ProfileResponseDTO> registration(@Valid @RequestBody RegistrationDTO dto, @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
+        var result = service.registration(getUserId(), dto, language);
         return ResponseEntity.ok(result);
     }
 

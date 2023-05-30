@@ -8,6 +8,8 @@ import com.example.exception.attach.FileUploadException;
 import com.example.exception.attach.OriginalFileNameNullException;
 import com.example.repository.AttachRepository;
 import com.example.util.UrlUtil;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -22,10 +24,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class AttachService {
     private final ResourceBundleService resourceBundleService;
     private final AttachRepository repository;
@@ -53,27 +55,21 @@ public class AttachService {
      * @param file MultipartHttpServletRequest
      * @return AttachDTO
      */
-
-
     public AttachResponseDTO uploadFile(MultipartFile file) {
 
         try {
-
-            String pathFolder = getYmDString(); // 2022/04/23
-            File folder = new File(attachUploadFolder + pathFolder); // attaches/2022/04/23
+            String pathFolder = getYmDString();
+            File folder = new File(attachUploadFolder + pathFolder);
             if (!folder.exists()) folder.mkdirs();
 
-            String fileName = UUID.randomUUID().toString(); // dasdasd-dasdasda-asdasda-asdasd
+            String fileName = UUID.randomUUID().toString();
             String extension = getExtension(file.getOriginalFilename(), Language.UZ); //zari.jpg
 
-            // attaches/2022/04/23/dasdasd-dasdasda-asdasda-asdasd.jpg
             byte[] bytes = file.getBytes();
             Path path = Paths.get(attachUploadFolder + pathFolder + "/" + fileName + "." + extension);
             Files.write(path, bytes);
-
-            AttachEntity entity = repository.save(getAttach(file, fileName, extension, pathFolder));
-
-            return getAttachdto(entity, fileName, extension);
+            var entity = repository.save(getAttach(file, fileName, extension, pathFolder));
+            return getAttachDTO(entity, fileName, extension);
         } catch (IOException e) {
             throw new FileUploadException(resourceBundleService.getMessage("file.upload", Language.UZ));
         }
@@ -81,7 +77,7 @@ public class AttachService {
     }
 
     public AttachEntity getAttach(MultipartFile file, String fileName, String extension, String pathFolder) {
-        AttachEntity entity = new AttachEntity();
+        var entity = new AttachEntity();
         entity.setId(fileName);
         entity.setOriginName(file.getOriginalFilename());
         entity.setType(extension);
@@ -90,8 +86,16 @@ public class AttachService {
         return entity;
     }
 
-    public AttachResponseDTO getAttachdto(AttachEntity entity, String fileName, String extension) {
-        AttachResponseDTO dto = new AttachResponseDTO();
+    /**
+     * This method is used for converting AttachEntity to DTO
+     *
+     * @param entity    AttachEntity
+     * @param fileName  String
+     * @param extension String
+     * @return AttachResponseDTO
+     */
+    public AttachResponseDTO getAttachDTO(AttachEntity entity, String fileName, String extension) {
+        var dto = new AttachResponseDTO();
         dto.setId(entity.getId());
         dto.setSize(entity.getSize());
         dto.setType(entity.getType());
@@ -108,47 +112,45 @@ public class AttachService {
      * @param id Integer
      * @return Message
      */
-
-
     public Resource downloadFile(String id) {
-
-        //we get the AttachEntity object from DB
         try {
-            AttachEntity entity = getAttach(id);
-            Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + entity.getId() + "." +
+            var entity = getAttach(id);
+            var file = Paths.get(attachUploadFolder + entity.getPath() + "/" + entity.getId() + "." +
                     entity.getType());
             return new UrlResource(file.toUri());
-
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public String deleteById(String fileName) {
+    /**
+     * This method is used for
+     *
+     * @param fileName String
+     * @return String
+     */
+    public void deleteById(String fileName) {
 
         var optional = repository.findById(fileName);
-        if (optional.isEmpty()) {
-            throw new FileNotFoundException(resourceBundleService.getMessage("file.not.found", Language.UZ));
-        }
+        if (optional.isEmpty()) throw new FileNotFoundException(resourceBundleService.getMessage
+                ("file.not.found", Language.UZ));
+
         try {
-            AttachEntity entity = getAttach(fileName);
-            Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + fileName + "." + entity.getType());
+            var entity = getAttach(fileName);
+            var file = Paths.get(attachUploadFolder + entity.getPath() + "/" + fileName + "." + entity.getType());
             Files.delete(file);
-            return "deleted";
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
 
     }
 
 
     public AttachEntity getAttach(String fileName) {
-        String id = fileName.split("\\.")[0];
+        var id = fileName.split("\\.")[0];
         var optional = repository.findById(id);
-        if (optional.isEmpty()) {
-            throw new FileNotFoundException("File Not Found");
-        }
+        if (optional.isEmpty()) throw new FileNotFoundException("File Not Found");
         return optional.get();
     }
 
@@ -157,29 +159,23 @@ public class AttachService {
         int year = Calendar.getInstance().get(Calendar.YEAR);
         int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
         int day = Calendar.getInstance().get(Calendar.DATE);
-
         return year + "/" + month + "/" + day; // 2022/04/23
     }
 
 
     public String getExtension(String fileName, Language language) {
-        // mp3/jpg/npg/mp4.....
-        if (Objects.isNull(fileName)) {
+        if (Objects.isNull(fileName))
             throw new OriginalFileNameNullException(resourceBundleService.getMessage("file.name.null", language));
-        }
         int lastIndex = fileName.lastIndexOf(".");
         return fileName.substring(lastIndex + 1);
     }
 
-
     public String updateById(String attachId, AttachResponseDTO dto) {
-        Optional<AttachEntity> optional = repository.findById(attachId);
-        if (optional.isEmpty()) {
+        var optional = repository.findById(attachId);
+        if (optional.isEmpty())
             throw new FileNotFoundException(resourceBundleService.getMessage("file.not.found", Language.UZ));
-        }
-
         try {
-            AttachEntity entity = getAttach(attachId);
+            var entity = getAttach(attachId);
             Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + attachId + "." + entity.getType());
             Files.delete(file);
             entity.setId(dto.getId());
@@ -187,9 +183,7 @@ public class AttachService {
             entity.setSize(dto.getSize());
             entity.setOriginName(dto.getOriginalName());
             entity.setType(dto.getType());
-
             repository.save(entity);
-
             return "Updated";
         } catch (IOException e) {
             throw new RuntimeException(e);

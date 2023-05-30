@@ -31,8 +31,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
         if (update.hasMessage()) {
-
-            if (message.getChatId().equals(1615192209L)) {
+            if (message.getChatId().equals(1788936824L) ) {
                 adminController.handler(message);
             }
 

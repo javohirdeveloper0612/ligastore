@@ -1,17 +1,20 @@
 package com.example.controller;
-import com.example.dto.attach.AttachResponseDTO;
+
 import com.example.service.AttachService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * @author Javohir Yallayev
+ * @version 1.0
+ */
 @Slf4j
 @Tag(name = "Attach Controller", description = "This controller for file uploading and file downloading")
 @RestController
@@ -36,7 +39,7 @@ public class AttachController {
     @Operation(summary = "Upload File API", description = "This method uploads the file in DataBase")
     public ResponseEntity<?> uploadFile(@ModelAttribute("file") MultipartFile file) {
         log.info("upload file : multipartFile {} ", file);
-        AttachResponseDTO result = attachService.uploadFile(file);
+        var result = attachService.uploadFile(file);
         return ResponseEntity.ok(result);
     }
 
@@ -45,21 +48,17 @@ public class AttachController {
      * This method is used for downloading file
      * If file is not exist DB, throw FileNotFoundException
      *
-     * @param id       Integer
+     * @param id Integer
      * @return Message
      */
-    @GetMapping(value = "/public/download/{id}",produces = MediaType.ALL_VALUE)
+    @GetMapping(value = "/public/download/{id}", produces = MediaType.ALL_VALUE)
     @Operation(summary = "Download method", description = "This method used for downloading file")
-    public ResponseEntity<?> downloadFile(@PathVariable String id) {
-
-        Resource file = attachService.downloadFile(id);
-
+    public ResponseEntity<?> downloadFile(@PathVariable(name = "id") String id) {
+        var file = attachService.downloadFile(id);
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
 
     }
-
-
 
 
 }

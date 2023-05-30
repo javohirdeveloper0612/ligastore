@@ -8,6 +8,8 @@ class LigastoreApplicationTests {
 
     @Test
     void contextLoads() {
+
+
     }
 
 }

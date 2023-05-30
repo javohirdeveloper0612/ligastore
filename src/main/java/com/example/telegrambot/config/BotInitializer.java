@@ -1,3 +1,4 @@
+
 package com.example.telegrambot.config;
 
 
@@ -18,7 +19,6 @@ public class BotInitializer {
     public BotInitializer(MyTelegramBot telegramBot) {
         this.telegramBot = telegramBot;
     }
-
 
     @EventListener({ContextRefreshedEvent.class})
     public void init() throws TelegramApiException {

@@ -57,9 +57,9 @@ public class BrandService {
         if (list.isEmpty())
             throw new EmptyListException(resourceBundleService.getMessage("brand.list.not.found", language));
         var brandDtoList = new LinkedList<ResponseBrandDto>();
-        for (BrandEntity brandEntity : list)
-            brandDtoList.add(responseBrandDtoByLan(brandEntity, language));
+        for (BrandEntity brandEntity : list) brandDtoList.add(responseBrandDtoByLan(brandEntity, language));
         return brandDtoList;
+
     }
 
     /**
@@ -124,10 +124,8 @@ public class BrandService {
     public ResponseBrandDto responseBrandDtoByLan(BrandEntity brand, Language language) {
         var responseBrandDto = new ResponseBrandDto();
         responseBrandDto.setId(brand.getId());
-        if (language.equals(Language.UZ))
-            responseBrandDto.setNameUz(brand.getNameUz());
-        else
-            responseBrandDto.setNameRu(brand.getNameRu());
+        if (language.equals(Language.UZ)) responseBrandDto.setNameUz(brand.getNameUz());
+        else responseBrandDto.setNameRu(brand.getNameRu());
         responseBrandDto.setFileUrl(UrlUtil.url + brand.getAttachId());
         return responseBrandDto;
     }
@@ -172,4 +170,5 @@ public class BrandService {
         var attachResponseDTO = attachService.uploadFile(brandDto.getMultipartFile());
         return new BrandEntity(brandDto.getNameUz(), brandDto.getNameRu(), attachResponseDTO.getId());
     }
+
 }

@@ -14,7 +14,6 @@ public class DataLoader implements CommandLineRunner {
 
     private final ProfileRepository profileRepository;
 
-
     @Value(value = "${spring.sql.init.mode}")
     private String modeType;
 

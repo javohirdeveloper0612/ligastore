@@ -36,6 +36,9 @@ public class ProductDto {
     @Positive
     private Double price;
 
+    @NotEmpty(message = "isFamous cannot be null")
+    private String isFamous;
+
 
 }
 

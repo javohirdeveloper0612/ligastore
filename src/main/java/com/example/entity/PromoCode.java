@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import static com.example.entity.PromoCode.PromoCodeStatus.ACTIVE;
-
 @Getter
 @Setter
 @Entity
@@ -19,20 +17,22 @@ public class PromoCode extends AbsEntity {
     @Column
     private String code;
 
+
     @Column(nullable = false)
     private Long score;
+
 
     @ManyToOne(cascade = CascadeType.ALL)
     private ProfileEntity profile;
 
+
     @ManyToOne
     private ProductEntity product;
+
 
     @Enumerated(EnumType.STRING)
     private PromoCodeStatus status;
 
-    public enum PromoCodeStatus {
-        ACTIVE, BLOCK
-    }
+    public enum PromoCodeStatus {ACTIVE, BLOCK}
 
 }

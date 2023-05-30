@@ -7,11 +7,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 
-public class TranslaterUtil {
+public class TranslateUtil {
 
-    public static String latinToCryllic(String text){
+    public static String LatinToAcrylic(String text) {
 
         String result = "";
         try {
@@ -23,25 +24,22 @@ public class TranslaterUtil {
             connection.setRequestProperty("Accept", "application/json");
 
             connection.setDoOutput(true);
-            String requestBody = "{\"mod\":\"lattocyr\",\"text\":\" "+text+"\",\"ignoreHtml\":true}";
+            String requestBody = "{\"mod\":\"lattocyr\",\"text\":\" " + text + "\",\"ignoreHtml\":true}";
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(connection.getOutputStream());
             outputStreamWriter.write(requestBody);
             outputStreamWriter.flush();
             outputStreamWriter.close();
 
             BufferedReader bufferedReader = new BufferedReader(
-                    new InputStreamReader(connection.getInputStream(), "utf-8"));
+                    new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
             StringBuilder response = new StringBuilder();
             String inputLine;
             while ((inputLine = bufferedReader.readLine()) != null) {
                 response.append(inputLine);
             }
             bufferedReader.close();
-
-
-            JSONObject jsonObject =new JSONObject(response.toString());
+            JSONObject jsonObject = new JSONObject(response.toString());
             result = jsonObject.getString("result");
-
 
         } catch (Exception e) {
             e.printStackTrace();

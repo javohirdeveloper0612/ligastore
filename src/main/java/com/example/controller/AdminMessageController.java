@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import com.example.dto.jwt.ResponseMessage;
 import com.example.service.AdminMessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -9,10 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * This class for Admin
+ *
+ * @author Firdavs Amonov
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/admin_message")
 public class AdminMessageController {
-
     private final AdminMessageService adminMessageService;
 
     @Autowired
@@ -47,9 +51,8 @@ public class AdminMessageController {
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/accept")
-    public ResponseEntity<?> checkAcceptable(@RequestParam Long user_id,
-                                             @RequestParam String product_model) {
-        ResponseMessage responseMessage = adminMessageService.checkAcceptable(user_id, product_model);
+    public ResponseEntity<?> checkAcceptable(@RequestParam Long user_id, @RequestParam String product_model) {
+        var responseMessage = adminMessageService.checkAcceptable(user_id, product_model);
         return ResponseEntity.ok(responseMessage);
     }
 }

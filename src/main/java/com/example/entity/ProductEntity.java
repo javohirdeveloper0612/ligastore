@@ -37,9 +37,13 @@ public class ProductEntity extends AbsEntity {
     @ManyToOne(optional = false)
     private CategoryEntity category;
 
+    @Column(nullable = false)
+    private String isFamous;
+
 
     @Column(name = "attach_id")
     private String attachId;
+
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     @JoinColumn(name = "attach_id", insertable = false, updatable = false)

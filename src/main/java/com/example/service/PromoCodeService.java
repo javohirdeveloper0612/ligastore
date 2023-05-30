@@ -78,7 +78,6 @@ public class PromoCodeService {
         var codes = promocodeRepository.findAll(pageable);
         if (codes.isEmpty()) throw new EmptyListException(resourceBundleService.getMessage("empty.list", language));
         return convertToList(codes);
-
     }
 
 
@@ -102,10 +101,8 @@ public class PromoCodeService {
      */
 
     public List<ResponsePromoCodeDto> convertToList(Page<PromoCode> codes) {
-        List<ResponsePromoCodeDto> list = new ArrayList<>();
-        for (PromoCode code : codes) {
-            list.add(responsePromoCodeDto(code));
-        }
+        var list = new ArrayList<ResponsePromoCodeDto>();
+        for (PromoCode code : codes) list.add(responsePromoCodeDto(code));
         return list;
     }
 
@@ -116,10 +113,8 @@ public class PromoCodeService {
      * @return List<PromoCodeDto></>
      */
     public List<ResponsePromoCodeDto> convertToList(List<PromoCode> codes) {
-        List<ResponsePromoCodeDto> list = new ArrayList<>();
-        for (PromoCode code : codes) {
-            list.add(responsePromoCodeDto(code));
-        }
+        var list = new ArrayList<ResponsePromoCodeDto>();
+        for (PromoCode code : codes) list.add(responsePromoCodeDto(code));
         return list;
     }
 
@@ -145,14 +140,11 @@ public class PromoCodeService {
      * @return CheckPromoCodeDto
      */
     public CheckPromoCodeDTO check_promo_code(String promoCode, Language language) {
-
         ProfileEntity user = getUser(language);
         boolean exists = promocodeRepository.existsByCodeAndProfileId(promoCode, user.getId());
-        if (exists)
-            throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));
+        if (exists) throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));
         var optional = promocodeRepository.findByCode(promoCode);
-        if (optional.isEmpty())
-            throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));
+        if (optional.isEmpty()) throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));
 
         PromoCode code = optional.get();
         long score = user.getScore() + code.getScore();
@@ -206,7 +198,6 @@ public class PromoCodeService {
         var optional = profileRepository.findById(customUserDetail.getId());
         if (optional.isEmpty()) throw new ProfileNotFoundException(resourceBundleService.
                 getMessage("profile.not.found", language));
-
         return optional.get();
     }
 }

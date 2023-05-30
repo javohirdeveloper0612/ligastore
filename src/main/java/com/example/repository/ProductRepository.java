@@ -17,5 +17,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     Optional<ProductEntity> findByModel(String model);
 
+    List<ProductEntity> findAllByOrderByIdDesc();
+
     boolean existsByModel(String model);
 }

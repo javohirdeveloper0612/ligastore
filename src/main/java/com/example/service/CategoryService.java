@@ -133,9 +133,8 @@ public class CategoryService {
      */
     public ResponseMessage deleteCategory(Long id, Language language) {
         var optional = categoryRepository.findById(id);
-        if (optional.isEmpty()) {
+        if (optional.isEmpty())
             throw new BrandNotFoundException(bundleService.getMessage("category.not.found", language));
-        }
         attachService.deleteById(optional.get().getAttachId());
         categoryRepository.deleteById(optional.get().getId());
         return new ResponseMessage("Successfully deleted", true, 200);
