@@ -5,7 +5,6 @@ import com.example.enums.Language;
 import com.example.service.BrandService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -13,12 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * This class for manipulating brand data
- *
- * @author Firdavs Amonov
- * @version 1.0
- */
+
 @RestController
 @RequestMapping("/api/brand")
 @Slf4j

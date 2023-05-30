@@ -32,6 +32,6 @@ public class AdminMessageEntity extends AbsEntity {
     private Boolean accepted = false;
 
     @Column
-    private Long sellScore;
+    private Double sellScore;
 
 }

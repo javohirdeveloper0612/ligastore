@@ -31,7 +31,7 @@ public class ProfileResponseDTO {
     private String phoneUser;
     private String message;
     private String phoneHome;
-    private Long score;
+    private Double score;
     @Enumerated(EnumType.STRING)
     private ProfileStatus status;
 

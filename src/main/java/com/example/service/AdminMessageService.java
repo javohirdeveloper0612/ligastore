@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.dto.ResponseAdminMessage;
 import com.example.dto.ResponseHistoryDto;
 import com.example.dto.jwt.ResponseMessage;
 import com.example.entity.AdminMessageEntity;
@@ -20,41 +21,45 @@ public class AdminMessageService {
     private final ProductRepository productRepository;
 
 
-    public AdminMessageService(AdminMessageRepository adminMessageRepository,
-                               AuthRepository authRepository,
-                               ProductRepository productRepository) {
+    public AdminMessageService(AdminMessageRepository adminMessageRepository, AuthRepository authRepository, ProductRepository productRepository) {
         this.adminMessageRepository = adminMessageRepository;
         this.authRepository = authRepository;
         this.productRepository = productRepository;
-
     }
 
 
-    public List<AdminMessageEntity> getAllMessage() {
-        return adminMessageRepository.findAllByOrderByIdDesc();
+    public List<ResponseAdminMessage> getAllMessage() {
+        var list = adminMessageRepository.findAllByAccepted(false);
+        List<ResponseAdminMessage> adminMessageList = new LinkedList<>();
+        for (AdminMessageEntity message : list) adminMessageList.add(getResponseAdminMessage(message));
+        return adminMessageList;
     }
 
+    public ResponseAdminMessage getResponseAdminMessage(AdminMessageEntity message) {
+        ResponseAdminMessage adminMessage = new ResponseAdminMessage();
+        adminMessage.setUser_id(message.getUserId());
+        adminMessage.setFirst_name(message.getUser_name());
+        adminMessage.setLast_name(message.getUser_surname());
+        adminMessage.setPhone(message.getPhone());
+        adminMessage.setProduct_name(message.getProduct_name());
+        adminMessage.setProduct_model(message.getProduct_model());
+        adminMessage.setAccepted(message.getAccepted());
+        return adminMessage;
+    }
 
     public ResponseMessage checkAcceptable(Long user_id, String product_model) {
         var optionalProduct = productRepository.findByModel(product_model);
-        if (optionalProduct.isEmpty()) return new ResponseMessage(product_model + " product modeli topilmadi",
-                false, 400);
-
+        if (optionalProduct.isEmpty()) return new ResponseMessage(product_model + " product modeli topilmadi", false, 400);
         var optionalProfile = authRepository.findById(user_id);
-        if (optionalProfile.isEmpty()) return new ResponseMessage(user_id + " id li user topilmadi",
-                false, 400);
-
+        if (optionalProfile.isEmpty()) return new ResponseMessage(user_id + " id li user topilmadi", false, 400);
         var product = optionalProduct.get();
         var profile = optionalProfile.get();
-
-        if (profile.getScore() >= product.getScore()) {
-            Long score = profile.getScore() - product.getScore();
-            profile.setScore(score);
-            authRepository.save(profile);
-            adminMessageRepository.save(getAdminMessageEntity(profile, product));
-            return new ResponseMessage("Ball muvaffaqqiyatli yechildi", true, 200);
-        }
-        return new ResponseMessage("Ball yetarli emas", false, 400);
+        if (profile.getScore() < product.getScore()) return new ResponseMessage("Ball yetarli emas", false, 400);
+        Double score = profile.getScore() - product.getScore();
+        profile.setScore(score);
+        authRepository.save(profile);
+        adminMessageRepository.save(getAdminMessageEntity(profile, product));
+        return new ResponseMessage("Ball muvaffaqqiyatli yechildi", true, 200);
     }
 
     public List<ResponseHistoryDto> getUserHistory(Long user_id) {

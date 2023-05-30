@@ -14,6 +14,6 @@ public class ResponseHistoryDto {
     private String last_name;
     private String phone;
     private String product_model;
-    private Long sell_score;
+    private Double sell_score;
     private Boolean isAccepted;
 }

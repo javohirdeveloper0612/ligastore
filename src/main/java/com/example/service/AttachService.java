@@ -9,7 +9,6 @@ import com.example.exception.attach.OriginalFileNameNullException;
 import com.example.repository.AttachRepository;
 import com.example.util.UrlUtil;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -38,33 +37,20 @@ public class AttachService {
 
 
     @Autowired
-    public AttachService(ResourceBundleService resourceBundleService,
-                         AttachRepository attachRepository) {
+    public AttachService(ResourceBundleService resourceBundleService, AttachRepository attachRepository) {
         this.resourceBundleService = resourceBundleService;
         this.repository = attachRepository;
 
     }
 
 
-
-
-    /**
-     * This method is used for file uploading in DataBase
-     * If File Name is Empty  ,throw FileNameNotFoundException()
-     *
-     * @param file MultipartHttpServletRequest
-     * @return AttachDTO
-     */
     public AttachResponseDTO uploadFile(MultipartFile file) {
-
         try {
             String pathFolder = getYmDString();
             File folder = new File(attachUploadFolder + pathFolder);
             if (!folder.exists()) folder.mkdirs();
-
             String fileName = UUID.randomUUID().toString();
             String extension = getExtension(file.getOriginalFilename(), Language.UZ); //zari.jpg
-
             byte[] bytes = file.getBytes();
             Path path = Paths.get(attachUploadFolder + pathFolder + "/" + fileName + "." + extension);
             Files.write(path, bytes);
@@ -86,14 +72,7 @@ public class AttachService {
         return entity;
     }
 
-    /**
-     * This method is used for converting AttachEntity to DTO
-     *
-     * @param entity    AttachEntity
-     * @param fileName  String
-     * @param extension String
-     * @return AttachResponseDTO
-     */
+
     public AttachResponseDTO getAttachDTO(AttachEntity entity, String fileName, String extension) {
         var dto = new AttachResponseDTO();
         dto.setId(entity.getId());
@@ -105,36 +84,21 @@ public class AttachService {
         return dto;
     }
 
-    /**
-     * This method is used for downloading file
-     * If file is not exist DB, throw FileNotFoundException
-     *
-     * @param id Integer
-     * @return Message
-     */
+
     public Resource downloadFile(String id) {
         try {
             var entity = getAttach(id);
-            var file = Paths.get(attachUploadFolder + entity.getPath() + "/" + entity.getId() + "." +
-                    entity.getType());
+            var file = Paths.get(attachUploadFolder + entity.getPath() + "/" + entity.getId() + "." + entity.getType());
             return new UrlResource(file.toUri());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * This method is used for
-     *
-     * @param fileName String
-     * @return String
-     */
+
     public void deleteById(String fileName) {
-
         var optional = repository.findById(fileName);
-        if (optional.isEmpty()) throw new FileNotFoundException(resourceBundleService.getMessage
-                ("file.not.found", Language.UZ));
-
+        if (optional.isEmpty()) throw new FileNotFoundException(resourceBundleService.getMessage("file.not.found", Language.UZ));
         try {
             var entity = getAttach(fileName);
             var file = Paths.get(attachUploadFolder + entity.getPath() + "/" + fileName + "." + entity.getType());
@@ -164,16 +128,14 @@ public class AttachService {
 
 
     public String getExtension(String fileName, Language language) {
-        if (Objects.isNull(fileName))
-            throw new OriginalFileNameNullException(resourceBundleService.getMessage("file.name.null", language));
+        if (Objects.isNull(fileName)) throw new OriginalFileNameNullException(resourceBundleService.getMessage("file.name.null", language));
         int lastIndex = fileName.lastIndexOf(".");
         return fileName.substring(lastIndex + 1);
     }
 
     public String updateById(String attachId, AttachResponseDTO dto) {
         var optional = repository.findById(attachId);
-        if (optional.isEmpty())
-            throw new FileNotFoundException(resourceBundleService.getMessage("file.not.found", Language.UZ));
+        if (optional.isEmpty()) throw new FileNotFoundException(resourceBundleService.getMessage("file.not.found", Language.UZ));
         try {
             var entity = getAttach(attachId);
             Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + attachId + "." + entity.getType());

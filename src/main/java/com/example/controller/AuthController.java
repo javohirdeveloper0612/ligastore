@@ -1,6 +1,9 @@
 package com.example.controller;
 
-import com.example.dto.auth.*;
+import com.example.dto.auth.ProfileResponseDTO;
+import com.example.dto.auth.RegistrationDTO;
+import com.example.dto.auth.SendSmsDTO;
+import com.example.dto.auth.VerificationDTO;
 import com.example.enums.Language;
 import com.example.security.CustomUserDetail;
 import com.example.service.AuthService;

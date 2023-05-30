@@ -13,10 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * @author Javohir Yallayev
- * @version 1.0
- */
+
 @RestController
 @RequestMapping("/api/profile")
 public class ProfileController {
@@ -39,7 +36,7 @@ public class ProfileController {
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
-    @Operation(summary = "Update Profile", description = "This API for update Profile Details ")
+    @Operation(summary = "VIEW PROFILE", description = "This API for update Profile Details ")
     @GetMapping("/get")
     public ResponseEntity<?> getById(@RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
         var response = service.getById(getUserId(), language);

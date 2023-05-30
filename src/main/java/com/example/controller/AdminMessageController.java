@@ -43,7 +43,7 @@ public class AdminMessageController {
     @Operation(summary = "USER HISTORY API", description = "Ushbu API har bir foydalanuvchining sotib olgan mahsulotining tarixinini chiqarib beradi" +
             "Buning uchun siz USER ning ID sini berishingiz talab qilinadi,Chunki har bir userning o'z history si bo'ladi")
     @GetMapping("/history/{user_id}")
-    @PreAuthorize(value = "hasRole('USER')")
+    @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<?> getUserHistory(@PathVariable Long user_id) {
         var history = adminMessageService.getUserHistory(user_id);

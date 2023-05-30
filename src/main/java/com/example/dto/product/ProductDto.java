@@ -33,10 +33,8 @@ public class ProductDto {
     private MultipartFile file;
 
     @NotNull(message = "price cannot be null or empty")
-    @Positive
     private Double price;
 
-    @NotEmpty(message = "isFamous cannot be null")
     private Boolean isFamous;
 
 

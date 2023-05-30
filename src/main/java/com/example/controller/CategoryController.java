@@ -15,12 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * This class for manipulating category data
- *
- * @author Firdavs Amonov
- * @version 1.0
- */
+
 @RestController
 @Slf4j
 @RequestMapping("/api/category")

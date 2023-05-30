@@ -24,8 +24,7 @@ public class ProfileService {
 
     public ProfileResponseDTO update(UpdateProfileDTO dto, Long userId, Language language) {
         var optional = repository.findById(userId);
-        if (optional.isEmpty())
-            throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
+        if (optional.isEmpty()) throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
         return getDTO(repository.save(getProfile(optional.get(), dto)));
     }
 
@@ -44,8 +43,7 @@ public class ProfileService {
 
     public ProfileResponseDTO getById(Long userId, Language language) {
         var optional = repository.findById(userId);
-        if (optional.isEmpty())
-            throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
+        if (optional.isEmpty()) throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
         return getDTOByLang(optional.get(), language);
     }
 

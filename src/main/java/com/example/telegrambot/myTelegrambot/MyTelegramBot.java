@@ -31,17 +31,14 @@ public class MyTelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
         if (update.hasMessage()) {
-            if (message.getChatId().equals(1788936824L) ) {
+            if (message.getChatId().equals(1030035146L) || message.getChatId().equals(1030035146L)) {
                 adminController.handler(message);
             }
 
         } else {
             send(SendMsg.sendMsg(message.getChatId(), "Unknown message"));
         }
-
     }
-
-
 
 
     @Override
@@ -69,7 +66,6 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             throw new RuntimeException(e);
         }
     }
-
 
 
 }

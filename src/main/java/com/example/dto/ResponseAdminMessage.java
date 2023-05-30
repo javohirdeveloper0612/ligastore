@@ -8,11 +8,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseAdminMessage {
-    private Long OrderId;
-    private String user_name;
-    private String user_surname;
+    private Long user_id;
+    private String first_name;
+    private String last_name;
     private String phone;
     private String product_name;
     private String product_model;
+    private Boolean accepted;
+
 
 }

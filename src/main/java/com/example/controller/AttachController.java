@@ -2,7 +2,6 @@ package com.example.controller;
 
 import com.example.service.AttachService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -11,10 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-/**
- * @author Javohir Yallayev
- * @version 1.0
- */
+
 @Slf4j
 @RestController
 @RequestMapping("/api/attach")
@@ -40,8 +36,7 @@ public class AttachController {
     @Operation(summary = "Download method", description = "This method used for downloading file")
     public ResponseEntity<?> downloadFile(@PathVariable(name = "id") String id) {
         var file = attachService.downloadFile(id);
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
 
     }
 

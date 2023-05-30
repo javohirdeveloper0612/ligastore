@@ -16,7 +16,7 @@ public class ResponseProductDto {
     private String name_ru;
     private String description_uz;
     private String description_ru;
-    private Long score;
+    private Double score;
     private Double price;
     private String model;
     private Boolean isFamous;

@@ -39,11 +39,7 @@ public class AuthService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
         Optional<ProfileEntity> optional = repository.findByPhoneUser(phone);
-
-        if (optional.isEmpty()) {
-            throw new UsernameNotFoundException("Bad Credentials");
-        }
-
+        if (optional.isEmpty()) throw new UsernameNotFoundException("Bad Credentials");
         return new CustomUserDetail(optional.get());
     }
 
@@ -53,47 +49,33 @@ public class AuthService implements UserDetailsService {
         Optional<ProfileEntity> optional = repository.findByPhoneUser(dto.getPhone());
         if (optional.isPresent()) {
             ProfileEntity entity = optional.get();
-
-       /*     int attempt= repository.countBySmsCodeHistory(entity.getId());
-
-            if (attempt>=5){
-                throw new LimitOverException(resourceBundleService.getMessage("limit.over.sms",language));
-            }*/
-            if (entity.getStatus().equals(ProfileStatus.ACTIVE)) {
-                return smsService.sendSms(entity, dto, ProfileStatus.ACTIVE, language);
-            } else if (entity.getStatus().equals(ProfileStatus.BLOCK)) {
-                throw new ProfileBlockedException(resourceBundleService.getMessage("profile.blocked", language.name()));
-            } else if (entity.getStatus().equals(ProfileStatus.NOT_ACTIVE)) {
-                return smsService.sendSms(entity, dto, ProfileStatus.NOT_ACTIVE, language);
-            }
+            if (entity.getStatus().equals(ProfileStatus.ACTIVE)) return smsService.sendSms(entity, dto, ProfileStatus.ACTIVE, language);
+             else if (entity.getStatus().equals(ProfileStatus.BLOCK)) throw new ProfileBlockedException(resourceBundleService.getMessage("profile.blocked", language.name()));
+             else if (entity.getStatus().equals(ProfileStatus.NOT_ACTIVE)) return smsService.sendSms(entity, dto, ProfileStatus.NOT_ACTIVE, language);
         }
         String smsCode = SmsService.randomSmsCode();
         ProfileEntity profile = new ProfileEntity();
         profile.setPhoneUser(dto.getPhone());
         profile.setSmsTime(LocalDateTime.now());
         profile.setSmsCode(MD5.md5(smsCode));
-
         profile.setRole(ProfileRole.ROLE_USER);
         profile.setStatus(ProfileStatus.NOT_ACTIVE);
-
         repository.save(profile);
-
-        smsService.sendSmsCode(SmsService.removePlusSign(dto.getPhone()), smsCode);
-
+        SmsService.sendSmsCode(smsService.removePlusSign(dto.getPhone()), smsCode);
         return "Tasdiqlash sms habar yuborildi";
 
     }
 
 
-
     public ProfileResponseDTO registration(Long userId, RegistrationDTO dto, Language language) {
-        Optional<ProfileEntity> optional = repository.findById(userId);
-        if (optional.isEmpty()) {
-            throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
-        } else if (optional.get().getStatus().equals(ProfileStatus.ACTIVE))
-            throw new ProfileAlReadyRegistrationException(resourceBundleService.getMessage("profile.ready.active", language));
+        var optional = repository.findById(userId);
+        if (optional.isEmpty()) throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
+        else if (optional.get().getStatus().equals(ProfileStatus.ACTIVE)) throw new ProfileAlReadyRegistrationException(resourceBundleService.getMessage("profile.ready.active", language));
+        return getDTO(repository.save(getProfile(optional.get(), dto)));
+    }
 
-        ProfileEntity profile = optional.get();
+
+    public ProfileEntity getProfile(ProfileEntity profile, RegistrationDTO dto) {
         profile.setNameUz(dto.getName());
         profile.setNameRu(TranslateUtil.latinToAcrylic(dto.getName()));
         profile.setSurnameUz(dto.getSurname());
@@ -106,43 +88,30 @@ public class AuthService implements UserDetailsService {
         profile.setDistrict(dto.getDistrict());
         profile.setPhoneHome(dto.getPhoneHome());
         profile.setStatus(ProfileStatus.ACTIVE);
-        profile.setScore(0L);
-
-        repository.save(profile);
-
-        return getDTO(profile);
+        profile.setScore(0D);
+        return profile;
     }
 
-
-
-
-
-
     public LoginResponseDTO verification(VerificationDTO dto, Language language) {
-        Optional<ProfileEntity> optional = repository.findByPhoneUser(dto.getPhone());
-        if (optional.isEmpty()) {
+        var optional = repository.findByPhoneUser(dto.getPhone());
+        if (optional.isEmpty())
             throw new PhoneNotExistsException(resourceBundleService.getMessage("phone.not.exists", language.name()));
-        }
         ProfileEntity entity = optional.get();
-        if (!entity.getSmsCode().equals(MD5.md5(dto.getPassword()))) {
+        if (!entity.getSmsCode().equals(MD5.md5(dto.getPassword())))
             throw new PasswordIncorrectException(resourceBundleService.getMessage("password.wrong", language.name()));
-        } else if (entity.getStatus().equals(ProfileStatus.BLOCK)) {
+        else if (entity.getStatus().equals(ProfileStatus.BLOCK))
             throw new ProfileBlockedException(resourceBundleService.getMessage("profile.blocked", language));
-        } else if (LocalDateTime.now().isAfter(entity.getSmsTime().plusMinutes(5))) {
+        else if (LocalDateTime.now().isAfter(entity.getSmsTime().plusMinutes(5)))
             throw new SmsTimeOverException(resourceBundleService.getMessage("sms.time.over", language));
-        }
-
         LoginResponseDTO response = new LoginResponseDTO();
         response.setStatus(entity.getStatus());
         response.setRole(entity.getRole());
         response.setToken(JwtUtil.encode(entity.getPhoneUser(), entity.getRole()));
-
         return response;
     }
 
 
     public ProfileResponseDTO getDTO(ProfileEntity entity) {
-
         ProfileResponseDTO dto = new ProfileResponseDTO();
         dto.setId(entity.getId());
         dto.setNameUz(entity.getNameUz());
@@ -158,8 +127,6 @@ public class AuthService implements UserDetailsService {
         dto.setPhoneUser(entity.getPhoneUser());
         dto.setPhoneHome(entity.getPhoneHome());
         dto.setScore(entity.getScore());
-
-
         return dto;
     }
 

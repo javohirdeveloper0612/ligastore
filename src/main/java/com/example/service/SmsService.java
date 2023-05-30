@@ -58,7 +58,7 @@ public class SmsService {
         return String.valueOf(((1 + r.nextInt(9)) * 10000 + r.nextInt(10000)));
     }
 
-    public static String removePlusSign(String phoneNumber) {
+    public  String removePlusSign(String phoneNumber) {
         if (phoneNumber.startsWith("+")) {
             return phoneNumber.substring(1);
         }

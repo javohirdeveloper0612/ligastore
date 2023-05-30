@@ -26,10 +26,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.io.FileNotFoundException;
 import java.util.*;
 
-/**
- * @author Firdavs Amonov
- * @version 1.0
- */
+
 @ControllerAdvice
 public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     @Override
