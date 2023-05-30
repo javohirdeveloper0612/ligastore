@@ -163,27 +163,5 @@ public class AuthService implements UserDetailsService {
         return dto;
     }
 
-
-    public LoginResponseDTO login(LoginDTO dto, Language language) {
-        Optional<ProfileEntity> optional = repository.findByUsername(dto.getUsername());
-
-
-            if (optional.isEmpty()) {
-                throw new PhoneNotExistsException(resourceBundleService.getMessage("phone.not.exists", language.name()));
-            }
-            ProfileEntity entity = optional.get();
-            if (!entity.getPassword().equals(MD5.md5(dto.getPassword()))) {
-                throw new PasswordIncorrectException(resourceBundleService.getMessage("password.wrong", language.name()));
-            } else if (entity.getStatus().equals(ProfileStatus.BLOCK)) {
-                throw new ProfileBlockedException(resourceBundleService.getMessage("profile.blocked", language));
-            }
-
-        LoginResponseDTO response = new LoginResponseDTO();
-        response.setStatus(entity.getStatus());
-        response.setRole(entity.getRole());
-        response.setToken(JwtUtil.encode(entity.getPhoneUser(), entity.getRole()));
-
-        return response;
-    }
 }
 
