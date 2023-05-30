@@ -38,8 +38,7 @@ public class ProductEntity extends AbsEntity {
     private CategoryEntity category;
 
     @Column(nullable = false)
-    private String isFamous;
-
+    private Boolean isFamous;
 
     @Column(name = "attach_id")
     private String attachId;

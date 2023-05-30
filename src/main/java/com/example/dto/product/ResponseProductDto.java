@@ -19,7 +19,7 @@ public class ResponseProductDto {
     private Long score;
     private Double price;
     private String model;
-    private String isFamous;
+    private Boolean isFamous;
     private String photoUrl;
 
 }

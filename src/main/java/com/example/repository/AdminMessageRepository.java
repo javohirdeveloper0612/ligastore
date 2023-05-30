@@ -7,7 +7,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AdminMesageRepository extends JpaRepository<AdminMessageEntity, Long> {
+public interface AdminMessageRepository extends JpaRepository<AdminMessageEntity, Long> {
 
     List<AdminMessageEntity> findAllByOrderByIdDesc();
+
+    List<AdminMessageEntity> findAllByUserIdAndAccepted(Long userId, Boolean accepted);
+
+
 }

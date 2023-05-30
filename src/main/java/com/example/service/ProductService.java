@@ -13,7 +13,7 @@ import com.example.exception.auth.ProfileNotFoundException;
 import com.example.exception.category.EmptyListException;
 import com.example.exception.category.NotFoundParentCategory;
 import com.example.exception.product.ProductNotFoundException;
-import com.example.repository.AdminMesageRepository;
+import com.example.repository.AdminMessageRepository;
 import com.example.repository.CategoryRepository;
 import com.example.repository.ProductRepository;
 import com.example.repository.ProfileRepository;
@@ -37,18 +37,18 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final ResourceBundleService resourceBundleService;
     private final ProfileRepository profileRepository;
-    private final AdminMesageRepository productUserRepository;
+    private final AdminMessageRepository adminMessageRepository;
 
     @Autowired
     public ProductService(ProductRepository productRepository, AttachService attachService,
                           CategoryRepository categoryRepository, ResourceBundleService resourceBundleService,
-                          ProfileRepository profileRepository, AdminMesageRepository productUserRepository) {
+                          ProfileRepository profileRepository, AdminMessageRepository productUserRepository) {
         this.productRepository = productRepository;
         this.attachService = attachService;
         this.categoryRepository = categoryRepository;
         this.resourceBundleService = resourceBundleService;
         this.profileRepository = profileRepository;
-        this.productUserRepository = productUserRepository;
+        this.adminMessageRepository = productUserRepository;
     }
 
 
@@ -289,7 +289,7 @@ public class ProductService {
         ProductEntity product = optional.get();
 
         if (user.getScore() >= product.getScore()) {
-            productUserRepository.save(getProductUser(user, product));
+            adminMessageRepository.save(getProductUser(user, product));
             return new ResponseMessage("So'rovingiz adminga xabar jo'natildi", true, 200);
         }
         return new ResponseMessage("Sizning balingiz yetarli emas", false, 400);
@@ -303,6 +303,8 @@ public class ProductService {
         productUser.setPhone(user.getPhoneUser());
         productUser.setProduct_name(product.getNameUz());
         productUser.setProduct_model(product.getModel());
+        productUser.setAccepted(false);
+        productUser.setSellScore(productUser.getSellScore());
         return productUser;
     }
 
@@ -325,9 +327,10 @@ public class ProductService {
 
     public List<ResponseProductDto> getAllProduct(Language language) {
         var list = productRepository.findAllByOrderByIdDesc();
-        if (list.isEmpty()) throw new ProductNotFoundException(resourceBundleService.getMessage("empty.list.product", language));
+        if (list.isEmpty())
+            throw new ProductNotFoundException(resourceBundleService.getMessage("empty.list.product", language));
         List<ResponseProductDto> dtoList = new LinkedList<>();
-        for (ProductEntity productEntity : list) dtoList.add(responseProductDtoByLan(productEntity,language));
+        for (ProductEntity productEntity : list) dtoList.add(responseProductDtoByLan(productEntity, language));
         return dtoList;
     }
 }

@@ -8,12 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * This class for Admin
- *
- * @author Firdavs Amonov
- * @version 1.0
- */
 @RestController
 @RequestMapping("/api/admin_message")
 public class AdminMessageController {
@@ -25,34 +19,34 @@ public class AdminMessageController {
     }
 
 
-    /**
-     * This method is used for getting message list
-     *
-     * @return List<AdminMessageEntity></>
-     */
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/message")
-    @Operation(summary = "Admin Message API", description = "This API for Sending Sms To Admin")
+    @Operation(summary = "MESSAGE TO ADMIN API", description = "Ushbu API User tomonidan qandaydir product sotib " +
+            "olinmoqchi bo'linsa adminga sms junatiladi va shu sms lar to'plamini olish uchun ushbu API ishlatiladi")
     public ResponseEntity<?> getAdminMessage() {
         return ResponseEntity.ok(adminMessageService.getAllMessage());
     }
 
-    /**
-     * This method is used for checking user press accept button or not
-     * If not founded user_id throw new ProfileNotFoundException
-     * If not founded product_model throw new ProductNotFoundException
-     *
-     * @param user_id       Long
-     * @param product_model String
-     * @return ResponseMessage
-     */
-    @Operation(summary = "Check SMS API", description = "This API for checking SMS")
+
+    @Operation(summary = "CHECK SMS API", description = "Ushbu API kelgan SMS ni tasdiqlash yoki belor qilish uchun" +
+            " ishlatiladi . Tasdiqlash uchun parametr sifatida ushbu userning ID si va Product ning model Raqami " +
+            " berish suraladi")
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/accept")
     public ResponseEntity<?> checkAcceptable(@RequestParam Long user_id, @RequestParam String product_model) {
         var responseMessage = adminMessageService.checkAcceptable(user_id, product_model);
         return ResponseEntity.ok(responseMessage);
+    }
+
+    @Operation(summary = "USER HISTORY API", description = "Ushbu API har bir foydalanuvchining sotib olgan mahsulotining tarixinini chiqarib beradi" +
+            "Buning uchun siz USER ning ID sini berishingiz talab qilinadi,Chunki har bir userning o'z history si bo'ladi")
+    @GetMapping("/history/{user_id}")
+    @PreAuthorize(value = "hasRole('USER')")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<?> getUserHistory(@PathVariable Long user_id) {
+        var history = adminMessageService.getUserHistory(user_id);
+        return ResponseEntity.ok(history);
     }
 }

@@ -34,12 +34,7 @@ public class BrandService {
         this.attachRepository = attachRepository;
     }
 
-    /**
-     * This method is used for adding new Brand
-     *
-     * @param brandDto BrandDto
-     * @return ResponseBrandDto
-     */
+
     public ResponseBrandDto addBrand(BrandDto brandDto) {
         var savedBrand = brandRepository.save(getBrand(brandDto));
         return responseBrandDto(savedBrand);

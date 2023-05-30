@@ -11,7 +11,7 @@ import lombok.Setter;
 public class AdminMessageEntity extends AbsEntity {
 
     @Column(nullable = false)
-    private Long user_id;
+    private Long userId;
 
     @Column(nullable = false)
     private String user_name;
@@ -28,5 +28,10 @@ public class AdminMessageEntity extends AbsEntity {
     @Column(nullable = false)
     private String product_model;
 
+    @Column(nullable = false)
+    private Boolean accepted = false;
+
+    @Column
+    private Long sellScore;
 
 }

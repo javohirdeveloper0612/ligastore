@@ -23,7 +23,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/product")
-@Tag(name = "ProductController")
 @Slf4j
 public class ProductController {
 
@@ -33,38 +32,24 @@ public class ProductController {
         this.productService = productService;
     }
 
-
-    /**
-     * This method is used for converting CreatedDto to ProductEntity
-     * If Category not Found throw new NotFoundParentCategoryException
-     *
-     * @param productDto ProductDto
-     * @return ProductEntity
-     */
+    @Operation(summary = "ADD PRODUCT API", description = "Ushbu API yangi product qo'shish uchun ishlatiladi va qaysi " +
+            " category ga biriktirmoqchi bo'lsangiz o'sha category ni ID raqami berish  so'raladi Agar category topilmasa" +
+            " code=400 message=category topilmadi")
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping(value = "/add_product/{category_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "ADD PRODUCT API", description = "This API for adding new Product")
     public ResponseEntity<?> addProduct(@PathVariable Long category_id, @Valid @ModelAttribute ProductDto productDto, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
         log.info("Add Product : productDto {}", productDto);
         var dto = productService.addProduct(category_id, productDto, language);
         return ResponseEntity.status(201).body(dto);
     }
 
-
-    /**
-     * This method is used for editing product data if product_id not founded
-     * throw new ProductNotFoundException
-     *
-     * @param product_id Long
-     * @param productDto ProductDto
-     * @param language   Language
-     * @return ResponseProductDto
-     */
+    @Operation(summary = "EDITE PRODUCT API", description = "Ushbu API product ni edite qilish uchun ishlatiladi " +
+            " va buning uchun sizdan productga tegishli ID raqam ni berish so'raladi Agar ID raqam topilmasa code=400" +
+            " message=product topilmadi")
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(value = "/edite/{product_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Edite Product API", description = "This API for editing Product Data")
     public ResponseEntity<?> editeProduct(@PathVariable Long product_id, @Valid @ModelAttribute ProductDto productDto, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
         log.info("Edite Product :  productDto {} ", productDto);
         var dto = productService.editeProduct(product_id, productDto, language);
@@ -72,54 +57,23 @@ public class ProductController {
 
     }
 
-
-    /**
-     * This method is used for viewing all the product data list if product list is empty
-     * throw EmptyListException
-     *
-     * @param language Language
-     * @return List<ResponseProductDto></>
-     */
+    @Operation(summary = "LIST OF PRODUCT API", description = "Ushbu API barcha product lar ro'yxatini ko'rish uchun ishlatiladi" +
+            " va sizdan ushbu productlar qaysi category ga kirsa usha categoryning ID raqami berish so'raladi")
     @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/view_product_list/{category_id}")
-    @Operation(summary = "View Product Data List API", description = "This API for viewing all the productDto")
     public ResponseEntity<?> getProductList(@PathVariable Long category_id, @RequestHeader(name = "Accept-Language") Language language) {
         log.info("getProductList : category_id{}", category_id);
         var productList = productService.getProductList(category_id, language);
         return ResponseEntity.ok(productList);
     }
 
-    /**
-     * This method is used for viewing all the product data list if product list is empty
-     * throw EmptyListException
-     *
-     * @param language Language
-     * @return List<ResponseProductDto></>
-     */
-    @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
-    @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("/view_product_list_by_page/{category_id}")
-    @Operation(summary = "View_product_List By Page API", description = "This Api for viewing all the product data by page")
-    public ResponseEntity<?> getProductListByPage(@PathVariable Long category_id, @RequestParam int page, @RequestParam int size, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
-        log.info("getProductListByPage : category_id {}", category_id);
-        var list = productService.getProductListByPage(page, size, language, category_id);
-        return ResponseEntity.ok(list);
-    }
 
-
-    /**
-     * This method is used for viewing product data by Id
-     * If not found product_id throw ProductNotFoundException
-     *
-     * @param product_id Long
-     * @param language   Language
-     * @return ResponseProductDto
-     */
+    @Operation(summary = "VIEW PRODUCT API", description = "Ushbu API har bir product ni ko'rish uchun ishlatiladi va sizdan productga" +
+            " tegishli ID raqam ni berish so'raladi Agar product topilmasa code=400 va message = product topilmadi")
     @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/view_product_by_id/{product_id}")
-    @Operation(summary = "View Product By Id API", description = "This API for viewing product data by Id")
     public ResponseEntity<?> getProductById(@PathVariable Long product_id, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
         log.info("View Product BY ID : product_id {}", product_id);
         var product = productService.getProductById(product_id, language);
@@ -127,14 +81,9 @@ public class ProductController {
     }
 
 
-    /**
-     * This method is used for deleting product data if not found product_id
-     * throw new ProductNotFoundException
-     *
-     * @param product_id Long
-     * @param language   Language
-     * @return ResponseMessage
-     */
+    @Operation(summary = "DELETE PRODUCT API", description = "Ushbu API product ni delete qilish uchun ishlatialdi" +
+            " va sizdan productga tegishli ID raqam berish suraladi Agar ID raqam topilmasa code=400 va message=" +
+            "product topilmadi degan xabar ni olasiz !")
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/deleteProduct/{product_id}")
@@ -144,16 +93,12 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
-    /**
-     * This method is used for selling product
-     *
-     * @param product_model String
-     * @return ResponseMessage
-     */
+    @Operation(summary = "SELL PRODUCT API", description = "Ushbu API Agar User product ni sotip olmoqchi bo'lsa " +
+            "ushbu API ga murojat qiladi va buning uchun sizdan product ninh modelini berish soraladi Agar product modeli " +
+            " topilmasa code=400 va message product topilmadi")
     @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @PostMapping("/sell_product")
     @SecurityRequirement(name = "Bearer Authentication")
-    @Operation(summary = "Sell Product API", description = "This API for selling Product")
     public ResponseEntity<?> sellProduct(@RequestParam String product_model, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
         log.info("Sell product :  model_product {}", product_model);
         var responseMessage = productService.sellProduct(product_model, language);
@@ -161,16 +106,10 @@ public class ProductController {
     }
 
 
-    /**
-     * This API for getting all Product from DB
-     * @param language Language
-     * @return List<ResponseProductDto
-     */
-
+    @Operation(summary = "LIST OF PRODUCT API", description = "Ushbu API barcha productlar ro'yxatini ko'rish uchun ishlatiladi")
     @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/get_all_product")
-    @Operation(summary = "GET ALL PRODUCT FOR HEAD DATA")
     public ResponseEntity<?> getALLProduct(@RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
         List<ResponseProductDto> allProduct = productService.getAllProduct(language);
         return ResponseEntity.ok(allProduct);

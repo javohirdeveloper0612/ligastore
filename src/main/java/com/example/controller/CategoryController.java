@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Slf4j
 @RequestMapping("/api/category")
-@Tag(name = "Category Controller")
 public class CategoryController {
     private final CategoryService categoryService;
 
@@ -33,52 +32,37 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-
-    /**
-     * this method and API are used to create category and ParentCategory
-     *
-     * @param dto ResponseCategoryDTO
-     * @param lan language
-     * @return result
-     */
+    @Operation(summary = "ADD_CATEGORY API", description = "Ushbu API har bir brend ga category qo'shish uchun ishlatiladi" +
+            " va qaysi brend ga category qo'shmoqchi bo'lsangiz o'sha brend ni ID raqami berishingiz so'raladi" +
+            "Agar brend topilmasa code =400 message = brend topilmadi")
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize(value = "hasRole('ADMIN')")
     @PostMapping(value = "/add_category", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "ADD_CATEGORY API", description = "This API for adding new Category")
     public ResponseEntity<?> addCategory(@Valid @ModelAttribute CategoryDto dto, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language lan) {
         log.info("Creation Category : categoryCreationDTO {} ", dto);
         var result = categoryService.add_category(dto, lan);
         return ResponseEntity.ok(result);
     }
 
-    /**
-     * This method and API are used to get the category list
-     *
-     * @param language language
-     * @return result
-     */
+    @Operation(summary = "LIST OF CATEGORY API", description = "Ushbu API barcha category lar ro'yxatini ko'rish " +
+            "uchun ishlatiladi va buning uchun qaysi brend ga tegishli category ni ko'rmoqchi bo'sangiz o'sha brend ni " +
+            "ID raqamini berishingiz so'raladi Agar brend ga tegisgli ID raqami topilmasa code=400 message = brend " +
+            "topilmadi degan xabar olasiz")
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @GetMapping("/get_all_category/{brand_id}")
-    @Operation(summary = "CATEGORY  LIST", description = "This API is used for getting category list  ")
     public ResponseEntity<?> getAllCategory(@RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language, @PathVariable Long brand_id) {
         log.info("Getting category list : brand_id {}", brand_id);
         var result = categoryService.getCategoryList(brand_id, language);
         return ResponseEntity.ok().body(result);
     }
 
-
-    /**
-     * this method and API will find the category by id
-     *
-     * @param id       Long
-     * @param language language
-     * @return result
-     */
+    @Operation(summary = "VIEW CATEGORY", description = "Ushbu API har bir category ni ID raqami bo'yicha ko'rish uchun ishlatiladi" +
+            " Buning uchun sizdan Category ning ID raqami berish  so'raladi Agar category topilmasa code=400" +
+            " message=Category topilmadi")
     @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/get_category_by_id/{id}")
-    @Operation(summary = "Get Category By ID API", description = "This API is used  category get by id ( public )")
     public ResponseEntity<?> getCategoryById(@PathVariable("id") Long id, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
         log.info("getCategoryById : id {}", id);
         var result = categoryService.getCategoryById(id, language);
@@ -86,59 +70,28 @@ public class CategoryController {
 
     }
 
-    /**
-     * this method and API are used to replace the category finder by id
-     *
-     * @param id  Long
-     * @param dto dto
-     * @param lan language
-     * @return result;
-     */
+    @Operation(summary = "EDITE CATEGORY API", description = "Ushbu API har bir category ni edite qilish uchun ishlatiladi" +
+            " buning uchun category ni ID raqamini  berish so'raladi Agar ID raqam topilmasa code=400 message=category topilmadi")
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping(value = "/edite_category/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "CATEGORY UPDATE BY ID", description = "This API is used for editing Category")
     public ResponseEntity<?> editeCategory(@PathVariable("id") Long id, @Valid @ModelAttribute EditeCategoryDto dto, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language lan) {
         log.info("Edite Category : id {},categoryUpdateDTO {}", id, dto);
         var result = categoryService.editeCategory(id, dto, lan);
         return ResponseEntity.ok().body(result);
     }
 
-    /**
-     * this method and API is used to search the category by id and remove it from the database
-     *
-     * @param id       Long
-     * @param language language
-     * @return String result
-     */
+    @Operation(summary = "DELETE CATEGORY API", description = "Ushbu API har bir category ni o'chirish uchun ishlatiladi" +
+            " va buning uchun sizdan category tegishli ID raqamini berish so'raladi Agar ID raqam topilmasa code=400" +
+            " message=category topilmadi")
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
-    @Operation(summary = "CATEGORY DELETE BY ID", description = "this API category update by id (only ADMIN) ")
     @DeleteMapping("/deleteCategory/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable("id") Long id, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
         log.info("deleteCategory : id {}", id);
         var responseMessage = categoryService.deleteCategory(id, language);
         return ResponseEntity.ok().body(responseMessage);
-
     }
 
-    /**
-     * this method and API are used to paginate the category
-     *
-     * @param page     int
-     * @param size     int
-     * @param language language
-     * @return allCategory
-     */
-    @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
-    @SecurityRequirement(name = "Bearer Authentication")
-    @Operation(summary = "CATEGORY GET LIST PAGINATION", description = "this API category list pagination (only ADMIN va USER) ")
-    @GetMapping("/get_category_list_by_page")
-    public ResponseEntity<?> getCategoryByPage(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "1") int size, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
-        log.info("categoryGetPages : page {},size{}", page, size);
-        var allCategory = categoryService.categoryGetPaginationList(page, size, language);
-        return ResponseEntity.ok().body(allCategory);
-
-    }
 
 }
