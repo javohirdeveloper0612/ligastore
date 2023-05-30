@@ -16,6 +16,16 @@ Content-Type: application/json
   "phoneHome": "+998997684433"
 }
 
+###
+GET localhost:8080/api/auth/public/login
+Accept-Language: UZ
+Content-Type: application/json
+
+{
+  "username": "adminjon",
+  "password": "1234"
+}
+
 
 
 ###

@@ -57,7 +57,7 @@ public class BrandController {
     @GetMapping("/get_all_brand")
     @Operation(summary = "VIEW ALL BRAND API", description = "This API for viewing all brand data")
     public ResponseEntity<?> getAllBrand(@RequestHeader(name = "Accept-Language") Language language) {
-        List<ResponseBrandDto> list = brandService.getAllBrand(language);
+        var list = brandService.getAllBrand(language);
         return ResponseEntity.ok(list);
     }
 
@@ -76,7 +76,7 @@ public class BrandController {
     @Operation(summary = "VIEW BRAND BY ID API", description = "This API for viewing brand data by id")
     public ResponseEntity<?> getBrandById(@PathVariable Long brand_id, @RequestHeader(name = "Accept-Language") Language language) {
         log.info("GET BRAND BY ID  :  brand_id {}", brand_id);
-        ResponseBrandDto brand = brandService.getBrandById(brand_id, language);
+        var brand = brandService.getBrandById(brand_id, language);
         return ResponseEntity.ok(brand);
     }
 

@@ -105,11 +105,11 @@
 			<artifactId>json</artifactId>
 			<version>20230227</version>
 		</dependency>
-<!--flyway dependency-->
-		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-core</artifactId>
-		</dependency>
+<!--&lt;!&ndash;flyway dependency&ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>org.flywaydb</groupId>-->
+<!--			<artifactId>flyway-core</artifactId>-->
+<!--		</dependency>-->
 
 
 

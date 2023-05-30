@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
 import java.util.List;
 
 @RestController
@@ -50,7 +51,7 @@ public class CategoryController {
                                          @RequestHeader(name = "Accept-Language", defaultValue = "UZ")
                                          Language language) {
         log.info("Creation Category : categoryCreationDTO {} ", categoryCreationDTO);
-        ResponseCategoryDto result = categoryService.add_category(categoryCreationDTO, language);
+        var result = categoryService.add_category(categoryCreationDTO, language);
         return ResponseEntity.ok(result);
     }
 
@@ -71,7 +72,6 @@ public class CategoryController {
         List<ResponseCategoryDto> result = categoryService.getCategoryList(brand_id, language);
         return ResponseEntity.ok().body(result);
     }
-
 
     /**
      * this method and API will find the category by id
