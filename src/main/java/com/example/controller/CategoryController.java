@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @Slf4j
 @RequestMapping("/api/category")
@@ -34,8 +33,7 @@ public class CategoryController {
     @PostMapping(value = "/add_category", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addCategory(@Valid @ModelAttribute CategoryDto dto, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language lan) {
         log.info("Creation Category : categoryCreationDTO {} ", dto);
-        var result = categoryService.add_category(dto, lan);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(categoryService.add_category(dto, lan));
     }
 
     @Operation(summary = "LIST OF CATEGORY API", description = "Ushbu API barcha category lar ro'yxatini ko'rish " +
@@ -47,8 +45,7 @@ public class CategoryController {
     @GetMapping("/get_all_category/{brand_id}")
     public ResponseEntity<?> getAllCategory(@RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language, @PathVariable Long brand_id) {
         log.info("Getting category list : brand_id {}", brand_id);
-        var result = categoryService.getCategoryList(brand_id, language);
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.ok().body(categoryService.getCategoryList(brand_id, language));
     }
 
     @Operation(summary = "VIEW CATEGORY", description = "Ushbu API har bir category ni ID raqami bo'yicha ko'rish uchun ishlatiladi" +
@@ -59,9 +56,7 @@ public class CategoryController {
     @GetMapping("/get_category_by_id/{id}")
     public ResponseEntity<?> getCategoryById(@PathVariable("id") Long id, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
         log.info("getCategoryById : id {}", id);
-        var result = categoryService.getCategoryById(id, language);
-        return ResponseEntity.ok().body(result);
-
+        return ResponseEntity.ok().body(categoryService.getCategoryById(id, language));
     }
 
     @Operation(summary = "EDITE CATEGORY API", description = "Ushbu API har bir category ni edite qilish uchun ishlatiladi" +
@@ -71,10 +66,8 @@ public class CategoryController {
     @PutMapping(value = "/edite_category/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> editeCategory(@PathVariable("id") Long id, @Valid @ModelAttribute EditeCategoryDto dto, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language lan) {
         log.info("Edite Category : id {},categoryUpdateDTO {}", id, dto);
-        var result = categoryService.editeCategory(id, dto, lan);
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.ok().body(categoryService.editeCategory(id, dto, lan));
     }
-
     @Operation(summary = "DELETE CATEGORY API", description = "Ushbu API har bir category ni o'chirish uchun ishlatiladi" +
             " va buning uchun sizdan category tegishli ID raqamini berish so'raladi Agar ID raqam topilmasa code=400" +
             " message=category topilmadi")
@@ -83,8 +76,7 @@ public class CategoryController {
     @DeleteMapping("/deleteCategory/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable("id") Long id, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
         log.info("deleteCategory : id {}", id);
-        var responseMessage = categoryService.deleteCategory(id, language);
-        return ResponseEntity.ok().body(responseMessage);
+        return ResponseEntity.ok().body(categoryService.deleteCategory(id, language));
     }
 
 

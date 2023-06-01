@@ -5,18 +5,14 @@ import com.example.dto.auth.RegistrationDTO;
 import com.example.dto.auth.SendSmsDTO;
 import com.example.dto.auth.VerificationDTO;
 import com.example.enums.Language;
-import com.example.security.CustomUserDetail;
 import com.example.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -36,16 +32,16 @@ public class AuthController {
     @Operation(summary = "SEND SMS TO PHONE API", description = "Ushbu API telefon raqamga sms junatish uchun ishlatiladi")
     @PostMapping("/public/send_sms")
     public ResponseEntity<String> sendSms(@Valid @RequestBody SendSmsDTO dto, @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
-        String response = service.sendSms(dto, language);
-        return ResponseEntity.ok(response);
+        log.info("SEND SMS : dto{}", dto);
+        return ResponseEntity.ok(service.sendSms(dto, language));
     }
 
 
     @Operation(summary = "VERIFICATION SMS CODE API", description = "Ushbu API Telefon raqamga kelgan sms ni verifikatsiya" + " qilish uchun ishlatiladi")
     @PostMapping("/public/verification")
     public ResponseEntity<?> verification(@Valid @RequestBody VerificationDTO dto, @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
-        var responseDTO = service.verification(dto, language);
-        return ResponseEntity.ok().body(responseDTO);
+        log.info("VERIFICATION SMS : dto{}", dto);
+        return ResponseEntity.ok().body(service.verification(dto, language));
     }
 
     @Operation(summary = "REGISTER USER API", description = "Ushbu API USER ni registratsiya qilish uchun ishlatiladi")
@@ -53,11 +49,9 @@ public class AuthController {
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @PostMapping("/registration")
     public ResponseEntity<ProfileResponseDTO> registration(@Valid @RequestBody RegistrationDTO dto, @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
-        var result = service.registration(dto, language);
-        return ResponseEntity.ok(result);
+        log.info("REGISTER USER : dto {}", dto);
+        return ResponseEntity.ok(service.registration(dto, language));
     }
-
-
 
 
 }

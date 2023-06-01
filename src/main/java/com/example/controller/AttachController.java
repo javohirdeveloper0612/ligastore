@@ -1,7 +1,6 @@
 package com.example.controller;
 
 import com.example.service.AttachService;
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -26,8 +25,7 @@ public class AttachController {
     @PostMapping(value = "/public/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadFile(@ModelAttribute("file") MultipartFile file) {
         log.info("upload file : multipartFile {} ", file);
-        var result = attachService.uploadFile(file);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(attachService.uploadFile(file));
     }
 
 

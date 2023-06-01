@@ -76,12 +76,14 @@ public class PromoCodeService {
 
 
     public CheckPromoCodeDTO check_promo_code(String promoCode, Language language) {
-        ProfileEntity user = getUser(language);
+        var user = getUser(language);
         boolean exists = promocodeRepository.existsByCodeAndProfileId(promoCode, user.getId());
-        if (exists) throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));
+        if (exists)
+            throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));
         var optional = promocodeRepository.findByCode(promoCode);
-        if (optional.isEmpty()) throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));
-        PromoCode code = optional.get();
+        if (optional.isEmpty())
+            throw new InvalidPromoCodeException(resourceBundleService.getMessage("invalid.promo_code", language));
+        var code = optional.get();
         double score = user.getScore() + code.getScore();
         user.setScore(score);
         code.setProfile(user);

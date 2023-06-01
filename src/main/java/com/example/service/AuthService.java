@@ -12,7 +12,6 @@ import com.example.util.JwtUtil;
 import com.example.util.MD5;
 import com.example.util.TranslateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -103,14 +102,14 @@ public class AuthService implements UserDetailsService {
         var optional = repository.findByPhoneUser(dto.getPhone());
         if (optional.isEmpty())
             throw new PhoneNotExistsException(resourceBundleService.getMessage("phone.not.exists", language.name()));
-        ProfileEntity entity = optional.get();
+        var entity = optional.get();
         if (!entity.getSmsCode().equals(MD5.md5(dto.getPassword())))
             throw new PasswordIncorrectException(resourceBundleService.getMessage("password.wrong", language.name()));
         else if (entity.getStatus().equals(ProfileStatus.BLOCK))
             throw new ProfileBlockedException(resourceBundleService.getMessage("profile.blocked", language));
         else if (LocalDateTime.now().isAfter(entity.getSmsTime().plusMinutes(5)))
             throw new SmsTimeOverException(resourceBundleService.getMessage("sms.time.over", language));
-        LoginResponseDTO response = new LoginResponseDTO();
+        var response = new LoginResponseDTO();
         response.setStatus(entity.getStatus());
         response.setRole(entity.getRole());
         response.setToken(JwtUtil.encode(entity.getPhoneUser(), entity.getRole()));
@@ -119,7 +118,7 @@ public class AuthService implements UserDetailsService {
 
 
     public ProfileResponseDTO getDTO(ProfileEntity entity) {
-        ProfileResponseDTO dto = new ProfileResponseDTO();
+        var dto = new ProfileResponseDTO();
         dto.setId(entity.getId());
         dto.setNameUz(entity.getNameUz());
         dto.setNameRu(entity.getNameRu());
@@ -138,8 +137,8 @@ public class AuthService implements UserDetailsService {
     }
 
     private Long getUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetail user = (CustomUserDetail) authentication.getPrincipal();
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var user = (CustomUserDetail) authentication.getPrincipal();
         return user.getId();
     }
 

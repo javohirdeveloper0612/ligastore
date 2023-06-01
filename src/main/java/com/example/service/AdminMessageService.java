@@ -5,18 +5,16 @@ import com.example.dto.ResponseHistoryDto;
 import com.example.dto.jwt.ResponseMessage;
 import com.example.entity.AdminMessageEntity;
 import com.example.entity.ProductEntity;
-import com.example.entity.ProfileEntity;
 import com.example.repository.AdminMessageRepository;
 import com.example.repository.AuthRepository;
 import com.example.repository.ProductRepository;
 import com.example.security.CustomUserDetail;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AdminMessageService {
@@ -34,13 +32,13 @@ public class AdminMessageService {
 
     public List<ResponseAdminMessage> getAllMessage() {
         var list = adminMessageRepository.findAllByOrderByIdDesc();
-        List<ResponseAdminMessage> adminMessageList = new LinkedList<>();
+        var adminMessageList = new LinkedList<ResponseAdminMessage>();
         for (AdminMessageEntity message : list) adminMessageList.add(getResponseAdminMessage(message));
         return adminMessageList;
     }
 
     public ResponseAdminMessage getResponseAdminMessage(AdminMessageEntity message) {
-        ResponseAdminMessage adminMessage = new ResponseAdminMessage();
+        var adminMessage = new ResponseAdminMessage();
         adminMessage.setId(message.getId());
         adminMessage.setFirst_name(message.getUser_name());
         adminMessage.setLast_name(message.getUser_surname());
@@ -70,7 +68,7 @@ public class AdminMessageService {
 
     public List<ResponseHistoryDto> getUserHistory() {
         var list = adminMessageRepository.findAllByUserIdAndAccepted(getUserId(), true);
-        List<ResponseHistoryDto> responseHistoryDtoList = new LinkedList<>();
+        var responseHistoryDtoList = new LinkedList<ResponseHistoryDto>();
         for (AdminMessageEntity message : list) responseHistoryDtoList.add(getHistoryDto(message));
         return responseHistoryDtoList;
     }
@@ -82,7 +80,7 @@ public class AdminMessageService {
     }
 
     public ResponseHistoryDto getHistoryDto(AdminMessageEntity message) {
-        ResponseHistoryDto dto = new ResponseHistoryDto();
+        var dto = new ResponseHistoryDto();
         dto.setProduct_model(message.getProduct_model());
         dto.setSell_score(message.getSellScore());
         dto.setFileUrl(message.getFileUrl());
@@ -90,8 +88,17 @@ public class AdminMessageService {
     }
 
     private Long getUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetail user = (CustomUserDetail) authentication.getPrincipal();
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var user = (CustomUserDetail) authentication.getPrincipal();
         return user.getId();
+    }
+
+    @Transactional
+    public ResponseMessage deleteMessage(Long id) {
+        var optional = adminMessageRepository.findById(id);
+        if (optional.isEmpty())
+            return new ResponseMessage(" ushbu " + id + " raqamli  message topilmadio ", false, 400);
+        adminMessageRepository.delete(optional.get());
+        return new ResponseMessage("Muvaffaqqiyatli o'chirildi", true, 200);
     }
 }

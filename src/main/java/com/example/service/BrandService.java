@@ -36,8 +36,7 @@ public class BrandService {
 
 
     public ResponseBrandDto addBrand(BrandDto brandDto) {
-        var savedBrand = brandRepository.save(getBrand(brandDto));
-        return responseBrandDto(savedBrand);
+        return responseBrandDto(brandRepository.save(getBrand(brandDto)));
     }
 
 
@@ -64,9 +63,7 @@ public class BrandService {
         var optional = brandRepository.findById(brand_id);
         if (optional.isEmpty())
             throw new BrandNotFoundException(resourceBundleService.getMessage("brand.not.found", language));
-        var editedBrand = brandRepository.save(getBrand(optional.get(), brandDto));
-        attachRepository.deleteById(optional.get().getAttachId());
-        return responseBrandDtoByLan(editedBrand, language);
+        return responseBrandDtoByLan(brandRepository.save(getBrand(optional.get(), brandDto)), language);
     }
 
 
@@ -75,7 +72,6 @@ public class BrandService {
         var optional = brandRepository.findById(brand_id);
         if (optional.isEmpty())
             throw new BrandNotFoundException(resourceBundleService.getMessage("brand.not.found", language));
-        attachService.deleteById(optional.get().getAttachId());
         brandRepository.delete(optional.get());
         return new ResponseMessage("Successfully deleted", true, 200);
     }
@@ -97,19 +93,18 @@ public class BrandService {
 
 
     public BrandEntity getBrand(BrandDto brandDto) {
-        var attach = attachService.uploadFile(brandDto.getMultipartFile());
-        return new BrandEntity(brandDto.getNameUz(), brandDto.getNameRu(), attach.getId());
+        return new BrandEntity(brandDto.getNameUz(), brandDto.getNameRu(),
+                attachService.uploadFile(brandDto.getMultipartFile()).getId());
     }
 
 
     public BrandEntity getBrand(BrandEntity brandEntity, BrandDto brandDto) {
         var attach = attachService.getAttach(brandEntity.getAttachId());
-        if (Objects.nonNull(attach)) {
-            attachService.deleteById(brandEntity.getAttachId());
-            attachRepository.delete(attach);
-        }
-        var attachResponseDTO = attachService.uploadFile(brandDto.getMultipartFile());
-        return new BrandEntity(brandDto.getNameUz(), brandDto.getNameRu(), attachResponseDTO.getId());
+        if (!Objects.nonNull(attach)) return new BrandEntity(brandDto.getNameUz(), brandDto.getNameRu(),
+                attachService.uploadFile(brandDto.getMultipartFile()).getId());
+        attachService.deleteById(brandEntity.getAttachId());
+        attachRepository.delete(attach);
+        return new BrandEntity(brandDto.getNameUz(), brandDto.getNameRu(), attachService.uploadFile(brandDto.getMultipartFile()).getId());
     }
 
 }

@@ -30,8 +30,7 @@ public class BrandController {
     @PostMapping(value = "/add_brand", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addBrand(@Valid @ModelAttribute BrandDto brandDto) {
         log.info("ADD BRAND : brandDto {}", brandDto);
-        var responseBrandDto = brandService.addBrand(brandDto);
-        return ResponseEntity.status(201).body(responseBrandDto);
+        return ResponseEntity.status(201).body(brandService.addBrand(brandDto));
     }
 
     @Operation(summary = "LIST OF BRAND API", description = "Ushbu API barcha Brand lar ro'yxatini ko'rish uchun ishlatiladi")
@@ -39,8 +38,7 @@ public class BrandController {
     @PreAuthorize(value = "hasAnyRole('ADMIN','USER')")
     @GetMapping("/get_all_brand")
     public ResponseEntity<?> getAllBrand(@RequestHeader(name = "Accept-Language") Language language) {
-        var list = brandService.getAllBrand(language);
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(brandService.getAllBrand(language));
     }
 
     @Operation(summary = "GET BRAND BY ID API", description = "Ushbu API har bir  brand ni ko'rish uchun ishlatiladi" +
@@ -51,8 +49,7 @@ public class BrandController {
     @GetMapping("/get_brand_by_id/{brand_id}")
     public ResponseEntity<?> getBrandById(@PathVariable Long brand_id, @RequestHeader(name = "Accept-Language") Language language) {
         log.info("GET BRAND BY ID  :  brand_id {}", brand_id);
-        var brand = brandService.getBrandById(brand_id, language);
-        return ResponseEntity.ok(brand);
+        return ResponseEntity.ok(brandService.getBrandById(brand_id, language));
     }
 
     @Operation(summary = "EDITE BRAND API", description = "Ushbu API mavjud brandni edite qilish uchun ishlatiladi" +
@@ -61,9 +58,8 @@ public class BrandController {
     @PreAuthorize(value = "hasAnyRole('ADMIN')")
     @PutMapping(value = "/edite_brand/{brand_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> editeBrand(@PathVariable Long brand_id, @ModelAttribute BrandDto dto, @RequestHeader(name = "Accept-Language") Language language) {
-        log.info("EDITE BRAND : brandDto {}", dto);
-        var editeBrand = brandService.editeBrand(brand_id, language, dto);
-        return ResponseEntity.ok(editeBrand);
+        log.info("EDITE BRAND : dto {}", dto);
+        return ResponseEntity.ok(brandService.editeBrand(brand_id, language, dto));
     }
 
     @Operation(summary = "DELETE BRAND API", description = "Ushbu API mavjud bend ni o'chirish uchun ishlatiladi" +
@@ -74,7 +70,6 @@ public class BrandController {
     @DeleteMapping("/delete_brand/{brand_id}")
     public ResponseEntity<?> deleteBrand(@PathVariable Long brand_id, @RequestHeader(name = "Accept-Language") Language language) {
         log.info("DELETE BRAND : brand_id{}", brand_id);
-        var responseMessage = brandService.deleteBrand(brand_id, language);
-        return ResponseEntity.ok(responseMessage);
+        return ResponseEntity.ok(brandService.deleteBrand(brand_id, language));
     }
 }

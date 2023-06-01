@@ -6,8 +6,11 @@ import com.example.entity.ProfileEntity;
 import com.example.enums.Language;
 import com.example.exception.auth.ProfileNotFoundException;
 import com.example.repository.AuthRepository;
+import com.example.security.CustomUserDetail;
 import com.example.util.TranslateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,8 +25,8 @@ public class ProfileService {
     }
 
 
-    public ProfileResponseDTO update(UpdateProfileDTO dto, Long userId, Language language) {
-        var optional = repository.findById(userId);
+    public ProfileResponseDTO update(UpdateProfileDTO dto, Language language) {
+        var optional = repository.findById(getUserId());
         if (optional.isEmpty()) throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
         return getDTO(repository.save(getProfile(optional.get(), dto)));
     }
@@ -41,8 +44,8 @@ public class ProfileService {
         return profile;
     }
 
-    public ProfileResponseDTO getById(Long userId, Language language) {
-        var optional = repository.findById(userId);
+    public ProfileResponseDTO getById(Language language) {
+        var optional = repository.findById(getUserId());
         if (optional.isEmpty()) throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
         return getDTOByLang(optional.get(), language);
     }
@@ -63,8 +66,6 @@ public class ProfileService {
         dto.setPhoneUser(entity.getPhoneUser());
         dto.setPhoneHome(entity.getPhoneHome());
         dto.setScore(entity.getScore());
-
-
         return dto;
     }
 
@@ -88,7 +89,12 @@ public class ProfileService {
         dto.setPhoneUser(entity.getPhoneUser());
         dto.setPhoneHome(entity.getPhoneHome());
         dto.setScore(entity.getScore());
-
         return dto;
+    }
+
+    private Long getUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetail user = (CustomUserDetail) authentication.getPrincipal();
+        return user.getId();
     }
 }

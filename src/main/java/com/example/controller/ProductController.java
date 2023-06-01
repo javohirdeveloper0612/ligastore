@@ -2,7 +2,6 @@ package com.example.controller;
 
 
 import com.example.dto.product.ProductDto;
-import com.example.dto.product.ResponseProductDto;
 import com.example.enums.Language;
 import com.example.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,8 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController
@@ -36,8 +33,7 @@ public class ProductController {
     @PostMapping(value = "/add_product/{category_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addProduct(@PathVariable Long category_id, @Valid @ModelAttribute ProductDto productDto, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
         log.info("Add Product : productDto {}", productDto);
-        var dto = productService.addProduct(category_id, productDto, language);
-        return ResponseEntity.status(201).body(dto);
+        return ResponseEntity.status(201).body(productService.addProduct(category_id, productDto, language));
     }
 
     @Operation(summary = "EDITE PRODUCT API", description = "Ushbu API product ni edite qilish uchun ishlatiladi " +
@@ -48,9 +44,7 @@ public class ProductController {
     @PutMapping(value = "/edite/{product_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> editeProduct(@PathVariable Long product_id, @Valid @ModelAttribute ProductDto productDto, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
         log.info("Edite Product :  productDto {} ", productDto);
-        var dto = productService.editeProduct(product_id, productDto, language);
-        return ResponseEntity.ok(dto);
-
+        return ResponseEntity.ok(productService.editeProduct(product_id, productDto, language));
     }
 
     @Operation(summary = "LIST OF PRODUCT API", description = "Ushbu API barcha product lar ro'yxatini ko'rish uchun ishlatiladi" +
@@ -60,8 +54,7 @@ public class ProductController {
     @GetMapping("/view_product_list/{category_id}")
     public ResponseEntity<?> getProductList(@PathVariable Long category_id, @RequestHeader(name = "Accept-Language") Language language) {
         log.info("getProductList : category_id{}", category_id);
-        var productList = productService.getProductList(category_id, language);
-        return ResponseEntity.ok(productList);
+        return ResponseEntity.ok(productService.getProductList(category_id, language));
     }
 
 
@@ -72,8 +65,7 @@ public class ProductController {
     @GetMapping("/view_product_by_id/{product_id}")
     public ResponseEntity<?> getProductById(@PathVariable Long product_id, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
         log.info("View Product BY ID : product_id {}", product_id);
-        var product = productService.getProductById(product_id, language);
-        return ResponseEntity.ok(product);
+        return ResponseEntity.ok(productService.getProductById(product_id, language));
     }
 
 
@@ -85,8 +77,7 @@ public class ProductController {
     @DeleteMapping("/deleteProduct/{product_id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long product_id, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
         log.info("Delete Product : product_id{}", product_id);
-        var product = productService.deleteProduct(product_id, language);
-        return ResponseEntity.ok(product);
+        return ResponseEntity.ok(productService.deleteProduct(product_id, language));
     }
 
     @Operation(summary = "SELL PRODUCT API", description = "Ushbu API Agar User product ni sotip olmoqchi bo'lsa " +
@@ -107,8 +98,7 @@ public class ProductController {
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/get_all_product")
     public ResponseEntity<?> getALLProduct(@RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
-        List<ResponseProductDto> allProduct = productService.getAllProduct(language);
-        return ResponseEntity.ok(allProduct);
+        return ResponseEntity.ok(productService.getAllProduct(language));
     }
 
 }

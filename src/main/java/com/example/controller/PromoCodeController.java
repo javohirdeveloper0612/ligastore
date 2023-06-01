@@ -26,8 +26,8 @@ public class PromoCodeController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/generate")
     public ResponseEntity<?> generatePromoCode(@RequestBody CreatePromoCodeDto dto, @RequestHeader(name = "Accept-Language", defaultValue = "UZ") Language language) {
-        var promCode = promoCodeService.generateCode(dto, language);
-        return ResponseEntity.status(201).body(promCode);
+        log.info("GENERATE PROMO_CODE : dto {}", dto);
+        return ResponseEntity.status(201).body(promoCodeService.generateCode(dto, language));
     }
 
     @Operation(summary = "LIST OF PROMO_CODE LIST API", description = "Ushbu API barcha promo_code lar ro'yxatini ko'rish uchun ishlatiladi")
@@ -35,8 +35,7 @@ public class PromoCodeController {
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/view_all_list")
     public ResponseEntity<?> getAllList(@RequestHeader(name = "Accept-Language") Language language) {
-        var list = promoCodeService.getAllList(language);
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(promoCodeService.getAllList(language));
     }
 
     @Operation(summary = "VERIFICATION PROMO_CODE API", description = "Ushbu API promo+code ni verifikatsiya qilish uchun ishlatiladi")

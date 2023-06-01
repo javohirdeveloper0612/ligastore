@@ -133,22 +133,4 @@ public class AttachService {
         return fileName.substring(lastIndex + 1);
     }
 
-    public String updateById(String attachId, AttachResponseDTO dto) {
-        var optional = repository.findById(attachId);
-        if (optional.isEmpty()) throw new FileNotFoundException(resourceBundleService.getMessage("file.not.found", Language.UZ));
-        try {
-            var entity = getAttach(attachId);
-            Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + attachId + "." + entity.getType());
-            Files.delete(file);
-            entity.setId(dto.getId());
-            entity.setPath(dto.getPath());
-            entity.setSize(dto.getSize());
-            entity.setOriginName(dto.getOriginalName());
-            entity.setType(dto.getType());
-            repository.save(entity);
-            return "Updated";
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

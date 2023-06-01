@@ -7,10 +7,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * @author Firdavs Amonov
- * @version 1.0
- */
+
 @Configuration
 @OpenAPIDefinition(info = @Info(title = "LigaStore.com APi documentation", version = "1.0"))
 @ConditionalOnProperty(value = "springfox.documentation.enabled", havingValue = "true", matchIfMissing = true)
