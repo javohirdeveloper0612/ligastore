@@ -8,11 +8,7 @@ import java.util.List;
 
 @Repository
 public interface AdminMessageRepository extends JpaRepository<AdminMessageEntity, Long> {
-
     List<AdminMessageEntity> findAllByOrderByIdDesc();
-
-    List<AdminMessageEntity> findAllByAccepted(Boolean accepted);
-
     List<AdminMessageEntity> findAllByUserIdAndAccepted(Long userId, Boolean accepted);
 
 

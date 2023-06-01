@@ -23,30 +23,30 @@ public class AdminMessageController {
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/message")
     @Operation(summary = "MESSAGE TO ADMIN API", description = "Ushbu API User tomonidan qandaydir product sotib " +
-            "olinmoqchi bo'linsa adminga sms junatiladi va shu sms lar to'plamini olish uchun ushbu API ishlatiladi")
+            "olinmoqchi bo'linsa adminga sms junatiladi va shu sms lar to'plamini olish uchun ushbu API ishlatiladi." +
+            "Ushbu List larda ACTIVE VA NOT AVTIVE MESSAGE lar turadi Agar active message larni accept qilinsa " +
+            "not active ga utadi")
     public ResponseEntity<?> getAdminMessage() {
         return ResponseEntity.ok(adminMessageService.getAllMessage());
     }
 
 
-    @Operation(summary = "CHECK SMS API", description = "Ushbu API kelgan SMS ni tasdiqlash yoki belor qilish uchun" +
-            " ishlatiladi . Tasdiqlash uchun parametr sifatida ushbu userning ID si va Product ning model Raqami " +
-            " berish suraladi")
+    @Operation(summary = "CHECK SMS API", description = "Ushbu API kelgan SMS ni tasdiqlash yoki bekor qilish uchun" +
+            " ishlatiladi . Tasdiqlash uchun parametr sifatida ushbu buyurtmaninh ID si  berish suraladi")
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/accept")
-    public ResponseEntity<?> checkAcceptable(@RequestParam Long user_id, @RequestParam String product_model) {
-        var responseMessage = adminMessageService.checkAcceptable(user_id, product_model);
+    public ResponseEntity<?> checkAcceptable(@RequestParam Long id) {
+        var responseMessage = adminMessageService.checkAcceptable(id);
         return ResponseEntity.ok(responseMessage);
     }
 
-    @Operation(summary = "USER HISTORY API", description = "Ushbu API har bir foydalanuvchining sotib olgan mahsulotining tarixinini chiqarib beradi" +
-            "Buning uchun siz USER ning ID sini berishingiz talab qilinadi,Chunki har bir userning o'z history si bo'ladi")
-    @GetMapping("/history/{user_id}")
+    @Operation(summary = "USER HISTORY API", description = "Ushbu API har bir foydalanuvchining transaksiya tarixinini chiqarib beradi")
+    @GetMapping("/history")
     @PreAuthorize(value = "hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
-    public ResponseEntity<?> getUserHistory(@PathVariable Long user_id) {
-        var history = adminMessageService.getUserHistory(user_id);
+    public ResponseEntity<?> getUserHistory() {
+        var history = adminMessageService.getUserHistory();
         return ResponseEntity.ok(history);
     }
 }

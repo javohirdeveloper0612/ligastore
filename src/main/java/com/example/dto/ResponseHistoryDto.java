@@ -1,5 +1,6 @@
 package com.example.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,13 +8,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseHistoryDto {
 
-    private Long id;
-    private String first_name;
-    private String last_name;
-    private String phone;
     private String product_model;
-    private Double sell_score;
-    private Boolean isAccepted;
+    private String productName;
+    private String fileUrl;
+    private double sell_score;
+
+
 }

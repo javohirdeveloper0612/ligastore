@@ -9,6 +9,6 @@ public class ResponsePromoCodeDto {
 
     private Long id;
     private String promo_code;
-    private Double score;
+    private double score;
     private String product_model;
 }

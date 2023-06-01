@@ -28,8 +28,11 @@ public class AdminMessageEntity extends AbsEntity {
     @Column(nullable = false)
     private String product_model;
 
+
+    private String fileUrl;
+
     @Column(nullable = false)
-    private Boolean accepted = false;
+    private Boolean accepted;
 
     @Column
     private Double sellScore;

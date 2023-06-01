@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Slf4j
-@Tag(name = "AuthController")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

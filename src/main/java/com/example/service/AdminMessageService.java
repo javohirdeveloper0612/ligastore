@@ -9,10 +9,14 @@ import com.example.entity.ProfileEntity;
 import com.example.repository.AdminMessageRepository;
 import com.example.repository.AuthRepository;
 import com.example.repository.ProductRepository;
+import com.example.security.CustomUserDetail;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AdminMessageService {
@@ -29,7 +33,7 @@ public class AdminMessageService {
 
 
     public List<ResponseAdminMessage> getAllMessage() {
-        var list = adminMessageRepository.findAllByAccepted(false);
+        var list = adminMessageRepository.findAllByOrderByIdDesc();
         List<ResponseAdminMessage> adminMessageList = new LinkedList<>();
         for (AdminMessageEntity message : list) adminMessageList.add(getResponseAdminMessage(message));
         return adminMessageList;
@@ -37,7 +41,7 @@ public class AdminMessageService {
 
     public ResponseAdminMessage getResponseAdminMessage(AdminMessageEntity message) {
         ResponseAdminMessage adminMessage = new ResponseAdminMessage();
-        adminMessage.setUser_id(message.getUserId());
+        adminMessage.setId(message.getId());
         adminMessage.setFirst_name(message.getUser_name());
         adminMessage.setLast_name(message.getUser_surname());
         adminMessage.setPhone(message.getPhone());
@@ -47,36 +51,31 @@ public class AdminMessageService {
         return adminMessage;
     }
 
-    public ResponseMessage checkAcceptable(Long user_id, String product_model) {
-        var optionalProduct = productRepository.findByModel(product_model);
-        if (optionalProduct.isEmpty()) return new ResponseMessage(product_model + " product modeli topilmadi", false, 400);
-        var optionalProfile = authRepository.findById(user_id);
-        if (optionalProfile.isEmpty()) return new ResponseMessage(user_id + " id li user topilmadi", false, 400);
-        var product = optionalProduct.get();
-        var profile = optionalProfile.get();
-        if (profile.getScore() < product.getScore()) return new ResponseMessage("Ball yetarli emas", false, 400);
-        Double score = profile.getScore() - product.getScore();
-        profile.setScore(score);
-        authRepository.save(profile);
-        adminMessageRepository.save(getAdminMessageEntity(profile, product));
+    public ResponseMessage checkAcceptable(Long orderId) {
+        var admin = adminMessageRepository.findById(orderId);
+        if (admin.isEmpty()) return new ResponseMessage(orderId + "ushbu Buyurtma ID topilmadi", false, 400);
+        var product = productRepository.findByModel(admin.get().getProduct_model());
+        if (product.isEmpty())
+            return new ResponseMessage(admin.get().getProduct_model() + " product modeli topilmadi", false, 400);
+        var profile = authRepository.findById(admin.get().getUserId());
+        if (profile.isEmpty())
+            return new ResponseMessage(admin.get().getUserId() + " ushbu Id li profile mavjud emas", false, 400);
+        if (profile.get().getScore() < product.get().getScore())
+            return new ResponseMessage("Ball yetarli emas", false, 400);
+        profile.get().setScore(profile.get().getScore() - product.get().getScore());
+        authRepository.save(profile.get());
+        adminMessageRepository.save(getAdminMessageEntity(product.get(), admin.get()));
         return new ResponseMessage("Ball muvaffaqqiyatli yechildi", true, 200);
     }
 
-    public List<ResponseHistoryDto> getUserHistory(Long user_id) {
-        var list = adminMessageRepository.findAllByUserIdAndAccepted(user_id, true);
+    public List<ResponseHistoryDto> getUserHistory() {
+        var list = adminMessageRepository.findAllByUserIdAndAccepted(getUserId(), true);
         List<ResponseHistoryDto> responseHistoryDtoList = new LinkedList<>();
         for (AdminMessageEntity message : list) responseHistoryDtoList.add(getHistoryDto(message));
         return responseHistoryDtoList;
     }
 
-    public AdminMessageEntity getAdminMessageEntity(ProfileEntity profile, ProductEntity product) {
-        AdminMessageEntity message = new AdminMessageEntity();
-        message.setUserId(profile.getId());
-        message.setUser_name(profile.getNameUz());
-        message.setUser_surname(profile.getSurnameUz());
-        message.setProduct_name(product.getNameUz());
-        message.setProduct_model(product.getModel());
-        message.setPhone(profile.getPhoneUser());
+    public AdminMessageEntity getAdminMessageEntity(ProductEntity product, AdminMessageEntity message) {
         message.setAccepted(true);
         message.setSellScore(product.getScore());
         return message;
@@ -84,12 +83,15 @@ public class AdminMessageService {
 
     public ResponseHistoryDto getHistoryDto(AdminMessageEntity message) {
         ResponseHistoryDto dto = new ResponseHistoryDto();
-        dto.setId(message.getId());
-        dto.setFirst_name(message.getUser_name());
-        dto.setLast_name(message.getUser_surname());
-        dto.setPhone(message.getPhone());
+        dto.setProduct_model(message.getProduct_model());
         dto.setSell_score(message.getSellScore());
-        dto.setIsAccepted(message.getAccepted());
+        dto.setFileUrl(message.getFileUrl());
         return dto;
+    }
+
+    private Long getUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetail user = (CustomUserDetail) authentication.getPrincipal();
+        return user.getId();
     }
 }

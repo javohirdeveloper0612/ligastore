@@ -43,7 +43,8 @@ public class BrandService {
 
     public List<ResponseBrandDto> getAllBrand(Language language) {
         var list = brandRepository.findAll();
-        if (list.isEmpty()) throw new EmptyListException(resourceBundleService.getMessage("brand.list.not.found", language));
+        if (list.isEmpty())
+            throw new EmptyListException(resourceBundleService.getMessage("brand.list.not.found", language));
         var brandDtoList = new LinkedList<ResponseBrandDto>();
         for (BrandEntity brandEntity : list) brandDtoList.add(responseBrandDtoByLan(brandEntity, language));
         return brandDtoList;
@@ -53,14 +54,16 @@ public class BrandService {
 
     public ResponseBrandDto getBrandById(Long brand_id, Language language) {
         var brand = brandRepository.findById(brand_id);
-        if (brand.isEmpty()) throw new BrandNotFoundException(resourceBundleService.getMessage("brand.not.found", language));
+        if (brand.isEmpty())
+            throw new BrandNotFoundException(resourceBundleService.getMessage("brand.not.found", language));
         return responseBrandDtoByLan(brand.get(), language);
     }
 
 
     public ResponseBrandDto editeBrand(Long brand_id, Language language, BrandDto brandDto) {
         var optional = brandRepository.findById(brand_id);
-        if (optional.isEmpty()) throw new BrandNotFoundException(resourceBundleService.getMessage("brand.not.found", language));
+        if (optional.isEmpty())
+            throw new BrandNotFoundException(resourceBundleService.getMessage("brand.not.found", language));
         var editedBrand = brandRepository.save(getBrand(optional.get(), brandDto));
         attachRepository.deleteById(optional.get().getAttachId());
         return responseBrandDtoByLan(editedBrand, language);
@@ -70,7 +73,8 @@ public class BrandService {
     @Transactional
     public ResponseMessage deleteBrand(Long brand_id, Language language) {
         var optional = brandRepository.findById(brand_id);
-        if (optional.isEmpty()) throw new BrandNotFoundException(resourceBundleService.getMessage("brand.not.found", language));
+        if (optional.isEmpty())
+            throw new BrandNotFoundException(resourceBundleService.getMessage("brand.not.found", language));
         attachService.deleteById(optional.get().getAttachId());
         brandRepository.delete(optional.get());
         return new ResponseMessage("Successfully deleted", true, 200);

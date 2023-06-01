@@ -19,7 +19,7 @@ public class PromoCode extends AbsEntity {
 
 
     @Column(nullable = false)
-    private Double score;
+    private double score;
 
 
     @ManyToOne(cascade = CascadeType.ALL)

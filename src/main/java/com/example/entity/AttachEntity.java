@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-
 @Getter
 @Setter
 @Entity
@@ -30,6 +29,7 @@ public class AttachEntity {
 
     @Column
     private Double duration;
+
     @OneToOne(mappedBy = "attach")
     private CategoryEntity category;
 

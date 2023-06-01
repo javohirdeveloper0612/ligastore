@@ -57,7 +57,7 @@ public class ProfileEntity extends AbsEntity {
     private LocalDateTime smsTime;
 
     @Column
-    private Double score;
+    private double score;
 
     @Column
     @Enumerated(EnumType.STRING)

@@ -32,7 +32,7 @@ public class DataLoader implements CommandLineRunner {
             profile.setNameRu("ADMIN");
             profile.setRole(ProfileRole.ROLE_ADMIN);
             profile.setStatus(ProfileStatus.ACTIVE);
-            profile.setPhoneUser("+998932235432");
+            profile.setPhoneUser("+998996731741");
             profile.setPhoneHome("+998911234567");
             profile.setScore(0D);
             profile.setSmsCode("12345");

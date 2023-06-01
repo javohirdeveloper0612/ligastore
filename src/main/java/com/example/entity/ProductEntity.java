@@ -23,7 +23,7 @@ public class ProductEntity extends AbsEntity {
     private Double price;
 
     @Column(nullable = false)
-    private Double score;
+    private double score;
 
     @Column(nullable = false)
     private String descriptionUz;
