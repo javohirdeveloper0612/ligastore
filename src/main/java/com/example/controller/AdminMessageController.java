@@ -24,15 +24,16 @@ public class AdminMessageController {
     @GetMapping("/message")
     @Operation(summary = "MESSAGE TO ADMIN API", description = "Ushbu API User tomonidan qandaydir product sotib " +
             "olinmoqchi bo'linsa adminga sms junatiladi va shu sms lar to'plamini olish uchun ushbu API ishlatiladi." +
-            "Ushbu List larda ACTIVE VA NOT AVTIVE MESSAGE lar turadi Agar active message larni accept qilinsa " +
-            "not active ga utadi")
+            "Ushbu List larda ACTIVE VA NOT AVTIVE MESSAGE lar turadi ! Agar Admin accept tugmasini bossa Active Message larni " +
+            "accepted statusi  true buladi  va NotActive Message ga aylanadi ! Active Message larni " +
+            "accepted statusi false buladi ")
     public ResponseEntity<?> getAdminMessage() {
         return ResponseEntity.ok(adminMessageService.getAllMessage());
     }
 
 
     @Operation(summary = "CHECK SMS API", description = "Ushbu API kelgan SMS ni tasdiqlash yoki bekor qilish uchun" +
-            " ishlatiladi . Tasdiqlash uchun parametr sifatida ushbu buyurtmaninh ID si  berish suraladi")
+            " ishlatiladi . Tasdiqlash uchun parametr sifatida ushbu buyurtmaning ID si  berish suraladi")
     @PreAuthorize(value = "hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/accept")

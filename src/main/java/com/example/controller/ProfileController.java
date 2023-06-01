@@ -26,7 +26,7 @@ public class ProfileController {
 
     @PreAuthorize("hasRole('USER')")
     @SecurityRequirement(name = "Bearer Authentication")
-    @Operation(summary = "Update Profile", description = "This API for update Profile Details ")
+    @Operation(summary = "EDITE PROFILE API", description = "Ushbu API har bir user o'z profilini  edite qilish uchun ishlatiladi")
     @PutMapping("/update")
     public ResponseEntity<?> update(@Valid @RequestBody UpdateProfileDTO dto, @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
         var response = service.update(dto, getUserId(), language);
@@ -36,7 +36,7 @@ public class ProfileController {
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
-    @Operation(summary = "VIEW PROFILE", description = "This API for update Profile Details ")
+    @Operation(summary = "VIEW PROFILE API", description = "Ushbu API har bir user o'z profilini ko'rish uchun ishlatiladi ")
     @GetMapping("/get")
     public ResponseEntity<?> getById(@RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
         var response = service.getById(getUserId(), language);

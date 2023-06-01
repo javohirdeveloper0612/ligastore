@@ -12,6 +12,8 @@ import com.example.util.JwtUtil;
 import com.example.util.MD5;
 import com.example.util.TranslateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -46,12 +48,15 @@ public class AuthService implements UserDetailsService {
 
     @Transactional
     public String sendSms(SendSmsDTO dto, Language language) {
-        Optional<ProfileEntity> optional = repository.findByPhoneUser(dto.getPhone());
+        var optional = repository.findByPhoneUser(dto.getPhone());
         if (optional.isPresent()) {
             ProfileEntity entity = optional.get();
-            if (entity.getStatus().equals(ProfileStatus.ACTIVE)) return smsService.sendSms(entity, dto, ProfileStatus.ACTIVE, language);
-             else if (entity.getStatus().equals(ProfileStatus.BLOCK)) throw new ProfileBlockedException(resourceBundleService.getMessage("profile.blocked", language.name()));
-             else if (entity.getStatus().equals(ProfileStatus.NOT_ACTIVE)) return smsService.sendSms(entity, dto, ProfileStatus.NOT_ACTIVE, language);
+            if (entity.getStatus().equals(ProfileStatus.ACTIVE))
+                return smsService.sendSms(entity, dto, ProfileStatus.ACTIVE, language);
+            else if (entity.getStatus().equals(ProfileStatus.BLOCK))
+                throw new ProfileBlockedException(resourceBundleService.getMessage("profile.blocked", language.name()));
+            else if (entity.getStatus().equals(ProfileStatus.NOT_ACTIVE))
+                return smsService.sendSms(entity, dto, ProfileStatus.NOT_ACTIVE, language);
         }
         String smsCode = SmsService.randomSmsCode();
         ProfileEntity profile = new ProfileEntity();
@@ -67,10 +72,12 @@ public class AuthService implements UserDetailsService {
     }
 
 
-    public ProfileResponseDTO registration(Long userId, RegistrationDTO dto, Language language) {
-        var optional = repository.findById(userId);
-        if (optional.isEmpty()) throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
-        else if (optional.get().getStatus().equals(ProfileStatus.ACTIVE)) throw new ProfileAlReadyRegistrationException(resourceBundleService.getMessage("profile.ready.active", language));
+    public ProfileResponseDTO registration(RegistrationDTO dto, Language language) {
+        var optional = repository.findById(getUserId());
+        if (optional.isEmpty())
+            throw new ProfileNotFoundException(resourceBundleService.getMessage("profile.not.found", language.name()));
+        else if (optional.get().getStatus().equals(ProfileStatus.ACTIVE))
+            throw new ProfileAlReadyRegistrationException(resourceBundleService.getMessage("profile.ready.active", language));
         return getDTO(repository.save(getProfile(optional.get(), dto)));
     }
 
@@ -128,6 +135,12 @@ public class AuthService implements UserDetailsService {
         dto.setPhoneHome(entity.getPhoneHome());
         dto.setScore(entity.getScore());
         return dto;
+    }
+
+    private Long getUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetail user = (CustomUserDetail) authentication.getPrincipal();
+        return user.getId();
     }
 
 }

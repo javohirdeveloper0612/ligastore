@@ -24,7 +24,6 @@ public class AttachController {
 
 
     @PostMapping(value = "/public/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Upload File API", description = "This method uploads the file in DataBase")
     public ResponseEntity<?> uploadFile(@ModelAttribute("file") MultipartFile file) {
         log.info("upload file : multipartFile {} ", file);
         var result = attachService.uploadFile(file);
@@ -33,7 +32,6 @@ public class AttachController {
 
 
     @GetMapping(value = "/public/download/{id}", produces = MediaType.ALL_VALUE)
-    @Operation(summary = "Download method", description = "This method used for downloading file")
     public ResponseEntity<?> downloadFile(@PathVariable(name = "id") String id) {
         var file = attachService.downloadFile(id);
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);

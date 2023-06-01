@@ -33,7 +33,7 @@ public class AuthController {
     }
 
 
-    @Operation(summary = "Phone Registration", description = "This API for send message Phone number")
+    @Operation(summary = "SEND SMS TO PHONE API", description = "Ushbu API telefon raqamga sms junatish uchun ishlatiladi")
     @PostMapping("/public/send_sms")
     public ResponseEntity<String> sendSms(@Valid @RequestBody SendSmsDTO dto, @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
         String response = service.sendSms(dto, language);
@@ -41,28 +41,23 @@ public class AuthController {
     }
 
 
-    @Operation(summary = "Verification", description = "Ushbu APIdan status NOT_ACTIVE bulsa registrationga utqaziladi yoki Status ACTIVE bulsa Avval ruyxatdan utgan buladi " +
-            "shunchaki tokenni saqlab applicationga utadigan qilinadi tamom !")
+    @Operation(summary = "VERIFICATION SMS CODE API", description = "Ushbu API Telefon raqamga kelgan sms ni verifikatsiya" + " qilish uchun ishlatiladi")
     @PostMapping("/public/verification")
     public ResponseEntity<?> verification(@Valid @RequestBody VerificationDTO dto, @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
         var responseDTO = service.verification(dto, language);
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @Operation(summary = "Method for registration", description = "This method used to create a user")
+    @Operation(summary = "REGISTER USER API", description = "Ushbu API USER ni registratsiya qilish uchun ishlatiladi")
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @PostMapping("/registration")
     public ResponseEntity<ProfileResponseDTO> registration(@Valid @RequestBody RegistrationDTO dto, @RequestHeader(value = "Accept-Language", defaultValue = "UZ") Language language) {
-        var result = service.registration(getUserId(), dto, language);
+        var result = service.registration(dto, language);
         return ResponseEntity.ok(result);
     }
 
 
-    private Long getUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetail user = (CustomUserDetail) authentication.getPrincipal();
-        return user.getId();
-    }
+
 
 }
